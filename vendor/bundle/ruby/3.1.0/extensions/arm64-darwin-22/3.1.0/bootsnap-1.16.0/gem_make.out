@@ -1,0 +1,15 @@
+current directory: /Users/romanciobanu/Documents/rails/orienteering/vendor/bundle/ruby/3.1.0/gems/bootsnap-1.16.0/ext/bootsnap
+/Users/romanciobanu/.rvm/rubies/ruby-3.1.2/bin/ruby -I /Users/romanciobanu/.rvm/rubies/ruby-3.1.2/lib/ruby/3.1.0 -r ./siteconf20230926-34160-l67moe.rb extconf.rb
+creating Makefile
+
+current directory: /Users/romanciobanu/Documents/rails/orienteering/vendor/bundle/ruby/3.1.0/gems/bootsnap-1.16.0/ext/bootsnap
+make DESTDIR\= clean
+
+current directory: /Users/romanciobanu/Documents/rails/orienteering/vendor/bundle/ruby/3.1.0/gems/bootsnap-1.16.0/ext/bootsnap
+make DESTDIR\=
+compiling bootsnap.c
+linking shared-object bootsnap/bootsnap.bundle
+
+current directory: /Users/romanciobanu/Documents/rails/orienteering/vendor/bundle/ruby/3.1.0/gems/bootsnap-1.16.0/ext/bootsnap
+make DESTDIR\= install
+/Users/romanciobanu/homebrew/opt/coreutils/bin/ginstall -c -m 0755 bootsnap.bundle ./.gem.20230926-34160-iw5772/bootsnap
