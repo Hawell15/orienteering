@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_12_11_120451) do
+ActiveRecord::Schema.define(version: 2023_12_11_141818) do
 
   create_table "competitions", force: :cascade do |t|
     t.string "competition_name"
@@ -22,6 +22,16 @@ ActiveRecord::Schema.define(version: 2023_12_11_120451) do
     t.string "checksum"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "groups", force: :cascade do |t|
+    t.string "group_name"
+    t.integer "competition_id", default: 0
+    t.integer "rang"
+    t.string "clasa"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["competition_id"], name: "index_groups_on_competition_id"
   end
 
   create_table "users", force: :cascade do |t|
