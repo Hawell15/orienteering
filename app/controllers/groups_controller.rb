@@ -4,9 +4,9 @@ class GroupsController < ApplicationController
   # GET /groups or /groups.json
 def index
   @groups = if params[:comp_id]
-    Group.where(competition_id: params[:comp_id]).paginate(page: params[:page], per_page: 1)
+    Group.where(competition_id: params[:comp_id])
   else
-    Group.paginate(page: params[:page], per_page: 1)
+    Group
   end
 
   @groups = case params[:sort]
@@ -14,7 +14,7 @@ def index
     @groups = @groups.includes(:competition).order("competitions.#{params[:sort]}")
   else
     @groups.order("#{params[:sort]}")
-  end
+  end.paginate(page: params[:page], per_page: 10)
 end
 
 
@@ -77,6 +77,7 @@ end
 
     # Only allow a list of trusted parameters through.
     def group_params
-      params.require(:group).permit(:group_name, :competition, :rang, :clasa)
+      params.require(:group).permit(:group_name, :competition_id, :rang, :clasa,
+      competition_attributes: [:id, :competition_name, :date, :location, :country, :distance_type, :wre_id])
     end
 end
