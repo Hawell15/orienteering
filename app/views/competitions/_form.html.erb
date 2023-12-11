@@ -1,0 +1,54 @@
+<% if admin_user? %>
+<%= form_with(model: competition) do |form| %>
+<% if competition.errors.any? %>
+<div id="error_explanation">
+    <h2>
+        <%= pluralize(competition.errors.count, "error") %> prohibited this competition from being saved:</h2>
+    <ul>
+        <% competition.errors.each do |error| %>
+        <li>
+            <%= error.full_message %>
+        </li>
+        <% end %>
+    </ul>
+</div>
+<% end %>
+<div class="row">
+    <div class="col">
+        <%= form.text_field :competition_name, placeholder: "Numele Competitiei", class: "form-control"  %>
+    </div>
+    <div class="col">
+        <%= form.text_field :distance_type, placeholder: "Tipul Distantei", class: "form-control"  %>
+    </div>
+    <div class="col">
+        <%= form.text_field :wre_id, placeholder: "WRE ID", class: "form-control"  %>
+    </div>
+</div>
+<br>
+<div class="row">
+    <div class="col">
+        <%= form.label :date ,'Data'%>
+        <%= form.date_select :date, class: "form-control"%>
+    </div>
+</div>
+<br>
+<div class="row">
+    <div class="col">
+        <%= form.text_field :location, placeholder: "Localitatea", class: "form-control"  %>
+    </div>
+    <div class="col">
+        <%= form.text_field :country, placeholder: "Tara", class: "form-control"  %>
+    </div>
+</div>
+<br>
+<div class="actions">
+    <% text = @competition.id ? "Actualizează" : "Crează" %>
+    <%= form.submit "#{text} Competiție", class: "btn btn-success btn-sm"%>
+    <%= link_to 'Inapoi', request.referer, class: "btn btn-secondary btn-sm" %>
+</div>
+<% end %>
+<% else %>
+
+<h3> Doar administratorul poate adăuga competiție </h3>
+<% end %>
+
