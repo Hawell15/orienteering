@@ -1,0 +1,42 @@
+
+
+<p id="notice">
+    <%= notice %>
+</p>
+<div class="mt-4 p-5 bg-light text-black rounded --bs-gray-500">
+    <h1>
+        <%= @competition.competition_name %>
+    </h1>
+    <p>
+        <strong>Data:</strong>
+        <%= @competition.date.strftime("%d/%m/%Y") %>
+    </p>
+    <p>
+        <strong>Tipul Distantei</strong>
+        <%= @competition.distance_type %>
+    </p>
+    <hr class="my-4">
+     <p>
+        <strong>Orasul</strong>
+        <%= @competition.location%>
+    </p>
+     <p>
+        <strong>Tara</strong>
+        <%= @competition.country %>
+    </p>
+    <% if wre_id = @competition.wre_id %>
+       <p>
+        <strong>WRE ID</strong>
+        <%= wre_id %>
+    </p>
+    <% end %>
+
+ <p class="lead">
+        <% if admin_user? %>
+        <%= link_to 'Editează', edit_polymorphic_path(@competition), class: "btn btn-success btn-sm" %>
+        <%= link_to 'Șterge', @competition, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-danger btn-sm" %>
+        <% end %>
+        <%= link_to 'Înapoi', request.referer, class: "btn btn-secondary btn-sm" %>
+    </p>
+</div>
+
