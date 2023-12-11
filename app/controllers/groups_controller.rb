@@ -2,9 +2,21 @@ class GroupsController < ApplicationController
   before_action :set_group, only: %i[ show edit update destroy ]
 
   # GET /groups or /groups.json
-  def index
-    @groups = Group.all
+def index
+  @groups = if params[:comp_id]
+    Group.where(competition_id: params[:comp_id]).paginate(page: params[:page], per_page: 1)
+  else
+    Group.paginate(page: params[:page], per_page: 1)
   end
+
+  @groups = case params[:sort]
+  when "competition_name", "date"
+    @groups = @groups.includes(:competition).order("competitions.#{params[:sort]}")
+  else
+    @groups.order("#{params[:sort]}")
+  end
+end
+
 
   # GET /groups/1 or /groups/1.json
   def show

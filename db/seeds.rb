@@ -1,3 +1,5 @@
 Competition.create("id": 0, "competition_name": 'Fara Competitie', "date": '2021-08-01')
 Competition.create("id": 1, "competition_name": 'Diminuare Categorie', "date": '2021-08-01')
+Group.create("id": 0, "group_name": 'No Group', "competition_id": 0)
+Group.create("id": 1, "group_name": 'Diminuare Categorie', "competition_id": 1)
 User.create!(email: "test@mail.ru", password: "1234qwe1234", admin: true)
