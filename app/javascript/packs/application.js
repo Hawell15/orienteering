@@ -9,7 +9,19 @@ import Rails from "@rails/ujs"
 import Turbolinks from "turbolinks"
 import * as ActiveStorage from "@rails/activestorage"
 import "channels"
+import "./application";
 
 Rails.start()
 Turbolinks.start()
 ActiveStorage.start()
+
+
+window.show_hide_new_competition = function(html) {
+    var value = $('[id*="competition_id"]').val();
+    if (value == "") {
+        $('#new-competition').replaceWith(html);
+    } else {
+        $('#create-competition').replaceWith('<div id="new-competition"></div>');
+    }
+}
+
