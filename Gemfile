@@ -20,6 +20,7 @@ gem 'jbuilder', '~> 2.7'
 gem 'rubocop'
 gem "devise"
 gem 'will_paginate'
+gem 'will_paginate-bootstrap-style'
 
 
 # Use Redis adapter to run Action Cable in production

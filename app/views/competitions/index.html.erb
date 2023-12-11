@@ -16,7 +16,8 @@
       <th colspan="3">Acțiuni</th>
     </tr>
   </thead>
-
+  <div class="py-4">
+      </div>
   <tbody>
     <% @competitions.each do |competition| %>
       <tr>
@@ -34,6 +35,9 @@
       </tr>
     <% end %>
   </tbody>
+  <div class="pagination">
+  <%= will_paginate @competitions, renderer: WillPaginate::ActionView::BootstrapLinkRenderer %>
+</div>
 </table>
 <% if admin_user? %>
   <%= link_to 'Competitie Noua', new_competition_path, class: "btn btn-info" %>

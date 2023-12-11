@@ -3,7 +3,7 @@ class CompetitionsController < ApplicationController
 
   # GET /competitions or /competitions.json
   def index
-    @competitions = Competition.all
+    @competitions = Competition.paginate(page: params[:page], per_page: 2)
   end
 
   # GET /competitions/1 or /competitions/1.json
