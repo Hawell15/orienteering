@@ -10,7 +10,15 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_12_11_141818) do
+ActiveRecord::Schema.define(version: 2023_12_12_120016) do
+
+  create_table "categories", force: :cascade do |t|
+    t.string "category_name"
+    t.string "full_name"
+    t.float "points"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
 
   create_table "competitions", force: :cascade do |t|
     t.string "competition_name"
