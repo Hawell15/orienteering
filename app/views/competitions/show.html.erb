@@ -31,6 +31,56 @@
     </p>
     <% end %>
 
+<ul class="nav nav-pills">
+  <% @competition.groups.each_with_index do |group, index| %>
+  <li class="nav-item">
+    <a class="nav-link <%= "active" if index.zero?%>" data-bs-toggle="pill" href="#menu<%=group.group_name %>"><%=group.group_name%></a>
+  </li>
+  <% end%>
+</ul>
+
+<!-- Tab panes -->
+<div class="tab-content">
+   <% @competition.groups.each_with_index do |group, index| %>
+  <div class="tab-pane container <%= index.zero? ? "active" : "fade"%>" id="menu<%=group.group_name %>">
+
+  <table class="table table-striped table-bordered table-hover">
+  <thead class="table-primary">
+     <tr>
+      <th scope="col"> <%= link_to 'Locul' %></th>
+      <th><%= link_to 'Sportiv'%></th>
+      <th><%= link_to 'Timpul'%></th>
+      <th><%= link_to 'Categoria indeplinita' %></th>
+      <th><%= link_to 'Competitia' %></th>
+      <th><%= link_to 'Grupa' %></th>
+      <th><%= link_to 'Wre Puncte' %></th>
+    </tr>
+  </thead>
+
+  <tbody>
+     <% group.results.order(:place).each do |result| %>
+      <tr>
+        <td><%= result.place %></td>
+        <td><%= link_to "#{result.runner.runner_name} #{result.runner.surname}", result.runner  %></td>
+        <td><%= Time.at(result.time).utc.strftime('%H:%M:%S') %></td>
+        <td><%= result.category.category_name %></td>
+        <td><%= link_to "#{result.group.competition.competition_name} #{result.group.competition.date.year}", result.group.competition %></td>
+        <td><%= link_to result.group.group_name, result.group %></td>
+        <td><%= result.wre_points %></td>
+
+
+      </tr>
+      <% end %>
+  </tbody>
+</table>
+
+
+
+    </div>
+  <% end%>
+
+</div>
+
  <p class="lead">
         <% if admin_user? %>
         <%= link_to 'Editează', edit_polymorphic_path(@competition), class: "btn btn-success btn-sm" %>
