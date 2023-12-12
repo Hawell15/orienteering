@@ -1,5 +1,5 @@
 current directory: /Users/romanciobanu/Documents/rails/orienteering/vendor/bundle/ruby/3.1.0/gems/sassc-2.4.0/ext
-/Users/romanciobanu/.rvm/rubies/ruby-3.1.2/bin/ruby -I /Users/romanciobanu/.rvm/rubies/ruby-3.1.2/lib/ruby/3.1.0 -r ./siteconf20231212-96982-l1szw8.rb extconf.rb
+/Users/romanciobanu/.rvm/rubies/ruby-3.1.2/bin/ruby -I /Users/romanciobanu/.rvm/rubies/ruby-3.1.2/lib/ruby/3.1.0 -r ./siteconf20231212-5116-f12d4c.rb extconf.rb
 creating Makefile
 
 current directory: /Users/romanciobanu/Documents/rails/orienteering/vendor/bundle/ruby/3.1.0/gems/sassc-2.4.0/ext
@@ -88,4 +88,4 @@ ld: warning: -multiply_defined is obsolete
 
 current directory: /Users/romanciobanu/Documents/rails/orienteering/vendor/bundle/ruby/3.1.0/gems/sassc-2.4.0/ext
 make DESTDIR\= install
-/Users/romanciobanu/homebrew/opt/coreutils/bin/ginstall -c -m 0755 libsass.bundle ./.gem.20231212-96982-loux9l/sassc
+/Users/romanciobanu/homebrew/opt/coreutils/bin/ginstall -c -m 0755 libsass.bundle ./.gem.20231212-5116-7qtgt5/sassc
