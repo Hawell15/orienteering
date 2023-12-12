@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_12_12_122608) do
+ActiveRecord::Schema.define(version: 2023_12_12_124747) do
 
   create_table "categories", force: :cascade do |t|
     t.string "category_name"
@@ -50,6 +50,26 @@ ActiveRecord::Schema.define(version: 2023_12_12_122608) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["competition_id"], name: "index_groups_on_competition_id"
+  end
+
+  create_table "runners", force: :cascade do |t|
+    t.string "runner_name"
+    t.string "surname"
+    t.date "dob", default: "2023-01-01"
+    t.integer "club_id", default: 0
+    t.string "gender"
+    t.integer "wre_id"
+    t.integer "best_category_id", default: 10
+    t.integer "category_id", default: 10
+    t.date "category_valid", default: "2100-01-01"
+    t.integer "sprint_wre_rang"
+    t.integer "forrest_wre_rang"
+    t.string "checksum"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["best_category_id"], name: "index_runners_on_best_category_id"
+    t.index ["category_id"], name: "index_runners_on_category_id"
+    t.index ["club_id"], name: "index_runners_on_club_id"
   end
 
   create_table "users", force: :cascade do |t|
