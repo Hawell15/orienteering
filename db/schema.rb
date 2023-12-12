@@ -10,12 +10,22 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_12_12_120016) do
+ActiveRecord::Schema.define(version: 2023_12_12_122608) do
 
   create_table "categories", force: :cascade do |t|
     t.string "category_name"
     t.string "full_name"
     t.float "points"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "clubs", force: :cascade do |t|
+    t.string "club_name"
+    t.string "territory"
+    t.string "representative"
+    t.string "email"
+    t.string "phone"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end
