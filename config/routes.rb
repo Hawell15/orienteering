@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :results
   resources :runners
   resources :clubs
   resources :categories

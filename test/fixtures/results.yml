@@ -1,0 +1,19 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  place: 1
+  runner: one
+  time: 1
+  category: one
+  group: one
+  wre_points: 1
+  date: 2023-12-12
+
+two:
+  place: 1
+  runner: two
+  time: 1
+  category: two
+  group: two
+  wre_points: 1
+  date: 2023-12-12

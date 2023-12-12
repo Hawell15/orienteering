@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_12_12_124747) do
+ActiveRecord::Schema.define(version: 2023_12_12_132428) do
 
   create_table "categories", force: :cascade do |t|
     t.string "category_name"
@@ -52,6 +52,21 @@ ActiveRecord::Schema.define(version: 2023_12_12_124747) do
     t.index ["competition_id"], name: "index_groups_on_competition_id"
   end
 
+  create_table "results", force: :cascade do |t|
+    t.integer "place"
+    t.integer "runner_id", null: false
+    t.integer "time", default: 0
+    t.integer "category_id", default: 10, null: false
+    t.integer "group_id", default: 0, null: false
+    t.integer "wre_points"
+    t.date "date"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["category_id"], name: "index_results_on_category_id"
+    t.index ["group_id"], name: "index_results_on_group_id"
+    t.index ["runner_id"], name: "index_results_on_runner_id"
+  end
+
   create_table "runners", force: :cascade do |t|
     t.string "runner_name"
     t.string "surname"
@@ -85,4 +100,7 @@ ActiveRecord::Schema.define(version: 2023_12_12_124747) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "results", "categories"
+  add_foreign_key "results", "groups"
+  add_foreign_key "results", "runners"
 end
