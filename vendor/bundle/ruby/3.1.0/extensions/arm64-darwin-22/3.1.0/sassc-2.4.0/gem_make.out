@@ -1,5 +1,5 @@
 current directory: /Users/romanciobanu/Documents/rails/orienteering/vendor/bundle/ruby/3.1.0/gems/sassc-2.4.0/ext
-/Users/romanciobanu/.rvm/rubies/ruby-3.1.2/bin/ruby -I /Users/romanciobanu/.rvm/rubies/ruby-3.1.2/lib/ruby/3.1.0 -r ./siteconf20230926-34160-erp2fw.rb extconf.rb
+/Users/romanciobanu/.rvm/rubies/ruby-3.1.2/bin/ruby -I /Users/romanciobanu/.rvm/rubies/ruby-3.1.2/lib/ruby/3.1.0 -r ./siteconf20231212-96982-l1szw8.rb extconf.rb
 creating Makefile
 
 current directory: /Users/romanciobanu/Documents/rails/orienteering/vendor/bundle/ruby/3.1.0/gems/sassc-2.4.0/ext
@@ -50,10 +50,10 @@ compiling ./libsass/src/json.cpp
 ./libsass/src/json.cpp:1289:3: warning: 'sprintf' is deprecated: This function is provided for compatibility reasons only.  Due to security concerns inherent in the design of sprintf(3), it is highly recommended that you use snprintf(3) instead. [-Wdeprecated-declarations]
   sprintf(buf, "%.16g", num);
   ^
-/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/stdio.h:188:1: note: 'sprintf' has been explicitly marked deprecated here
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/stdio.h:180:1: note: 'sprintf' has been explicitly marked deprecated here
 __deprecated_msg("This function is provided for compatibility reasons only.  Due to security concerns inherent in the design of sprintf(3), it is highly recommended that you use snprintf(3) instead.")
 ^
-/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/cdefs.h:215:48: note: expanded from macro '__deprecated_msg'
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/sys/cdefs.h:215:48: note: expanded from macro '__deprecated_msg'
         #define __deprecated_msg(_msg) __attribute__((__deprecated__(_msg)))
                                                       ^
 1 warning generated.
@@ -84,7 +84,8 @@ compiling ./libsass/src/util.cpp
 compiling ./libsass/src/util_string.cpp
 compiling ./libsass/src/values.cpp
 linking shared-object sassc/libsass.bundle
+ld: warning: -multiply_defined is obsolete
 
 current directory: /Users/romanciobanu/Documents/rails/orienteering/vendor/bundle/ruby/3.1.0/gems/sassc-2.4.0/ext
 make DESTDIR\= install
-/Users/romanciobanu/homebrew/opt/coreutils/bin/ginstall -c -m 0755 libsass.bundle ./.gem.20230926-34160-nbm72p/sassc
+/Users/romanciobanu/homebrew/opt/coreutils/bin/ginstall -c -m 0755 libsass.bundle ./.gem.20231212-96982-loux9l/sassc
