@@ -3,7 +3,7 @@ class ClubsController < ApplicationController
 
   # GET /clubs or /clubs.json
   def index
-    @clubs = Club.all
+    @clubs = Club.order("#{params[:sort]}")
   end
 
   # GET /clubs/1 or /clubs/1.json
@@ -49,6 +49,9 @@ class ClubsController < ApplicationController
 
   # DELETE /clubs/1 or /clubs/1.json
   def destroy
+    @club.runners.update_all(club_id: 0)
+    @club.users.update_all(club_id: 0)
+
     @club.destroy
 
     respond_to do |format|
