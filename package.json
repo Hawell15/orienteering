@@ -2,6 +2,7 @@
   "name": "orienteering",
   "private": true,
   "dependencies": {
+    "@babel/core": "^7.23.6",
     "@rails/actioncable": "^6.0.0",
     "@rails/activestorage": "^6.0.0",
     "@rails/ujs": "^6.0.0",
@@ -14,6 +15,8 @@
   "devDependencies": {
     "@babel/plugin-proposal-private-methods": "^7.16.11",
     "@babel/plugin-proposal-private-property-in-object": "^7.16.7",
+    "erb-loader": "^0.1.2",
+    "rails-erb-loader": "^5.5.2",
     "webpack-dev-server": "^3"
   }
 }
