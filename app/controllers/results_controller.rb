@@ -3,7 +3,7 @@ class ResultsController < ApplicationController
 
   # GET /results or /results.json
   def index
-    @results = Result.all
+    @results = Result.paginate(page: params[:page], per_page: 2)
   end
 
   # GET /results/1 or /results/1.json
