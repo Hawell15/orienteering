@@ -38,6 +38,9 @@
       </tr>
     <% end %>
   </tbody>
+   <div class="pagination">
+  <%= will_paginate @competitions, renderer: WillPaginate::ActionView::BootstrapLinkRenderer %>
+</div>
 </table>
 
 <br>
