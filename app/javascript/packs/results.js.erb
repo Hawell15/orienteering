@@ -1,0 +1,57 @@
+window.showHideNewCompetition = function() {
+  var value = $('[id*="competition_id"]').val();
+  var html = "";
+
+  if (value == "") {
+    html = '<%= j @competition_html %>';
+    addGroup("text_field");
+  } else {
+    addGroup("select");
+  }
+
+  $('#new-competition').html(html);
+};
+
+window.showHideNewGroup = function() {
+    var value = $('[id*="group_id"]').val();
+
+    if (value == "") {
+        addGroup("text_field");
+    }
+};
+
+
+window.showCompetitionGroups = function(id) {
+    var url = '/groups.json?comp_id=' + id;
+
+        showHideNewCompetition();
+
+        $.get(url, function(data) {
+            var select = $('#result_group_id');
+            select.empty();
+
+            $.each(data, function(index, item) {
+                select.append('<option value="' + item.id + '">' + item.group_name + '</option>');
+            });
+            select.append('<option value>' + "Grupa Noua" + '</option>');
+        });
+
+};
+
+$(document).ready(function() {
+    $('#result_group_attributes_competition_id').on('change', function() {
+        var id = $(this).val();
+        showCompetitionGroups(id);
+    });
+});
+
+$(document).ready(function() {
+  $('form[action="/results"]').submit(function(event) {
+      event.preventDefault();
+      var hours = parseInt($('#hours').val()) || 0;
+      var minutes = parseInt($('#minutes').val()) || 0;
+      var seconds = parseInt($('#seconds').val()) || 0;
+      $('#result_time').val(hours * 3600 + minutes * 60 + seconds);
+      $(this).unbind('submit').submit();
+    });
+});

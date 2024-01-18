@@ -4,4 +4,8 @@ module ApplicationHelper
 
     current_user.admin
   end
+
+  def club_admin?(_club)
+    return false
+  end
 end
