@@ -55,3 +55,9 @@ $(document).ready(function() {
       $(this).unbind('submit').submit();
     });
 });
+
+window.setTime = function() {
+  $('#hours').val(Math.floor($('#result_time').val() / 3600));
+  $('#minutes').val(Math.floor(($('#result_time').val() % 3600) / 60));
+  $('#seconds').val(Math.floor(($('#result_time').val() % 3600) % 60));
+};
