@@ -1,6 +1,8 @@
 <h1>Editing Result</h1>
+<script>
+  $(document).ready(function() {
+    setTime();
+});
+</script>
 
 <%= render 'form', result: @result %>
-
-<%= link_to 'Show', @result %> |
-<%= link_to 'Back', results_path %>
