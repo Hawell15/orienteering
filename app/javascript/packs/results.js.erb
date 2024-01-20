@@ -1,17 +1,3 @@
-window.showHideNewCompetition = function() {
-  var value = $('[id*="competition_id"]').val();
-  var html = "";
-
-  if (value == "") {
-    html = '<%= j @competition_html %>';
-    addGroup("text_field");
-  } else {
-    addGroup("select");
-  }
-
-  $('#new-competition').html(html);
-};
-
 window.showHideNewGroup = function() {
     var value = $('[id*="group_id"]').val();
 
