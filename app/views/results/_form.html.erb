@@ -16,6 +16,7 @@
 <div class="row">
     <%= form.fields_for :group_attributes do |form_group| %>
     <% @form_group = form_group %>
+    <% @competition_html = render partial: "competitions/create_competition", locals: { form: @form_group }  %>
     <div class="col">
         <%= form_group.label :competition_id ,'Competitia'%>
         <%= form_group.select :competition_id,  options_for_select(Competition.all.map { |comp| [comp.competition_name, comp.id] } + [["Competitie Noua", nil]], selected: result&.group&.competition_id || 2), {},{class: "form-select form-group form-control"} %>
@@ -64,6 +65,22 @@
 </div>
 <script>
 
+function showHideNewCompetition() {
+  var value = $('[id*="competition_id"]').val();
+  var html = "";
+  console.log("first");
+
+  if (value == "") {
+  console.log("first");
+
+    html = '<%= j @competition_html %>';
+    addGroup("text_field");
+  } else {
+    addGroup("select");
+  }
+
+  $('#new-competition').html(html);
+};
 
 
 function addGroup(type) {
