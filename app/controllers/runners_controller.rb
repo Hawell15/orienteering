@@ -73,7 +73,7 @@ class RunnersController < ApplicationController
 
   # Only allow a list of trusted parameters through.
   def runner_params
-    params.require(:runner).permit(:runner_name, :surname, :dob, :club, :gender, :wre_id, :best_category, :category,
-                                   :category_valid, :sprint_wre_rang, :forrest_wre_rang, :checksum)
+    params.require(:runner).permit(:id, :runner_name, :surname, :dob, :club_id, :gender, :wre_id, :best_category_id,
+                                   :category_id, :category_valid, :sprint_wre_rang, :sprint_wre_place, :forest_wre_place, :forest_wre_rang, :checksum, results_attributes: [:date, :place, :time, :group_id, :wre_points, { group_attributes: [:id, :group_name, :competition_id, { competition_attributes: %i[id competition_name date location country distance_type wre_id] }] }])
   end
 end

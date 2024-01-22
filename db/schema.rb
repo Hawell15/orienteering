@@ -70,7 +70,7 @@ ActiveRecord::Schema.define(version: 2023_12_12_132428) do
   create_table "runners", force: :cascade do |t|
     t.string "runner_name"
     t.string "surname"
-    t.date "dob", default: "2023-01-01"
+    t.date "dob", default: "2024-01-22"
     t.integer "club_id", default: 0
     t.string "gender"
     t.integer "wre_id"
@@ -78,7 +78,9 @@ ActiveRecord::Schema.define(version: 2023_12_12_132428) do
     t.integer "category_id", default: 10
     t.date "category_valid", default: "2100-01-01"
     t.integer "sprint_wre_rang"
-    t.integer "forrest_wre_rang"
+    t.integer "forest_wre_rang"
+    t.integer "sprint_wre_place"
+    t.integer "forest_wre_place"
     t.string "checksum"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
