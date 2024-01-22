@@ -4,6 +4,15 @@ class RunnersController < ApplicationController
   # GET /runners or /runners.json
   def index
     @runners = Runner.all
+
+    @runners = case params[:sort]
+    when "runner"
+     @runners.order(:runner_name, :surname)
+    else
+      @runners.order("#{params[:sort]}")
+    end
+
+    @runners = @runners.paginate(page: params[:page], per_page: 2)
   end
 
   # GET /runners/1 or /runners/1.json
