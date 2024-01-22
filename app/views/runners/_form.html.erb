@@ -1,77 +1,110 @@
 <%= form_with(model: runner) do |form| %>
-  <% if runner.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(runner.errors.count, "error") %> prohibited this runner from being saved:</h2>
-
-      <ul>
+<% if runner.errors.any? %>
+<div id="error_explanation">
+    <h2>
+        <%= pluralize(runner.errors.count, "error") %> prohibited this runner from being saved:</h2>
+    <ul>
         <% runner.errors.each do |error| %>
-          <li><%= error.full_message %></li>
+        <li>
+            <%= error.full_message %>
+        </li>
         <% end %>
-      </ul>
-    </div>
-  <% end %>
-
-  <div class="field">
-    <%= form.label :runner_name %>
-    <%= form.text_field :runner_name %>
-  </div>
-
-  <div class="field">
-    <%= form.label :surname %>
-    <%= form.text_field :surname %>
-  </div>
-
-  <div class="field">
-    <%= form.label :dob %>
-    <%= form.date_select :dob %>
-  </div>
-
-  <div class="field">
-    <%= form.label :club %>
-    <%= form.text_field :club %>
-  </div>
-
-  <div class="field">
-    <%= form.label :gender %>
-    <%= form.text_field :gender %>
-  </div>
-
-  <div class="field">
-    <%= form.label :wre_id %>
-    <%= form.number_field :wre_id %>
-  </div>
-
-  <div class="field">
-    <%= form.label :best_category %>
-    <%= form.text_field :best_category %>
-  </div>
-
-  <div class="field">
-    <%= form.label :category %>
-    <%= form.text_field :category %>
-  </div>
-
-  <div class="field">
-    <%= form.label :category_valid %>
-    <%= form.date_select :category_valid %>
-  </div>
-
-  <div class="field">
-    <%= form.label :sprint_wre_rang %>
-    <%= form.number_field :sprint_wre_rang %>
-  </div>
-
-  <div class="field">
-    <%= form.label :forrest_wre_rang %>
-    <%= form.number_field :forrest_wre_rang %>
-  </div>
-
-  <div class="field">
-    <%= form.label :checksum %>
-    <%= form.text_field :checksum %>
-  </div>
-
-  <div class="actions">
-    <%= form.submit %>
-  </div>
+    </ul>
+</div>
 <% end %>
+<div class="row">
+    <div class="col">
+        <%= form.text_field :runner_name, placeholder: "Numele", class: "form-control"  %>
+    </div>
+    <div class="col">
+        <%= form.text_field :surname, placeholder: "Prenumele", class: "form-control"  %>
+    </div>
+    <div class="col">
+        <% clubs = admin_user? ? Club.all : [current_user.club] %>
+        <%= form.select :club_id,  options_for_select(clubs.map { |club| [club.club_name, club.id] }), {},{class: "form-select form-group form-control"} %>
+    </div>
+</div>
+<br>
+<div class="row">
+    <div class="col">
+        <%= form.label :dob ,'Data Nasterii'%>
+        <%= form.date_select :dob, {order: [:day, :month, :year], use_month_numbers: true, end_year: Date.today.year, start_year: 1940 } , class: "date-select" %>
+    </div>
+    <div class="col">
+        <%= form.label :gender ,'Genul'%>
+        <%= form.select :gender, ["M", "F"] , {}, class: "date-select" %>
+    </div>
+</div>
+<br>
+<div class="row">
+    <div class="col">
+        <%= form.text_field :wre_id, placeholder: "WRE ID", class: "form-control"  %>
+    </div>
+</div>
+<br>
+<div class="row">
+    <div class="col">
+        <%= form.label :gender ,'Titlul Sportiv'%>
+        <%= form.select :best_category_id,  options_for_select(Category.all.map { |category| [category.category_name, category.id] }, selected: 10), {},{class: "form-select form-group form-control"} %>
+    </div>
+    <div class="col">
+        <%= form.label :gender ,'Categoria Sportiva'%>
+        <%= form.select :category_id,  options_for_select(Category.all.map { |category| [category.category_name, category.id] }, selected: 10), {},{class: "form-select form-group form-control", onChange: "addCompetition()"} %>
+    </div>
+</div>
+<div class="actions">
+    <% text = @runner.id ? "Actualizează" : "Crează" %>
+    <%= form.submit "#{text} Sportiv", class: "btn btn-success btn-sm"%>
+    <%= link_to 'Inapoi', request.referer, class: "btn btn-secondary btn-sm" %>
+</div>
+<% end %>
+<div class="modal" id="myModal">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Indeplinirea Categoriei</h4>
+                <button type="button" id="closeModalBtn" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <!-- Modal body -->
+            <div class="modal-body">
+            <p>Completeaza detaliile unde a fost indeplinita categoria sportiva</p>
+
+                <%= render 'results/form2', result: @result %>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+// Close the modal by triggering a click on a hypothetical close button with the id 'closeModalBtn'
+document.getElementById('closeModalBtn').click();
+</script>
+<script>
+$('#modal-form').submit(function(event) {
+    event.preventDefault();
+
+    $.ajax({
+        url: $(this).attr('action'),
+        type: $(this).attr('method'),
+        data: $(this).serialize(),
+        dataType: 'script', // Expecting a JavaScript response
+        success: function(response) {
+            // Handle success if needed
+        },
+        error: function(error) {
+            // Handle error if needed
+        }
+    });
+});
+
+function addCompetition() {
+    var selectElement = document.getElementById('runner_category_id');
+    var selectedValue = selectElement.value;
+
+    // Check if the selected value is not equal to 10
+    if (selectedValue !== '10') {
+        // If the value is not 10, open the modal
+        var myModal = new bootstrap.Modal(document.getElementById('myModal'));
+        myModal.show();
+    }
+}
+</script>

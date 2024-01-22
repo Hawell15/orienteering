@@ -15,6 +15,12 @@ class ResultsController < ApplicationController
     @result = Result.new
   end
 
+def modal_new
+  # Perform actions here (to be added later)
+  respond_to do |format|
+    format.js { render 'close_modal' }
+  end
+end
   # GET /results/1/edit
   def edit
     @competition_html = render partial: "app/views/competitions/create_competition", locals: { form: @form_group } rescue nil

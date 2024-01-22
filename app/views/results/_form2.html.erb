@@ -1,0 +1,50 @@
+<%= form_with url: modal_result_path, method: :post, remote: true, id: 'modal-form' do |form| %>
+
+
+<div class="row">
+    <%= form.fields_for :group_attributes do |form_group| %>
+    <%= render partial: 'results/results_script', locals: { form_group: form_group, form: form } %>
+
+
+    <div class="col">
+        <%= form_group.label :competition_id ,'Competitia'%>
+        <%= form_group.select :competition_id,  options_for_select(Competition.all.map { |comp| [comp.competition_name, comp.id] } + [["Competitie Noua", "new"]], selected: result&.group&.competition_id || 2), {},{class: "form-select form-group form-control"} %>
+    </div>
+    <div class="col" id="group-data">
+    </div>
+</div>
+<br>
+<div id="new-competition"></div>
+<br>
+<% end %>
+<div class="row">
+    <div class="col">
+        <%= form.number_field :place, placeholder: "Locul", class: "form-control"  %>
+    </div>
+
+    <div class="col">
+        <%= form.number_field :wre_points, placeholder: "WRE Puncte", class: "form-control"  %>
+    </div>
+</div>
+<br>
+<div class="row">
+    <div class="col" style="display:none">
+        <%= form.number_field :time, placeholder: "Timpul", class: "form-control" %>
+    </div>
+    <div class="col">
+        <%= number_field_tag :hours, nil,  placeholder: "Ore", class: "form-control" %>
+    </div>
+    <div class="col">
+        <%= number_field_tag :minutes, nil, placeholder: "Minute", class: "form-control"  %>
+    </div>
+    <div class="col">
+        <%= number_field_tag :seconds, nil, placeholder: "Secunde", class: "form-control"  %>
+    </div>
+</div>
+<br>
+ <div class="actions">
+    <%= form.submit "Adaugă", class: "btn btn-success btn-sm"%>
+
+    <%= link_to 'Inapoi', request.referer, class: "btn btn-secondary btn-sm" %>
+</div>
+<% end %>
