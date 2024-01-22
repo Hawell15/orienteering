@@ -33,8 +33,8 @@
         <td><%= runner.category.category_name %></td>
         <td><%= runner.category_valid&.strftime("%d/%m/%Y") %></td>
         <td><%= runner.wre_id %></td>
-        <td><%= "#{}/#{runner.sprint_wre_rang}p" %></td>
-        <td><%= "#{}/#{runner.forrest_wre_rang}p" %></td>
+        <td><%= "#{runner.sprint_wre_place}/#{runner.sprint_wre_rang}p" %></td>
+        <td><%= "#{runner.forest_wre_place}/#{runner.forest_wre_rang}p" %></td>
         <td><%= link_to 'Arată', runner, class: "btn btn-warning btn-sm"%></td>
         <% if admin_user? || club_admin?(runner.club) %>
           <td><%= link_to 'Editează', edit_polymorphic_path(runner), class: "btn btn-success btn-sm"%></td>
