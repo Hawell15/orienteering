@@ -23,14 +23,11 @@ def modal_new
 end
   # GET /results/1/edit
   def edit
-    @competition_html = render partial: "app/views/competitions/create_competition", locals: { form: @form_group } rescue nil
   end
 
   # POST /results or /results.json
   def create
     @result = Result.new(result_params)
-    @competition_html = render partial: "app/views/competitions/create_competition", locals: { form: @form_group } rescue nil
-
 
     respond_to do |format|
       if @result.save

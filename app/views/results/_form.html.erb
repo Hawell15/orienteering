@@ -14,7 +14,9 @@
 <% end %>
 <div class="row">
     <%= form.fields_for :group_attributes do |form_group| %>
+
     <%= render 'results_script', form_group: form_group, form: form %>
+
 
     <div class="col">
         <%= form_group.label :competition_id ,'Competitia'%>
