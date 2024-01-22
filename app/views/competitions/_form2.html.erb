@@ -1,0 +1,37 @@
+<%= form_with url: modal_competition_path, method: :post, remote: true, id: 'competitionForm' do |f| %>
+
+<div class="row">
+    <div class="col">
+        <%= f.text_field :competition_name, placeholder: "Numele Competitiei", class: "form-control"  %>
+    </div>
+    <div class="col">
+        <%= f.text_field :distance_type, placeholder: "Tipul Distantei", class: "form-control"  %>
+    </div>
+    <div class="col">
+        <%= form.text_field :wre_id, placeholder: "WRE ID", class: "form-control"  %>
+    </div>
+</div>
+<br>
+<div class="row">
+    <div class="col">
+        <%= f.label :date ,'Data'%>
+        <%= f.date_select :date, class: "form-control"%>
+    </div>
+</div>
+<br>
+<div class="row">
+    <div class="col">
+        <%= f.text_field :location, placeholder: "Localitatea", class: "form-control"  %>
+    </div>
+    <div class="col">
+        <%= f.text_field :country, placeholder: "Tara", class: "form-control"  %>
+    </div>
+</div>
+<br>
+ <div class="actions">
+    <%= f.submit "Crează Competiție", class: "btn btn-success btn-sm"%>
+    <%= link_to 'Inapoi', request.referer, class: "btn btn-secondary btn-sm" %>
+</div>
+<% end %>
+
+

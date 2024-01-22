@@ -1,5 +1,4 @@
 <%= form_with(model: result) do |form| %>
-<% @form = form %>
 <% if result.errors.any? %>
 <div id="error_explanation">
     <h2>
@@ -15,8 +14,10 @@
 <% end %>
 <div class="row">
     <%= form.fields_for :group_attributes do |form_group| %>
-    <% @form_group = form_group %>
-    <% @competition_html = render partial: "competitions/create_competition", locals: { form: @form_group }  %>
+
+    <%= render 'results_script', form_group: form_group, form: form %>
+
+
     <div class="col">
         <%= form_group.label :competition_id ,'Competitia'%>
         <%= form_group.select :competition_id,  options_for_select(Competition.all.map { |comp| [comp.competition_name, comp.id] } + [["Competitie Noua", nil]], selected: result&.group&.competition_id || 2), {},{class: "form-select form-group form-control"} %>
@@ -63,36 +64,4 @@
     <%= form.submit class: "btn btn-success btn-sm"%>
     <%= link_to 'Inapoi', request.referer, class: "btn btn-secondary btn-sm" %>
 </div>
-<script>
-
-function showHideNewCompetition() {
-  var value = $('[id*="competition_id"]').val();
-  var html = "";
-  console.log("first");
-
-  if (value == "") {
-  console.log("first");
-
-    html = '<%= j @competition_html %>';
-    addGroup("text_field");
-  } else {
-    addGroup("select");
-  }
-
-  $('#new-competition').html(html);
-};
-
-
-function addGroup(type) {
-    var html = "";
-
-    if (type == "text_field") {
-        html = '<%=j @form_group.label :group_name ,"Grupa"%><%= j @form_group.text_field :group_name, placeholder: "Grupa", class: "form-control" %>';
-    } else {
-        html = '<%=j form.label :group_id ,"Grupa"%><%=j form.select :group_id,[], {},{class: "form-select form-group form-control", onChange: "showHideNewGroup()"} %>';
-    }
-
-    $('#group-data').replaceWith('<div class="col" id="group-data">' + html + '</div>');
-}
-</script>
 <% end %>

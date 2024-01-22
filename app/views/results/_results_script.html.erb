@@ -1,0 +1,29 @@
+<script>
+function showHideNewCompetition() {
+  var value = $('[id*="competition_id"]').val();
+  var html = "";
+
+  if (value == "new") {
+  console.log("first");
+    html = '<%= j render partial: "competitions/create_competition", locals: { form: form_group }  %>';
+    addGroup("text_field");
+  } else {
+    addGroup("select");
+  }
+
+  $('#new-competition').html(html);
+};
+
+
+function addGroup(type) {
+    var html = "";
+
+    if (type == "text_field") {
+        html = '<%=j form_group.label :group_name ,"Grupa"%><%= j form_group.text_field :group_name, placeholder: "Grupa", class: "form-control" %>';
+    } else {
+        html = '<%=j form.label :group_id ,"Grupa"%><%=j form.select :group_id,[], {},{class: "form-select form-group form-control", onChange: "showHideNewGroup()"} %>';
+    }
+
+    $('#group-data').replaceWith('<div class="col" id="group-data">' + html + '</div>');
+}
+</script>
