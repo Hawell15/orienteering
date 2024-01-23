@@ -3,7 +3,7 @@ class CreateRunners < ActiveRecord::Migration[6.1]
     create_table :runners do |t|
       t.string :runner_name
       t.string :surname
-      t.date :dob, default: Time.now.as_json
+      t.date :dob, default: "2024-01-23"
       t.references :club, default: 0
       t.string :gender
       t.integer :wre_id

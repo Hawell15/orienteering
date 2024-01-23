@@ -37,6 +37,12 @@
   </div>
 </div>
 <br>
+<div class="row">
+  <div class="col">
+    <%= form.text_field :alternative_club_name, placeholder: "Alte nume", class: "form-control"  %>
+  </div>
+</div>
+<br>
  <div class="actions">
   <% text = @club.id ? "Actualizează" : "Crează" %>
     <%= form.submit "#{text} Club", class: "btn btn-success btn-sm"%>

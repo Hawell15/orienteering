@@ -26,6 +26,7 @@ ActiveRecord::Schema.define(version: 2023_12_12_132428) do
     t.string "representative"
     t.string "email"
     t.string "phone"
+    t.string "alternative_club_name"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end
@@ -70,7 +71,7 @@ ActiveRecord::Schema.define(version: 2023_12_12_132428) do
   create_table "runners", force: :cascade do |t|
     t.string "runner_name"
     t.string "surname"
-    t.date "dob", default: "2024-01-22"
+    t.date "dob", default: "2024-01-23"
     t.integer "club_id", default: 0
     t.string "gender"
     t.integer "wre_id"
