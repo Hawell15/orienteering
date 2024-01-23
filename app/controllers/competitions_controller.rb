@@ -3,7 +3,7 @@ class CompetitionsController < ApplicationController
 
   # GET /competitions or /competitions.json
   def index
-    @competitions = Competition.paginate(page: params[:page], per_page: 2)
+    @competitions = Competition.paginate(page: params[:page], per_page: 10)
   end
 
   # GET /competitions/1 or /competitions/1.json
@@ -21,10 +21,12 @@ class CompetitionsController < ApplicationController
 
   # POST /competitions or /competitions.json
   def create
-    @competition = Competition.new(competition_params)
+    @competition = Competition.new(competition_params.except(:group_list))
 
     respond_to do |format|
       if @competition.save
+        add_groups
+
         format.html { redirect_to competition_url(@competition), notice: "Competition was successfully created." }
         format.json { render :show, status: :created, location: @competition }
       else
@@ -36,8 +38,11 @@ class CompetitionsController < ApplicationController
 
   # PATCH/PUT /competitions/1 or /competitions/1.json
   def update
+    remove_groups
+    add_groups
+
     respond_to do |format|
-      if @competition.update(competition_params)
+      if @competition.update(competition_params.except(:group_list))
         format.html { redirect_to competition_url(@competition), notice: "Competition was successfully updated." }
         format.json { render :show, status: :ok, location: @competition }
       else
@@ -63,8 +68,22 @@ class CompetitionsController < ApplicationController
       @competition = Competition.find(params[:id])
     end
 
+    def add_groups
+      return if competition_params[:group_list].blank?
+
+      group_names = competition_params[:group_list].split(",").map(&:strip)
+      Group.add_groups(group_names, @competition)
+    end
+
+    def remove_groups
+      return if competition_params[:group_list].blank?
+
+      group_names = @competition.groups.pluck(:group_name) - competition_params[:group_list].split(",").map(&:strip)
+      Group.delete_groups(group_names, @competition)
+    end
+
     # Only allow a list of trusted parameters through.
     def competition_params
-      params.require(:competition).permit(:competition_name, :date, :location, :country, :distance_type, :wre_id, :checksum)
+      params.require(:competition).permit(:competition_name, :date, :location, :country, :distance_type, :wre_id, :checksum, :group_list)
     end
 end
