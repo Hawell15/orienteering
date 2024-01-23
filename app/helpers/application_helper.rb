@@ -8,4 +8,8 @@ module ApplicationHelper
   def club_admin?(_club = 0)
     return false
   end
+
+   def all_countries
+    ISO3166::Country.translations('ro').invert.to_a
+  end
 end
