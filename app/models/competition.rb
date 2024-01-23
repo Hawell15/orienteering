@@ -10,4 +10,8 @@ class Competition < ApplicationRecord
   def self.get_checksum(competition_name, date, distance_type)
     (Digest::SHA2.new << "#{competition_name}-#{date.as_json}-#{distance_type}").to_s
   end
+
+  def self.find_competition(params)
+    Competition.find_by(checksum: get_checksum(*params.values_at("competition_name", "date", "distance_type")))
+  end
 end
