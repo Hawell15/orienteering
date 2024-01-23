@@ -6,6 +6,10 @@
         <%= @club.club_name %>
     </h1>
     <p>
+        <strong>Alte Nume</strong>
+        <%= @club.alternative_club_name %>
+    </p>
+    <p>
         <strong>Teritoriu:</strong>
         <%= @club.territory %>
     </p>
@@ -35,7 +39,7 @@
                 <%= link_to 'Nume' %>
             </th>
              <th>
-                <%= link_to 'Data de Nastere' %>
+                <%= link_to 'Data Nasterii' %>
             </th>
         </thead>
         <tbody>
