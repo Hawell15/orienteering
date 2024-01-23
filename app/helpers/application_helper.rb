@@ -10,6 +10,6 @@ module ApplicationHelper
   end
 
    def all_countries
-    ISO3166::Country.translations('ro').invert.to_a
+    ISO3166::Country.translations('ro').values
   end
 end
