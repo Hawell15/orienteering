@@ -21,6 +21,7 @@ gem 'rubocop'
 gem "devise"
 gem 'will_paginate'
 gem 'will_paginate-bootstrap-style'
+gem 'countries'
 
 
 # Use Redis adapter to run Action Cable in production

@@ -18,7 +18,7 @@
         <%= form.text_field :competition_name, placeholder: "Numele Competitiei", class: "form-control"  %>
     </div>
     <div class="col">
-        <%= form.text_field :distance_type, placeholder: "Tipul Distantei", class: "form-control"  %>
+         <%= form.select :distance_type,  ["Sprint", "Medie", "Lunga", "Alegere", "Sprint Stafeta", "Stafeta", "Knock Out Sprint", "Alta"], {},{class: "form-select form-group form-control"} %>
     </div>
     <div class="col">
         <%= form.text_field :wre_id, placeholder: "WRE ID", class: "form-control"  %>
@@ -28,7 +28,7 @@
 <div class="row">
     <div class="col">
         <%= form.label :date ,'Data'%>
-        <%= form.date_select :date, class: "form-control"%>
+        <%= form.date_select :dob, {order: [:day, :month, :year], use_month_numbers: true, end_year: Date.today.year, start_year: 2015 } , class: "date-select" %>
     </div>
 </div>
 <br>
@@ -37,7 +37,7 @@
         <%= form.text_field :location, placeholder: "Localitatea", class: "form-control"  %>
     </div>
     <div class="col">
-        <%= form.text_field :country, placeholder: "Tara", class: "form-control"  %>
+        <%= form.select :country_code, options_for_select(all_countries, 'MD'), {}, class: 'form-control' %>
     </div>
 </div>
 <br>
