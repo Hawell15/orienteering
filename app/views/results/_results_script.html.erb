@@ -1,10 +1,11 @@
 <script>
 function showHideNewCompetition() {
+
   var value = $('[id*="competition_id"]').val();
   var html = "";
 
-  if (value == "new") {
-  console.log("first");
+
+  if (value == "") {
     html = '<%= j render partial: "competitions/create_competition", locals: { form: form_group }  %>';
     addGroup("text_field");
   } else {

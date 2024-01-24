@@ -30,9 +30,7 @@
 <br>
 <% end %>
 <div class="row">
-    <div class="col">
-        <%= form.number_field :place, placeholder: "Locul", class: "form-control"  %>
-    </div>
+
     <div class="col">
         <%= form.select :runner_id, options_for_select(Runner.all.map { |runner| ["#{runner.runner_name} #{runner.surname}", runner.id] }, selected: result&.runner_id), {}, { class: "form-select form-group form-control" } %>
 
@@ -45,18 +43,23 @@
     </div>
 </div>
 <br>
-<div class="row">
-    <div class="col" style="display:none">
-        <%= form.number_field :time, placeholder: "Timpul", class: "form-control" %>
-    </div>
-    <div class="col">
-        <%= number_field_tag :hours, nil,  placeholder: "Ore", class: "form-control" %>
-    </div>
-    <div class="col">
-        <%= number_field_tag :minutes, nil, placeholder: "Minute", class: "form-control"  %>
-    </div>
-    <div class="col">
-        <%= number_field_tag :seconds, nil, placeholder: "Secunde", class: "form-control"  %>
+<div id="result-details" style="display:none">
+    <div class="row">
+        <div class="col">
+            <%= form.number_field :place, placeholder: "Locul", class: "form-control"  %>
+        </div>
+        <div class="col" style="display:none">
+            <%= form.number_field :time, placeholder: "Timpul", class: "form-control" %>
+        </div>
+        <div class="col">
+            <%= number_field_tag :hours, nil,  placeholder: "Ore", class: "form-control" %>
+        </div>
+        <div class="col">
+            <%= number_field_tag :minutes, nil, placeholder: "Minute", class: "form-control"  %>
+        </div>
+        <div class="col">
+            <%= number_field_tag :seconds, nil, placeholder: "Secunde", class: "form-control"  %>
+        </div>
     </div>
 </div>
 <br>
