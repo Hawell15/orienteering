@@ -15,11 +15,14 @@ window.showCompetitionGroups = function(id) {
         $.get(url, function(data) {
             var select = $('[id*="group_id"]');
             select.empty();
-
-            $.each(data, function(index, item) {
-                select.append('<option value="' + item.id + '">' + item.group_name + '</option>');
-            });
-            select.append('<option value>' + "Grupa Noua" + '</option>');
+            if (data.length === 0) {
+                addGroup("text_field");
+            } else {
+                $.each(data, function(index, item) {
+                    select.append('<option value="' + item.id + '">' + item.group_name + '</option>');
+                });
+                select.append('<option value>' + "Grupa Noua" + '</option>');
+            }
         });
 
 };
@@ -27,7 +30,16 @@ window.showCompetitionGroups = function(id) {
 $(document).ready(function() {
     $('[id*="_group_attributes_competition_id"]').on('change', function() {
         var id = $(this).val();
-        showCompetitionGroups(id);
+
+        if (id != "" && id < 2) {
+            $('#result-details').hide();
+            showHideNewCompetition();
+            $('#group-data').empty();
+        }
+        else {
+            $('#result-details').show()
+            showCompetitionGroups(id);
+        }
     });
 });
 
