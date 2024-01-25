@@ -24,7 +24,7 @@
             <%= f.text_field :location, placeholder: "Localitatea", class: "form-control"  %>
         </div>
         <div class="col">
-            <%= f.text_field :country, placeholder: "Tara", class: "form-control"  %>
+            <%= form.select :country, options_for_select(all_countries, 'Moldova'), {}, class: 'form-control' %>
         </div>
     </div>
     <% end %>
