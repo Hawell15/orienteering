@@ -3,7 +3,7 @@ class ResultsController < ApplicationController
 
   # GET /results or /results.json
   def index
-    @results = Result.paginate(page: params[:page], per_page: 2)
+    @results = Result.paginate(page: params[:page], per_page: 20)
   end
 
   # GET /results/1 or /results/1.json
@@ -27,7 +27,20 @@ end
 
   # POST /results or /results.json
   def create
-    @result = Result.new(result_params)
+    res_params = result_params
+
+    if ["0", "1"].include?(res_params.dig("group_attributes", "competition_id"))
+      res_params["group_id"] = res_params.dig("group_attributes", "competition_id")
+      res_params.delete("group_attributes")
+    else
+      res_params.delete("date")
+    end
+
+    unless res_params.dig("group_attributes", "group_name")
+      res_params.delete("group_attributes")
+    end
+
+    @result = Result.new(res_params)
 
     respond_to do |format|
       if @result.save
@@ -71,6 +84,6 @@ end
 
     # Only allow a list of trusted parameters through.
     def result_params
-      params.require(:result).permit(:place, :runner_id, :time, :category_id, :group_id, :wre_points, :date)
+      params.require(:result).permit(:place, :runner_id, :time, :category_id, :group_id, :wre_points, group_attributes: [:id, :group_name, :competition_id, competition_attributes: [:id, :competition_name, :date, :location, :country, :distance_type, :wre_id]])
     end
 end
