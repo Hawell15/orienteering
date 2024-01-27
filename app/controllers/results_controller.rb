@@ -27,20 +27,7 @@ end
 
   # POST /results or /results.json
   def create
-    res_params = result_params
-
-    if ["0", "1"].include?(res_params.dig("group_attributes", "competition_id"))
-      res_params["group_id"] = res_params.dig("group_attributes", "competition_id")
-      res_params.delete("group_attributes")
-    else
-      res_params.delete("date")
-    end
-
-    unless res_params.dig("group_attributes", "group_name")
-      res_params.delete("group_attributes")
-    end
-
-    @result = Result.new(res_params)
+    @result = Result.new(params_for_results)
 
     respond_to do |format|
       if @result.save
@@ -56,7 +43,7 @@ end
   # PATCH/PUT /results/1 or /results/1.json
   def update
     respond_to do |format|
-      if @result.update(result_params)
+      if @result.update(params_for_results)
         format.html { redirect_to result_url(@result), notice: "Result was successfully updated." }
         format.json { render :show, status: :ok, location: @result }
       else
@@ -80,6 +67,23 @@ end
     # Use callbacks to share common setup or constraints between actions.
     def set_result
       @result = Result.find(params[:id])
+    end
+
+    def params_for_results
+      res_params = result_params
+
+      if ["0", "1"].include?(res_params.dig("group_attributes", "competition_id"))
+        res_params["group_id"] = res_params.dig("group_attributes", "competition_id")
+        res_params.delete("group_attributes")
+      else
+        res_params.delete("date")
+      end
+
+      unless res_params.dig("group_attributes", "group_name")
+        res_params.delete("group_attributes")
+      end
+
+      res_params
     end
 
     # Only allow a list of trusted parameters through.
