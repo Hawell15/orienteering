@@ -61,3 +61,19 @@ window.setTime = function() {
   $('#minutes').val(Math.floor(($('#result_time').val() % 3600) / 60));
   $('#seconds').val(Math.floor(($('#result_time').val() % 3600) % 60));
 };
+
+window.myFunction = function() {
+        var id = $('#result_group_attributes_competition_id').val();
+
+        if (id != "" && id < 2) {
+            $('#result-details').hide();
+            $('#date-details').show();
+            showHideNewCompetition();
+            $('#group-data').empty();
+        }
+        else {
+            $('#result-details').show();
+            $('#date-details').hide();
+            showCompetitionGroups(id);
+        }
+}
