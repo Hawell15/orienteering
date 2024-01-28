@@ -45,11 +45,11 @@
 <div class="row">
     <div class="col">
         <%= form.label :gender ,'Titlul Sportiv'%>
-        <%= form.select :best_category_id,  options_for_select(Category.all.map { |category| [category.category_name, category.id] }, selected: 10), {},{class: "form-select form-group form-control"} %>
+        <%= form.select :best_category_id,  options_for_select(Category.all.map { |category| [category.category_name, category.id] }, selected: @runner.best_category_id || 10), {},{class: "form-select form-group form-control"} %>
     </div>
     <div class="col">
         <%= form.label :gender ,'Categoria Sportiva'%>
-        <%= form.select :category_id,  options_for_select(Category.all.map { |category| [category.category_name, category.id] }, selected: 10), {},{class: "form-select form-group form-control", onChange: "addCompetition()"} %>
+        <%= form.select :category_id,  options_for_select(Category.all.map { |category| [category.category_name, category.id] }, @runner.category_id ||selected: 10), {},{class: "form-select form-group form-control", onChange: "addCompetition()"} %>
     </div>
 </div>
 <div class="actions">
