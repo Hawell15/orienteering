@@ -28,10 +28,13 @@ class RunnersController < ApplicationController
 
   # POST /runners or /runners.json
   def create
+
     @runner = Runner.new(runner_params)
 
     respond_to do |format|
       if @runner.save
+        add_result
+
         format.html { redirect_to runner_url(@runner), notice: 'Runner was successfully created.' }
         format.json { render :show, status: :created, location: @runner }
       else
@@ -69,6 +72,14 @@ class RunnersController < ApplicationController
   # Use callbacks to share common setup or constraints between actions.
   def set_runner
     @runner = Runner.find(params[:id])
+  end
+
+  def add_result
+    redis = Redis.new(url: 'redis://localhost:6379/0')
+    if (res_details = redis.hget("new_res","res_details"))
+      puts JSON.parse(res_details)
+      redis.del("new_res")
+    end
   end
 
   # Only allow a list of trusted parameters through.

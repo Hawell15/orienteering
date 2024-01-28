@@ -22,7 +22,8 @@ gem "devise"
 gem 'will_paginate'
 gem 'will_paginate-bootstrap-style'
 gem 'countries'
-
+gem 'redis'
+gem 'sidekiq'
 
 # Use Redis adapter to run Action Cable in production
 # gem 'redis', '~> 4.0'
