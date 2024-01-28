@@ -16,7 +16,10 @@ class ResultsController < ApplicationController
   end
 
 def modal_new
-  # Perform actions here (to be added later)
+  params_hash = params.to_unsafe_h.except("authenticity_token", "controller", "action").to_hash
+  redis = Redis.new(url: 'redis://localhost:6379/0')
+  redis.hset("new_res","res_details", params_hash.to_json)
+
   respond_to do |format|
     format.js { render 'close_modal' }
   end
