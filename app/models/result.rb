@@ -14,4 +14,9 @@ class Result < ApplicationRecord
 
     self.date = self.group.competition.date
   end
+
+  def self.add_result(params)
+    params.slice!("place", "runner_id", "time", "category_id", "group_id", "date", "wre_points", "group_attributes")
+    Result.create!(params)
+  end
 end

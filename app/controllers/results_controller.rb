@@ -16,9 +16,9 @@ class ResultsController < ApplicationController
   end
 
 def modal_new
-  params_hash = params.to_unsafe_h.except("authenticity_token", "controller", "action").to_hash
+  params_hash = params.to_unsafe_h.except("authenticity_token", "controller", "action", "runner").to_hash
   redis = Redis.new(url: 'redis://localhost:6379/0')
-  redis.hset("new_res","res_details", params_hash.to_json)
+  redis.hset("new_res", params["runner"]["uuid"], params_hash.to_json)
 
   respond_to do |format|
     format.js { render 'close_modal' }
