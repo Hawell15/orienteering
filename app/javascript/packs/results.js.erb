@@ -45,6 +45,23 @@ $(document).ready(function() {
     });
 });
 
+window.competitionChange = function() {
+    var id = $('[id*="_group_attributes_competition_id"]').val();
+
+    if (id != "" && id < 2) {
+           $('#result-details').hide();
+           $('#date-details').show();
+           showHideNewCompetition();
+           $('#group-data').empty();
+       }
+       else {
+           $('#result-details').show();
+           $('#date-details').hide();
+           showCompetitionGroups(id);
+       }
+
+};
+
 $(document).ready(function() {
   $('form[action="/results"]').submit(function(event) {
       event.preventDefault();
@@ -55,6 +72,8 @@ $(document).ready(function() {
       $(this).unbind('submit').submit();
     });
 });
+
+
 
 window.setTime = function() {
   $('#hours').val(Math.floor($('#result_time').val() / 3600));

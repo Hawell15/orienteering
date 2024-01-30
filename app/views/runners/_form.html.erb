@@ -52,6 +52,11 @@
         <%= form.select :category_id,  options_for_select(Category.all.map { |category| [category.category_name, category.id] },selected: @runner.category_id || 10), {},{class: "form-select form-group form-control", onChange: "addCompetition()"} %>
     </div>
 </div>
+<div class="row" hidden>
+    <div class="col">
+        <%= form.text_field :uuid %>
+    </div>
+</div>
 <div class="actions">
     <% text = @runner.id ? "Actualizează" : "Crează" %>
     <%= form.submit "#{text} Sportiv", class: "btn btn-success btn-sm"%>
@@ -82,6 +87,11 @@ document.getElementById('closeModalBtn').click();
 $('#modal-form').submit(function(event) {
     event.preventDefault();
 
+      var hours = parseInt($('#hours').val()) || 0;
+      var minutes = parseInt($('#minutes').val()) || 0;
+      var seconds = parseInt($('#seconds').val()) || 0;
+      $('#time').val(hours * 3600 + minutes * 60 + seconds);
+
     $.ajax({
         url: $(this).attr('action'),
         type: $(this).attr('method'),
@@ -99,12 +109,16 @@ $('#modal-form').submit(function(event) {
 function addCompetition() {
     var selectElement = document.getElementById('runner_category_id');
     var selectedValue = selectElement.value;
+    <% @uuid = SecureRandom.uuid %>
 
-    // Check if the selected value is not equal to 10
     if (selectedValue !== '10') {
-        // If the value is not 10, open the modal
         var myModal = new bootstrap.Modal(document.getElementById('myModal'));
         myModal.show();
+
+        var uuid_modal = '<input type="text" name="runner[uuid]" id="runner_uuid" value="<%= @uuid %>" hidden></input>';
+        myModal._element.querySelector('#modal-form').innerHTML += uuid_modal;
+         $('#runner_uuid').val('<%= @uuid %>');
+
     }
 }
 </script>

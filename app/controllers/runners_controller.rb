@@ -12,7 +12,7 @@ class RunnersController < ApplicationController
                  @runners.order(params[:sort])
                end
 
-    @runners = @runners.paginate(page: params[:page], per_page: 2)
+    @runners = @runners.paginate(page: params[:page], per_page: 20)
   end
 
   # GET /runners/1 or /runners/1.json
@@ -28,13 +28,10 @@ class RunnersController < ApplicationController
 
   # POST /runners or /runners.json
   def create
-
     @runner = Runner.new(runner_params)
-
     respond_to do |format|
       if @runner.save
         add_result
-
         format.html { redirect_to runner_url(@runner), notice: 'Runner was successfully created.' }
         format.json { render :show, status: :created, location: @runner }
       else
@@ -48,6 +45,8 @@ class RunnersController < ApplicationController
   def update
     respond_to do |format|
       if @runner.update(runner_params)
+        add_result
+
         format.html { redirect_to runner_url(@runner), notice: 'Runner was successfully updated.' }
         format.json { render :show, status: :ok, location: @runner }
       else
@@ -76,15 +75,42 @@ class RunnersController < ApplicationController
 
   def add_result
     redis = Redis.new(url: 'redis://localhost:6379/0')
-    if (res_details = redis.hget("new_res","res_details"))
-      puts JSON.parse(res_details)
-      redis.del("new_res")
-    end
+
+    return unless (res_details = redis.hget('new_res', params.dig('runner', 'uuid')))
+    result_params = params_for_results(res_details)
+    Result.add_result(result_params)
+    redis.hdel('new_res', params.dig('runner', 'uuid'))
+  end
+
+  def params_for_results(res_details)
+    res_params =  JSON.parse(res_details)
+    res_params["runner_id"] = @runner.id
+    res_params["category_id"] = @runner.category_id
+
+
+
+     if ["0", "1"].include?(res_params.dig("group_attributes", "competition_id"))
+        res_params["date"] = "#{res_params['date(1i)']}-#{res_params['date(2i)']}-#{res_params['date(3i)']}"
+        res_params["group_id"] = res_params.dig("group_attributes", "competition_id")
+        res_params.delete("group_attributes")
+      end
+
+      res_params.delete("date(3i)")
+      res_params.delete("date(2i)")
+      res_params.delete("date(1i)")
+
+      unless res_params.dig("group_attributes", "group_name")
+        res_params.delete("group_attributes")
+      end
+
+
+
+      res_params
   end
 
   # Only allow a list of trusted parameters through.
   def runner_params
     params.require(:runner).permit(:id, :runner_name, :surname, :dob, :club_id, :gender, :wre_id, :best_category_id,
-                                   :category_id, :category_valid, :sprint_wre_rang, :sprint_wre_place, :forest_wre_place, :forest_wre_rang, :checksum, results_attributes: [:date, :place, :time, :group_id, :wre_points, { group_attributes: [:id, :group_name, :competition_id, { competition_attributes: %i[id competition_name date location country distance_type wre_id] }] }])
+                                   :category_id, :category_valid, :sprint_wre_rang, :sprint_wre_place, :forest_wre_place, :forest_wre_rang, :checksum)
   end
 end
