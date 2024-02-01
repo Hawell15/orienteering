@@ -2,14 +2,17 @@ class JsonParser < BaseParser
   attr_accessor :file, :hash
 
   def initialize(path)
-    @path = path
-    @hash = {}
+    @path          = path
+    @hash          = {}
+    @return_data   = "competition"
+    @return_result = nil
   end
 
   def convert
     json = JSON.parse(File.read(@path))
     extract_competition_details(json)
     parser(@hash)
+    @return_result
   end
 
   def extract_competition_details(json)
