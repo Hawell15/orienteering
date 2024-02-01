@@ -30,16 +30,12 @@ end
 
   # POST /results or /results.json
   def create
-    @result = Result.new(params_for_results)
-
     respond_to do |format|
-      if @result.save
-        format.html { redirect_to result_url(@result), notice: "Result was successfully created." }
-        format.json { render :show, status: :created, location: @result }
-      else
-        format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @result.errors, status: :unprocessable_entity }
-      end
+      parser = ResultFormParser.new(result_params)
+      @result = parser.convert
+
+      format.html { redirect_to result_url(@result), notice: "Result was successfully created." }
+      format.json { render :show, status: :created, location: @result }
     end
   end
 
@@ -91,6 +87,6 @@ end
 
     # Only allow a list of trusted parameters through.
     def result_params
-      params.require(:result).permit(:place, :runner_id, :time, :category_id, :group_id, :wre_points, group_attributes: [:id, :group_name, :competition_id, competition_attributes: [:id, :competition_name, :date, :location, :country, :distance_type, :wre_id]])
+      params.require(:result).permit(:place, :runner_id, :time, :category_id, :group_id, :wre_points, :date, group_attributes: [:id, :group_name, :competition_id, competition_attributes: [:id, :competition_name, :date, :location, :country, :distance_type, :wre_id]])
     end
 end
