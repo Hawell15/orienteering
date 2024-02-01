@@ -14,4 +14,19 @@ class Competition < ApplicationRecord
   def self.find_competition(params)
     Competition.find_by(checksum: get_checksum(*params.values_at("competition_name", "date", "distance_type")))
   end
+
+  def self.add_competition(params)
+    params = params.with_indifferent_access
+
+    checksum = get_checksum(*params.values_at("competition_name", "date", "distance_type"))
+
+    Competition.find_or_create_by(checksum: checksum) do |comp|
+       comp.competition_name = params[:competition_name]
+       comp.date             = params[:date]
+       comp.distance_type    = params[:distance_type]
+       comp.location         = params[:location]
+       comp.country          = params[:country]
+       comp.wre_id           = params[:wre_id]
+     end
+  end
 end

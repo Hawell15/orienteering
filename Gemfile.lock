@@ -234,6 +234,7 @@ GEM
       activesupport (>= 5.2)
       sprockets (>= 3.0.0)
     sqlite3 (1.6.6-arm64-darwin)
+    text (1.3.1)
     thor (1.2.2)
     tilt (2.3.0)
     timeout (0.4.0)
@@ -244,6 +245,7 @@ GEM
       concurrent-ruby (~> 1.0)
     unaccent (0.4.0)
     unicode-display_width (2.4.2)
+    unicode_utils (1.4.0)
     warden (1.2.9)
       rack (>= 2.0.9)
     web-console (4.2.1)
@@ -292,8 +294,10 @@ DEPENDENCIES
   sidekiq
   spring
   sqlite3 (~> 1.4)
+  text
   turbolinks (~> 5)
   tzinfo-data
+  unicode_utils
   web-console (>= 4.1.0)
   webdrivers
   webpacker (~> 5.0)

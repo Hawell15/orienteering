@@ -10,5 +10,8 @@ Rails.application.routes.draw do
   post 'result/modal_new', to: 'results#modal_new', as: "modal_result"
 
   root "home#index"
+
+  get 'parser/file_results', as: 'file_results'
+  post 'parser/file_results'
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
 end

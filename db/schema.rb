@@ -27,6 +27,7 @@ ActiveRecord::Schema.define(version: 2023_12_12_132428) do
     t.string "email"
     t.string "phone"
     t.string "alternative_club_name"
+    t.string "formatted_name"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end
