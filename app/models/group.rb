@@ -10,6 +10,7 @@ class Group < ApplicationRecord
 
   def self.add_group(params)
     params = params.with_indifferent_access
+    return Group.find(params["group_id"]) if params["group_id"]
 
     Group.find_or_create_by(params)
   end
