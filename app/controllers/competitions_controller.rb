@@ -20,7 +20,7 @@ class CompetitionsController < ApplicationController
   # POST /competitions or /competitions.json
   def create
     respond_to do |format|
-      parser = FormParser.new(competition_params, "competition")
+      parser = CompetitionFormParser.new(competition_params)
       @competition = parser.convert
 
       format.html { redirect_to competition_url(@competition), notice: 'Competitia a fost creata cu succes' }
@@ -30,12 +30,17 @@ class CompetitionsController < ApplicationController
 
   # PATCH/PUT /competitions/1 or /competitions/1.json
   def update
-    respond_to do |format|
-      parser = FormParser.new(competition_params, "competition")
-      @competition = parser.convert
+    remove_groups
+    add_groups
 
-      format.html { redirect_to competition_url(@competition), notice: 'Competitia a fost actualizata' }
-      format.json { render :show, status: :ok, location: @competition }
+    respond_to do |format|
+      if @competition.update(competition_params.except(:group_list))
+        format.html { redirect_to competition_url(@competition), notice: 'Competitia a fost actualizata' }
+        format.json { render :show, status: :ok, location: @competition }
+      else
+        format.html { render :edit, status: :unprocessable_entity }
+        format.json { render json: @competition.errors, status: :unprocessable_entity }
+      end
     end
   end
 
@@ -54,6 +59,20 @@ class CompetitionsController < ApplicationController
   # Use callbacks to share common setup or constraints between actions.
   def set_competition
     @competition = Competition.find(params[:id])
+  end
+
+  def add_groups
+    return if competition_params[:group_list].blank?
+
+    group_names = competition_params[:group_list].split(',').map(&:strip)
+    Group.add_groups(group_names, @competition)
+  end
+
+  def remove_groups
+    return if competition_params[:group_list].blank?
+
+    group_names = @competition.groups.pluck(:group_name) - competition_params[:group_list].split(',').map(&:strip)
+    Group.delete_groups(group_names, @competition)
   end
 
   # Only allow a list of trusted parameters through.

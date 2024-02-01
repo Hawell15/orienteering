@@ -1,10 +1,10 @@
-class FormParser < BaseParser
+class CompetitionFormParser < BaseParser
   attr_accessor :params, :hash
 
-  def initialize(params, return_data)
+  def initialize(params)
     @params        = params
     @hash          = {}
-    @return_data   = return_data
+    @return_data   = "competition"
     @return_result = nil
   end
 

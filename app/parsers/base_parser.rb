@@ -8,12 +8,14 @@ class BaseParser
   def add_competition(hash)
     competition = Competition.add_competition(hash.except(:groups))
     add_groups(hash[:groups], competition)
-    @return_result = competition if @return_data = "competition"
+    @return_result = competition if @return_data == "competition"
   end
 
   def add_groups(hash, competition)
     hash.each do |group_hash|
       group = Group.add_group(group_hash.merge(competition_id: competition.id).except(:results))
+
+      @return_result = group if @return_data == "group"
       add_result(group_hash[:results], group)
     end
   end
