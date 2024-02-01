@@ -24,6 +24,8 @@ gem 'will_paginate-bootstrap-style'
 gem 'countries'
 gem 'redis'
 gem 'sidekiq'
+gem 'unicode_utils'
+gem 'text'
 
 # Use Redis adapter to run Action Cable in production
 # gem 'redis', '~> 4.0'

@@ -9,10 +9,9 @@ class Group < ApplicationRecord
   end
 
   def self.add_group(params)
-    group = Group.find_by(params)
-    return group if group
+    params = params.with_indifferent_access
 
-    Group.create!(params)
+    Group.find_or_create_by(params)
   end
 
   def self.delete_groups(groups, competition)

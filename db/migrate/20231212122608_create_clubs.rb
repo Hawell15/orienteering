@@ -7,6 +7,7 @@ class CreateClubs < ActiveRecord::Migration[6.1]
       t.string :email
       t.string :phone
       t.string :alternative_club_name
+      t.string :formatted_name
 
       t.timestamps
     end
