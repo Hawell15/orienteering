@@ -9,14 +9,15 @@ class ResultFormParser < BaseParser
   end
 
   def convert
-    json = @params.to_hash.compact.reject { |_, v| v.empty? }
+    json = @params.to_hash.compact.reject { |_, v| v.blank? }.with_indifferent_access
     extract_competition_details(json)
     parser(@hash)
     @return_result
   end
 
   def extract_competition_details(params)
-    json = params["group_attributes"].slice("competition_id").merge(params["group_attributes"]["competition_attributes"]&.to_h || {}).compact.reject { |_, v| v.empty? }
+
+    json = params["group_attributes"].slice("competition_id").merge(params["group_attributes"]["competition_attributes"]&.to_h || {}).compact.reject { |_, v| v.blank? }
 
     if json["date(1i)"]
       date_params = json.slice('date(1i)', 'date(2i)', 'date(3i)').values.map(&:to_i)
