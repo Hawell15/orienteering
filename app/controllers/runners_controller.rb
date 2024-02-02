@@ -28,16 +28,13 @@ class RunnersController < ApplicationController
 
   # POST /runners or /runners.json
   def create
-    @runner = Runner.new(runner_params)
     respond_to do |format|
-      if @runner.save
-        add_result
-        format.html { redirect_to runner_url(@runner), notice: 'Runner was successfully created.' }
-        format.json { render :show, status: :created, location: @runner }
-      else
-        format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @runner.errors, status: :unprocessable_entity }
-      end
+      parser = RunnerFormParser.new(runner_params)
+      @runner = parser.convert
+      add_result
+
+      format.html { redirect_to runner_url(@runner), notice: 'Runner was successfully created.' }
+      format.json { render :show, status: :created, location: @runner }
     end
   end
 
@@ -75,37 +72,12 @@ class RunnersController < ApplicationController
 
   def add_result
     redis = Redis.new(url: 'redis://localhost:6379/0')
-
     return unless (res_details = redis.hget('new_res', params.dig('runner', 'uuid')))
-    result_params = params_for_results(res_details)
-    Result.add_result(result_params)
+
     redis.hdel('new_res', params.dig('runner', 'uuid'))
-  end
+    result = ResultFormParser.new(JSON.parse(res_details).merge("runner_id": @runner.id, "category_id": @runner.category_id)).convert
 
-  def params_for_results(res_details)
-    res_params =  JSON.parse(res_details)
-    res_params["runner_id"] = @runner.id
-    res_params["category_id"] = @runner.category_id
-
-
-
-     if ["0", "1"].include?(res_params.dig("group_attributes", "competition_id"))
-        res_params["date"] = "#{res_params['date(1i)']}-#{res_params['date(2i)']}-#{res_params['date(3i)']}"
-        res_params["group_id"] = res_params.dig("group_attributes", "competition_id")
-        res_params.delete("group_attributes")
-      end
-
-      res_params.delete("date(3i)")
-      res_params.delete("date(2i)")
-      res_params.delete("date(1i)")
-
-      unless res_params.dig("group_attributes", "group_name")
-        res_params.delete("group_attributes")
-      end
-
-
-
-      res_params
+    @runner.update!(category_valid: result.date + 2.years)
   end
 
   # Only allow a list of trusted parameters through.

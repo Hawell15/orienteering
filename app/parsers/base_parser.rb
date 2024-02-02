@@ -6,15 +6,18 @@ class BaseParser
   end
 
   def add_competition(hash)
-    competition = Competition.add_competition(hash.except(:groups))
+    if hash.except(:groups).present?
+      competition = Competition.add_competition(hash.except(:groups))
+    end
     add_groups(hash[:groups], competition)
     @return_result = competition if @return_data == "competition"
   end
 
   def add_groups(hash, competition)
     hash.each do |group_hash|
-      group = Group.add_group(group_hash.merge(competition_id: competition.id).except(:results))
-
+      if [group_hash.except(:results), competition].any?(&:present?)
+        group = Group.add_group(group_hash.merge(competition_id: competition.id).except(:results))
+      end
       @return_result = group if @return_data == "group"
       add_result(group_hash[:results], group)
     end
@@ -22,9 +25,9 @@ class BaseParser
 
   def add_runners(hash)
     return unless hash
-
-    club = Club.add_club({ club_name: hash[:club] })
-    Runner.add_runner(hash.merge(club_id: club.id).except(:club))
+    club_id = hash[:club_id] || Club.add_club({ club_name: hash[:club] }).id
+    runner = Runner.add_runner(hash.merge(club_id: club_id).except(:club))
+    @return_result = runner if @return_data == "runner"
   end
 
   def add_result(hash, group)
@@ -34,7 +37,9 @@ class BaseParser
       next unless result_hash
 
       runner_id = result_hash[:runner_id] || add_runners(result_hash[:runner]).id
-      result    = Result.add_result(result_hash.merge({ runner_id: runner_id, group_id: group.id }).except(:runner))
+      if result_hash.except(:runner).present?
+        result    = Result.add_result(result_hash.merge({ runner_id: runner_id, group_id: group.id }).except(:runner))
+      end
 
       @return_result = result if @return_data == "result"
     end
