@@ -76,7 +76,7 @@ RSpec.describe GroupFormParser, type: :model do
           'distance_type' => 'Sprint',
           'wre_id' => 111,
           'id' => 2,
-          'checksum' => 'ce39a998a0a35bbaf1fb0622d37d13211e2c537e7803024ba412fd988c9e278d'
+          'checksum' => (Digest::SHA2.new << "Test Comp-2024-02-01-Sprint").to_s
         }
       )
     end
