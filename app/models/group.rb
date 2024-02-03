@@ -2,6 +2,8 @@ class Group < ApplicationRecord
   belongs_to :competition
   has_many :results, dependent: :destroy
 
+  before_save :remove_spaces
+
   accepts_nested_attributes_for :competition
 
   def self.add_groups(groups, competition)
@@ -24,5 +26,9 @@ class Group < ApplicationRecord
     return unless group
 
     group.destroy
+  end
+
+  def remove_spaces
+    self.group_name = self.group_name.remove(" ")
   end
 end

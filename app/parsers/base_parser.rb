@@ -25,9 +25,13 @@ class BaseParser
 
   def add_runners(hash)
     return unless hash
+
     club_id = hash[:club_id] || Club.add_club({ club_name: hash[:club] }).id
+
     runner = Runner.add_runner(hash.merge(club_id: club_id).except(:club))
     @return_result = runner if @return_data == "runner"
+
+    runner
   end
 
   def add_result(hash, group)
@@ -36,7 +40,7 @@ class BaseParser
     hash.each do |result_hash|
       next unless result_hash
 
-      runner_id = result_hash[:runner_id] || add_runners(result_hash[:runner]).id
+      runner_id = result_hash[:runner_id] || add_runners(result_hash[:runner]).id rescue byebug
       if result_hash.except(:runner).present?
         result    = Result.add_result(result_hash.merge({ runner_id: runner_id, group_id: group.id }).except(:runner))
       end

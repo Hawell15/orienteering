@@ -4,7 +4,12 @@ class ParserController < ApplicationController
 
     respond_to do |format|
       path         = params[:path].tempfile.path
-      parser       = JsonParser.new(path)
+
+      parser = if path[/json$/]
+        JsonParser.new(path)
+      elsif path[/html$/]
+        HtmlParser.new(path)
+      end
       @competition = parser.convert
 
       format.html { redirect_to competition_url(@competition), notice: 'Competitia a fost creata cu succes' }
