@@ -64,7 +64,6 @@ class JsonParser < BaseParser
   def extract_runner_id(runner_id)
     return unless runner_id
     runner_id.to_i.zero? ? false : true
-
   end
 
   def convert_dob(string)
