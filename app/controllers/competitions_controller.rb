@@ -3,7 +3,13 @@ class CompetitionsController < ApplicationController
 
   # GET /competitions or /competitions.json
   def index
-    @competitions = Competition.paginate(page: params[:page], per_page: 10)
+    @competitions = if params[:wre]
+       Competition.where.not(wre_id: nil)
+    else
+      Competition.all
+    end
+
+    @competitions = @competitions.paginate(page: params[:page], per_page: 10)
   end
 
   # GET /competitions/1 or /competitions/1.json

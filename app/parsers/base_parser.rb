@@ -62,9 +62,9 @@ class BaseParser
   end
 
   def convert_time(string)
-    hours, minutes, seconds = string.split(/:|\.|,/).map(&:to_i)
+    seconds, minutes, hours = string.split(/:|\.|,/).map(&:to_i).reverse
 
-    hours * 3600 + minutes * 60 + seconds
+    (hours || 0) * 3600 + minutes * 60 + seconds
   end
 
   def extract_gender(string)
