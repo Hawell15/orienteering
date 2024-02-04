@@ -83,8 +83,17 @@ class BaseParser
     string = case string
              when 'BR'    then 'f/c'
              when 'KMSRM' then 'CMSRM'
+             else string
              end
 
     Category.find_by(category_name: string)
+  end
+
+  def detect_gender(string)
+    case string
+    when "Nichita", "Ilia", "Mircea" then "M"
+    when "Irene", /a$/i then "F"
+    else "M"
+    end
   end
 end

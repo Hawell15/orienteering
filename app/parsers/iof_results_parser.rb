@@ -14,7 +14,6 @@ class IofResultsParser < BaseParser
     extract_competition_details(data)
 
     @hash.each { |comp| parser(comp)}
-    # parser(@hash)
   end
 
   def extract_competition_details(json)
@@ -57,21 +56,6 @@ class IofResultsParser < BaseParser
     runner
   end
 
-  def extract_runner_details(runner)
-    {
-      runner_name:      runner["Last Name"],
-      surname:          runner["First Name"],
-      dob:              runner["dob"],
-      gender:           runner["Gender"],
-      club_id:          0,
-      sprint_wre_rang:  runner["Sprint WRS points"],
-      forest_wre_rang:  runner["WRS points"],
-      sprint_wre_place: runner["Sprint WRS Position"],
-      forest_wre_place: runner["WRS Position"],
-      wre_id:           runner["IOF ID"]
-    }.compact
-  end
-
   def get_data
     runners_with_wre_id = Runner.where.not(wre_id: nil).select(:id, :wre_id, :gender)
 
@@ -89,34 +73,6 @@ class IofResultsParser < BaseParser
         hash["runner_id"] = runner.id
       end
     end.flatten
-  end
-
-  def get_dob
-    url = URI("https://eventor.orienteering.org/Athletes")
-
-    https = Net::HTTP.new(URI("https://eventor.orienteering.org/Athletes").host, url.port)
-    https.use_ssl = true
-    response = Nokogiri::HTML(https.post(url, 'CountryId=498&MaxNumberOfResults=500').body)
-
-    dob_hash = {}
-
-    response.at_css("div#athleteList tbody").css("tr").each do |tr|
-      dob_hash["#{tr.at_css("td").text}"] = tr.css("td")[2].text.presence || Time.now.year
-    end
-    dob_hash
-  end
-
-  def merge_data(forest_data, sprint_data)
-    runners_array = forest_data
-
-    sprint_data.each do |data|
-      if (detected_hash = runners_array.detect { |runner| runner["IOF ID"] == data["IOF ID"]})
-        detected_hash.merge!(data)
-      else
-        runners_array << data
-      end
-    end
-    runners_array
   end
 
   def update_wre_data(runner, hash)
