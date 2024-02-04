@@ -84,6 +84,7 @@ GEM
     countries (5.7.1)
       unaccent (~> 0.3)
     crass (1.0.6)
+    csv (3.2.8)
     date (3.3.3)
     devise (4.9.3)
       bcrypt (~> 3.0)
@@ -304,6 +305,7 @@ DEPENDENCIES
   byebug
   capybara (>= 3.26)
   countries
+  csv
   devise
   factory_bot_rails
   jbuilder (~> 2.7)

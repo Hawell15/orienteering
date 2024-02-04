@@ -27,6 +27,7 @@ gem 'sidekiq'
 gem 'unicode_utils'
 gem 'text'
 gem 'nokogiri'
+gem 'csv'
 
 # Use Redis adapter to run Action Cable in production
 # gem 'redis', '~> 4.0'
