@@ -201,7 +201,7 @@ RSpec.describe ResultFormParser, type: :model do
           'distance_type' => 'Long',
           'wre_id' => nil,
           'id' => 3,
-          'checksum' => (Digest::SHA2.new << "New Competition-2024-01-02-Long").to_s
+          'checksum' => (Digest::SHA2.new << "New Competition-2024-01-02-Long-").to_s
         }
       )
 

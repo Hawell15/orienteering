@@ -13,6 +13,7 @@ Rails.application.routes.draw do
 
   get 'parser/file_results', as: 'file_results'
   get 'parser/iof_runners', as: 'iof_runners'
+  get 'parser/iof_results', as: 'iof_results'
   post 'parser/file_results'
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
 end

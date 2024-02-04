@@ -1,4 +1,4 @@
-class IofRunnersParser < BaseParser
+class IofResultsParser < BaseParser
   require 'net/http'
 
   attr_accessor :hash
@@ -10,24 +10,45 @@ class IofRunnersParser < BaseParser
   end
 
   def convert
-    extract_competition_details
-    parser(@hash)
+    data = get_data
+    extract_competition_details(data)
+
+    @hash.each { |comp| parser(comp)}
+    # parser(@hash)
   end
 
-  def extract_competition_details
-    @hash = {
-      groups: extract_groups_details
-    }
+  def extract_competition_details(json)
+    @hash = json.map { |js| js.slice("raceDate", "raceName", "raceId", "raceFormat") }.uniq.map do |competition|
+      {
+        competition_name: competition["raceName"],
+        date:             competition["raceDate"].to_date.as_json,
+        distance_type:    competition["raceFormat"],
+        wre_id:           competition["raceId"],
+        groups:           extract_groups_details(json.select { |js| js["raceId"] == competition["raceId"]})
+      }
+    end.compact
   end
 
-  def extract_groups_details
-    [results: extract_results]
-  end
-
-  def extract_results
-    get_runners_array.map do |runner|
-      {runner: extract_runner_details(runner) }
+  def extract_groups_details(json)
+    json.pluck("gender").uniq.map do |group|
+      {
+        group_name: "#{group.first.upcase}21E",
+        results:  extract_results(json.select { |js| js["gender"] == group })
+      }
     end
+  end
+
+  def extract_results(json)
+    json.map do |result|
+      next if result["rank"].zero?
+
+      {
+        place:      result["rank"],
+        time:       convert_time(result["result"]),
+        wre_points: result["points"].to_i,
+        runner_id:  result["runner_id"]
+      }
+    end.compact
   end
 
   def add_runners(hash)
@@ -51,40 +72,23 @@ class IofRunnersParser < BaseParser
     }.compact
   end
 
-  def get_runners_array
-    runners = ["MEN", "WOMEN"].map do |gender|
-      forest_data = get_data("F", gender)
+  def get_data
+    runners_with_wre_id = Runner.where.not(wre_id: nil).select(:id, :wre_id, :gender)
 
-      sprint_data = get_data("FS", gender).each do |data|
-        data["Sprint WRS points"] = data.delete("WRS points")
-        data["Sprint WRS Position"] = data.delete("WRS Position")
-      end
-
-      merge_data(forest_data, sprint_data)
+    runners_with_wre_id.map do |runner|
+      get_runner_results(runner)
     end.flatten
-
-    dob_hash = get_dob
-
-    runners.each do |runner|
-      runner["dob"] = "#{dob_hash[runner["IOF ID"]]}-01-01"
-    end
   end
 
-
-
-  def get_data(type, gender)
-    url = "https://ranking.orienteering.org/download.ashx?doctype=rankfile&rank=#{type}&group=#{gender}&todate=#{Time.now.to_date.as_json}&ioc=MDA"
-
-    csv_content = Net::HTTP.get(URI(url))
-
-    csv_data  = CSV.parse(csv_content, headers: true)
-    hash_data = csv_data.map(&:to_h)
-
-    hash_data.map do |hash|
-      key_array   = hash.keys.first.split("\;")
-      value_array = hash.values.first.split("\;")
-      Hash[key_array.zip(value_array)].slice("IOF ID", "First Name", "Last Name",  "WRS Position", "WRS points").merge("Gender" => gender )
-    end
+  def get_runner_results(runner)
+    ["F", "FS"].map do |distance_type|
+      json = JSON.parse(Net::HTTP.get(URI("https://ranking.orienteering.org/api/person/#{runner.wre_id}/results/#{distance_type}")))
+      json.each do |hash|
+        hash["gender"] = runner.gender
+        hash["runner_wre_id"] = runner.wre_id
+        hash["runner_id"] = runner.id
+      end
+    end.flatten
   end
 
   def get_dob

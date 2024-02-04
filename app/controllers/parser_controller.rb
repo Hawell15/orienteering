@@ -24,4 +24,13 @@ class ParserController < ApplicationController
       format.html { redirect_to "#{runners_url}?wre=true", notice: 'Datele wre despre sportivi au fost actualizate' }
     end
   end
+
+  def iof_results
+     respond_to do |format|
+      parser = IofResultsParser.new
+      parser.convert
+
+      format.html { redirect_to "#{competitions_url}?wre=true", notice: 'Datele wre despre sportivi au fost actualizate' }
+    end
+  end
 end

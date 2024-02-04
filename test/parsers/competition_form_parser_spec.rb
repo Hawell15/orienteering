@@ -25,7 +25,7 @@ RSpec.describe CompetitionFormParser, type: :model do
           'distance_type' => 'Sprint',
           'wre_id' => 111,
           'id' => 1,
-          'checksum' => (Digest::SHA2.new << "Test Comp-2024-02-01-Sprint").to_s
+          'checksum' => (Digest::SHA2.new << "Test Comp-2024-02-01-Sprint-111").to_s
         }
       )
       expect(@competition).to eq(Competition.last)
@@ -52,7 +52,7 @@ RSpec.describe CompetitionFormParser, type: :model do
           'distance_type' => 'Sprint',
           'wre_id' => nil,
           'id' => 1,
-          'checksum' => (Digest::SHA2.new << "Test Comp-2024-02-01-Sprint").to_s
+          'checksum' => (Digest::SHA2.new << "Test Comp-2024-02-01-Sprint-").to_s
 
         }
       )
@@ -84,7 +84,7 @@ RSpec.describe CompetitionFormParser, type: :model do
           'distance_type' => 'Sprint',
           'wre_id' => 111,
           'id' => 1,
-          'checksum' => (Digest::SHA2.new << "Test Comp-2024-02-01-Sprint").to_s
+          'checksum' => (Digest::SHA2.new << "Test Comp-2024-02-01-Sprint-111").to_s
         }
       )
       expect(@competition).to eq(Competition.last)
