@@ -15,4 +15,13 @@ class ParserController < ApplicationController
       format.html { redirect_to competition_url(@competition), notice: 'Competitia a fost creata cu succes' }
     end
   end
+
+  def iof_runners
+     respond_to do |format|
+      parser = IofRunnersParser.new
+      parser.convert
+
+      format.html { redirect_to "#{runners_url}?wre=true", notice: 'Datele wre despre sportivi au fost actualizate' }
+    end
+  end
 end

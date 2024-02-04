@@ -3,7 +3,13 @@ class RunnersController < ApplicationController
 
   # GET /runners or /runners.json
   def index
-    @runners = Runner.all
+    if params[:wre]
+      @runners = Runner.all.where.not(wre_id: nil)
+    elsif params[:category]
+       @runners = Runner.all.where(category_id: params[:category])
+    else
+      @runners = Runner.all
+    end
 
     @runners = case params[:sort]
                when 'runner'
