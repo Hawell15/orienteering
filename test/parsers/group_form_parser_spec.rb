@@ -19,7 +19,7 @@ RSpec.describe GroupFormParser, type: :model do
       expect(@group.attributes.except('created_at', 'updated_at')).to eq(
         {
           'id' => 1,
-          'group_name' => 'Test Group',
+          'group_name' => 'TestGroup',
           'competition_id' => 1,
           'rang' => 1,
           'clasa' => 'Seniori'
@@ -60,7 +60,7 @@ RSpec.describe GroupFormParser, type: :model do
       expect(@group.attributes.except('created_at', 'updated_at')).to eq(
         {
           'id' => 1,
-          'group_name' => 'Test Group',
+          'group_name' => 'TestGroup',
           'competition_id' => 2,
           'rang' => 1,
           'clasa' => 'MSRM'

@@ -69,7 +69,8 @@ RSpec.describe ResultFormParser, type: :model do
 
     it 'passes flow with existing Competition and Group' do
       Competition.create!(id: 2, date: "2023-01-01")
-      Group.create!(id: 2, competition_id: 2)
+      Group.create!(id: 2, competition_id: 2, group_name: "SomeGroup")
+
       params = {"place"=>"1", "runner_id"=>"1", "time"=>"3661", "category_id"=>"6", "group_id"=>"2", "wre_points"=>"111", "date(3i)"=>"2", "date(2i)"=>"2", "date(1i)"=>"2024", "group_attributes"=>{"competition_id"=>"2"}}
       result_form_parser = ResultFormParser.new(params)
       @result = result_form_parser.convert
@@ -97,7 +98,8 @@ RSpec.describe ResultFormParser, type: :model do
 
     it 'passes flow with existing Competition and Group' do
       Competition.create!(id: 2, date: "2023-01-01")
-      Group.create!(id: 2, competition_id: 2)
+      Group.create!(id: 2, competition_id: 2, group_name: "SomeGroup")
+
       params = {"place"=>"1", "runner_id"=>"1", "time"=>"3661", "category_id"=>"6", "group_id"=>"2", "wre_points"=>"111", "date(3i)"=>"2", "date(2i)"=>"2", "date(1i)"=>"2024", "group_attributes"=>{"competition_id"=>"2"}}
       result_form_parser = ResultFormParser.new(params)
       @result = result_form_parser.convert
@@ -125,8 +127,9 @@ RSpec.describe ResultFormParser, type: :model do
 
     it 'passes flow with existing Competition and New Group' do
       Competition.create!(id: 2, date: "2023-01-01")
-      Group.create!(id: 2, competition_id: 2)
-      params = {"place"=>"1", "runner_id"=>"1", "time"=>"900", "category_id"=>"6", "wre_points"=>"", "date(3i)"=>"2", "date(2i)"=>"2", "date(1i)"=>"2024", "group_attributes"=>{"group_name"=>"M21", "competition_id"=>"2"}}
+      Group.create!(id: 2, competition_id: 2, group_name: "SomeGroup")
+
+        params = {"place"=>"1", "runner_id"=>"1", "time"=>"900", "category_id"=>"6", "wre_points"=>"", "date(3i)"=>"2", "date(2i)"=>"2", "date(1i)"=>"2024", "group_attributes"=>{"group_name"=>"M21", "competition_id"=>"2"}}
       result_form_parser = ResultFormParser.new(params)
       @result = result_form_parser.convert
 
@@ -163,7 +166,8 @@ RSpec.describe ResultFormParser, type: :model do
 
     it 'passes flow with New Competition and New Group' do
       Competition.create!(id: 2, date: "2023-01-01")
-      Group.create!(id: 2, competition_id: 2)
+      Group.create!(id: 2, competition_id: 2, group_name: "SomeGroup")
+
       params = {"place"=>"5", "runner_id"=>"1", "time"=>"3601", "category_id"=>"6", "wre_points"=>"", "date(3i)"=>"2", "date(2i)"=>"2", "date(1i)"=>"2024", "group_attributes"=>{"group_name"=>"M21", "competition_id"=>"", "competition_attributes"=>{"competition_name"=>"New Competition", "date(2i)"=>"1", "date(3i)"=>"2", "date(1i)"=>"2024", "location"=>"Chisinau", "country"=>"Moldova", "distance_type"=>"Long", "wre_id"=>""}}}
       result_form_parser = ResultFormParser.new(params)
       @result = result_form_parser.convert
