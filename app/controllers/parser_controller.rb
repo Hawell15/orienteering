@@ -33,4 +33,13 @@ class ParserController < ApplicationController
       format.html { redirect_to "#{competitions_url}?wre=true", notice: 'Datele wre despre sportivi au fost actualizate' }
     end
   end
+
+  def fos_data
+     respond_to do |format|
+      parser = FosParser.new
+      parser.convert
+
+      format.html { redirect_to runners_url, notice: 'Datele  despre sportivi au fost extrase' }
+    end
+  end
 end
