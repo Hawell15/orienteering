@@ -9,6 +9,8 @@ class ParserController < ApplicationController
         JsonParser.new(path)
       elsif path[/html$/]
         HtmlParser.new(path)
+      elsif path[/competitie.+xlsx$/]
+        ExcelCompetitionParser.new(path)
       end
       @competition = parser.convert
 
