@@ -78,7 +78,7 @@ class BaseParser
     string.gsub!('І', 'I') # NOTE: from Ukranian I to English
     string.gsub!('-u', ' j')
     string.gsub!('Ij', 'I j')
-    string.gsub!('S', 'SRM')
+    string.gsub!(/MS$/, 'MSRM')
 
     string = case string
              when 'BR'    then 'f/c'
