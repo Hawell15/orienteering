@@ -23,7 +23,7 @@ class ExcelCompetitionParser < BaseParser
     cell_value = ->(index_name) { sheet.cell(indexes.dig(:headers_index, index_name), indexes[:details_index]) }
 
     @hash = {
-      competition_name: cell_value.call(:comeptition_name),
+      competition_name: cell_value.call(:competition_name),
       date:             cell_value.call(:date).as_json,
       distance_type:    cell_value.call(:distance_type),
       location:         cell_value.call(:location),
@@ -84,7 +84,7 @@ class ExcelCompetitionParser < BaseParser
     headers = {}
     (1..sheet.last_row).each do |index|
       key = case sheet.cell(index, details_index)
-      when /Denumirea/i       then :comeptition_name
+      when /Denumirea/i       then :competition_name
       when /Tipul Distantei/i then :distance_type
       when /Data/i            then :date
       when /Orasul/i          then :location
