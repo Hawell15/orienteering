@@ -21,7 +21,7 @@ class Runner < ApplicationRecord
     runner ||= get_runner_by_matching(params)
     runner ||= Runner.create!(params.except("category_id"))
 
-    if params["category_id"] && params["category_id"] < runner.category_id
+    if params["category_id"] && params["category_id"].to_i < runner.category_id.to_i
       Result.add_result_and_entry({ runner_id: runner.id, group_id: 0, category_id: params["category_id"], date: Competition.last.date.as_json })
 
     end
