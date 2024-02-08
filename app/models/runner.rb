@@ -19,7 +19,13 @@ class Runner < ApplicationRecord
 
     runner = matching_runner(params).first
     runner ||= get_runner_by_matching(params)
-    runner ||= Runner.create!(params)
+    runner ||= Runner.create!(params.except("category_id"))
+
+    if params["category_id"] && params["category_id"] < runner.category_id
+      Result.add_result_and_entry({ runner_id: runner.id, group_id: 0, category_id: params["category_id"], date: Competition.last.date.as_json })
+
+    end
+    runner
   end
 
   def self.get_checksum(runner_name, surname, dob, gender)
@@ -37,7 +43,7 @@ class Runner < ApplicationRecord
   end
 
   def self.get_runner_by_matching(options)
-    threshold = 0.95
+    threshold = 0.7
     runners = Runner.where(gender: options[:gender]).all.map do |runner|
       name_threshold = Text::Levenshtein.distance(runner.runner_name.downcase, options[:runner_name].downcase) / runner.runner_name.length.to_f
       surname_threshold = Text::Levenshtein.distance(runner.surname.downcase, options[:surname].downcase) / runner.surname.length.to_f
