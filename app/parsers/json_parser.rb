@@ -48,22 +48,22 @@ class JsonParser < BaseParser
 
   def extract_runner(result, gender)
     runner_name, surname = result["runner_name"].split(" ", 2)
-    current_category     = convert_category(result["currenct_category"])
+    current_category     = convert_category(result["currenct_category"]).id
 
     {
-      runner_name:      runner_name,
-      surname:          surname,
-      dob:              convert_dob(result["date_of_birth"]),
-      gender:           gender,
-      category_id:      current_category,
-      best_category_id: current_category,
-      club:             result["club"]
+      runner_name: runner_name,
+      surname:     surname,
+      dob:         convert_dob(result["date_of_birth"]),
+      gender:      gender,
+      category_id: current_category,
+      club:        result["club"],
+      id:          extract_runner_id(result["runner_id"])
     }.compact
   end
 
   def extract_runner_id(runner_id)
     return unless runner_id
-    runner_id.to_i.zero? ? false : true
+    runner_id.to_i.zero? ? nil : runner_id
   end
 
   def convert_dob(string)

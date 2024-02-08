@@ -1,0 +1,60 @@
+{
+  "title": "Some Competition",
+  "name": "Все участники",
+  "date": "14.10.2023",
+  "groups": [
+    {
+      "name": "M21",
+      "distance_type": "заданка",
+      "distance_class": "сategoria I",
+      "rang": "390,0",
+      "results": [
+        {
+          "place": "1",
+          "runner_name": "Ciobanu Roman",
+          "runner_id": "1",
+          "date_of_birth": "15.02.1991",
+          "club": "CS Galata",
+          "time": "00:13.47",
+          "currenct_category": "MSRM",
+          "competition_category": "І"
+        },{
+          "place": "2",
+          "runner_name": "Golovei Andrei",
+          "runner_id": "2",
+          "date_of_birth": "12.12.1993",
+          "club": "CS Galata 2009",
+          "time": "00:13.48",
+          "currenct_category": "MSRM",
+          "competition_category": "І"
+        }
+      ]
+    },{
+      "name": "W14",
+      "distance_type": "заданка",
+      "distance_class": "categorii sportive juniori",
+      "rang": "11,0",
+      "results": [
+        {
+          "place": "1",
+          "runner_name": "Guțul Daria",
+          "runner_id": "26",
+          "date_of_birth": "15.02.2009",
+          "club": "CS FAURI",
+          "time": "00:10.19",
+          "currenct_category": "ІІ",
+          "competition_category": "І j"
+        },{
+          "place": "2",
+          "runner_name": "Hersun Valeria",
+          "runner_id": "0",
+          "date_of_birth": "04.06.2009",
+          "club": "CMTT Chișinău",
+          "time": "00:11.42",
+          "currenct_category": "І j",
+          "competition_category": "І j"
+        }
+      ]
+    }
+  ]
+}

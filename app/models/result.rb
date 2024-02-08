@@ -29,6 +29,14 @@ class Result < ApplicationRecord
     end
   end
 
+  def self.add_result_and_entry(params, status = "unconfirmed")
+    params = params.with_indifferent_access
+
+    result = add_result(params)
+
+    Entry.create!(params.slice("runner_id", "category_id").merge(result_id: result.id, status: status))
+  end
+
   private
 
   def add_date
