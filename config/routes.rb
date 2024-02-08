@@ -1,4 +1,11 @@
 Rails.application.routes.draw do
+  resources :entries do
+    member do
+      patch :confirm
+      delete :reject
+      patch :pending
+    end
+  end
   resources :results
   resources :runners
   resources :clubs
