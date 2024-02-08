@@ -42,7 +42,6 @@ class RunnerFormParser < BaseParser
       surname:          params["surname"],
       dob:              date,
       gender:           params["gender"],
-      category_id:      params["category_id"],
       best_category_id: params["best_category_id"],
       club_id:          params["club_id"],
       wre_id:           params["wre_id"]
