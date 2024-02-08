@@ -5,31 +5,33 @@ require 'rails_helper'
 RSpec.describe GroupFormParser, type: :model do
   describe '#convert' do
     it 'passes flow with existing competition' do
-      Competition.create!(id: 1)
-      params = { 'group_name' => 'Test Group', 'competition_id' => '1', 'rang' => '1', 'clasa' => 'Seniori' }
+      Competition.create!(id: 2)
+      params = { 'group_name' => 'Test Group', 'competition_id' => '2', 'rang' => '1', 'clasa' => 'Seniori' }
       group_form_parser = GroupFormParser.new(params)
-      @group = group_form_parser.convert
 
-      expect(Group.count).to eq(1)
-      expect(Runner.count).to be_zero
-      expect(Result.count).to be_zero
-      expect(Club.count).to be_zero
-      expect(Competition.count).to eq(1)
+      expect { @group = group_form_parser.convert}
+      .to change { Competition.count }.by(0)
+      .and change { Group.count }.by(1)
+      .and change { Runner.count }.by(0)
+      .and change { Result.count }.by(0)
+      .and change { Club.count }.by(0)
+      .and change { Entry.count }.by(0)
+
+      expect(@group).to eq(Group.last)
 
       expect(@group.attributes.except('created_at', 'updated_at')).to eq(
         {
-          'id' => 1,
-          'group_name' => 'TestGroup',
-          'competition_id' => 1,
-          'rang' => 1,
-          'clasa' => 'Seniori'
+          'id'             => 2,
+          'group_name'     => 'TestGroup',
+          'competition_id' => 2,
+          'rang'           => 1,
+          'clasa'          => 'Seniori'
         }
       )
-      expect(@group).to eq(Group.last)
     end
 
     it 'passes flow with new competition' do
-      Competition.create!(id: 1)
+      Competition.create!(id: 2)
       params = {
         'group_name' => 'Test Group',
         'competition_id' => '',
@@ -49,34 +51,35 @@ RSpec.describe GroupFormParser, type: :model do
       }
 
       group_form_parser = GroupFormParser.new(params)
-      @group = group_form_parser.convert
 
-      expect(Group.count).to eq(1)
-      expect(Runner.count).to be_zero
-      expect(Result.count).to be_zero
-      expect(Club.count).to be_zero
-      expect(Competition.count).to eq(2)
+      expect { @group = group_form_parser.convert}
+      .to change { Competition.count }.by(1)
+      .and change { Group.count }.by(1)
+      .and change { Runner.count }.by(0)
+      .and change { Result.count }.by(0)
+      .and change { Club.count }.by(0)
+      .and change { Entry.count }.by(0)
 
       expect(@group.attributes.except('created_at', 'updated_at')).to eq(
         {
-          'id' => 1,
-          'group_name' => 'TestGroup',
-          'competition_id' => 2,
-          'rang' => 1,
-          'clasa' => 'MSRM'
+          'id'             => 2,
+          'group_name'     => 'TestGroup',
+          'competition_id' => 3,
+          'rang'           => 1,
+          'clasa'          => 'MSRM'
         }
       )
       expect(@group).to eq(Group.last)
       expect(Competition.last.attributes.except('created_at', 'updated_at')).to eq(
         {
+          'id'               => 3,
           'competition_name' => 'Test Comp',
-          'date' => '2024-02-01'.to_date,
-          'location' => 'Chisinau',
-          'country' => 'Moldova',
-          'distance_type' => 'Sprint',
-          'wre_id' => 111,
-          'id' => 2,
-          'checksum' => (Digest::SHA2.new << "Test Comp-2024-02-01-Sprint-111").to_s
+          'date'             => '2024-02-01'.to_date,
+          'distance_type'    => 'Sprint',
+          'checksum'         => (Digest::SHA2.new << "Test Comp-2024-02-01-Sprint-111").to_s,
+          'location'         => 'Chisinau',
+          'country'          => 'Moldova',
+          'wre_id'           => 111
         }
       )
     end
