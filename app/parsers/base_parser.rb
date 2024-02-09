@@ -40,9 +40,12 @@ class BaseParser
     hash.each do |result_hash|
       next unless result_hash
 
+      status = "unconfirmed"
+      status = result_hash[:status] || status
+
       runner_id = result_hash[:runner_id] || add_runners(result_hash[:runner]).id
       if result_hash.except(:runner).present?
-        result    = Result.add_result(result_hash.merge({ runner_id: runner_id, group_id: group.id }).except(:runner))
+        result    = Result.add_result(result_hash.merge({ runner_id: runner_id, group_id: group.id }).except(:runner, :status), status)
       end
 
       @return_result = result if @return_data == "result"

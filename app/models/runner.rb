@@ -22,8 +22,7 @@ class Runner < ApplicationRecord
     runner ||= Runner.create!(params.except("category_id"))
 
     if params["category_id"] && params["category_id"].to_i < runner.category_id.to_i
-      Result.add_result_and_entry({ runner_id: runner.id, group_id: 0, category_id: params["category_id"], date: Competition.last.date.as_json })
-
+      Result.add_result({ runner_id: runner.id, group_id: 0, category_id: params["category_id"], date: Competition.last.date.as_json })
     end
     runner
   end
@@ -34,6 +33,16 @@ class Runner < ApplicationRecord
 
   def get_checksum(runner_name, surname, dob, gender)
     (Digest::SHA2.new << "#{runner_name}-#{surname}-#{dob.to_date.year}-#{gender}").to_s
+  end
+
+  def self.update_runner_category_from_entry(params)
+    runner = Runner.find(params["runner_id"])
+
+    runner.update!(
+      category_id: params["category_id"],
+      best_category_id: [runner.best_category_id, params["category_id"]].min,
+      category_valid: (params["date"].to_date + 2.years).as_json
+      )
   end
 
   private
