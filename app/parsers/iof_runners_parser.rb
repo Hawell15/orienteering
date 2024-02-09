@@ -74,10 +74,7 @@ class IofRunnersParser < BaseParser
 
   def get_data(type, gender)
     url = "https://ranking.orienteering.org/download.ashx?doctype=rankfile&rank=#{type}&group=#{gender}&todate=#{Time.now.to_date.as_json}&ioc=MDA"
-
-    csv_content = Net::HTTP.get(URI(url))
-
-    csv_data  = CSV.parse(csv_content, headers: true)
+    csv_data  = request_data(url)
     hash_data = csv_data.map(&:to_h)
 
     hash_data.map do |hash|
@@ -87,12 +84,13 @@ class IofRunnersParser < BaseParser
     end
   end
 
-  def get_dob
-    url = URI("https://eventor.orienteering.org/Athletes")
+  def request_data(url)
+    csv_content = Net::HTTP.get(URI(url))
+    CSV.parse(csv_content, headers: true)
+  end
 
-    https = Net::HTTP.new(URI("https://eventor.orienteering.org/Athletes").host, url.port)
-    https.use_ssl = true
-    response = Nokogiri::HTML(https.post(url, 'CountryId=498&MaxNumberOfResults=500').body)
+  def get_dob
+    response = request_dob
 
     dob_hash = {}
 
@@ -100,6 +98,15 @@ class IofRunnersParser < BaseParser
       dob_hash["#{tr.at_css("td").text}"] = tr.css("td")[2].text.presence || Time.now.year
     end
     dob_hash
+  end
+
+  def request_dob
+    url = URI("https://eventor.orienteering.org/Athletes")
+
+    https = Net::HTTP.new(url.host, url.port)
+    https.use_ssl = true
+    response = Nokogiri::HTML(https.post(url, 'CountryId=498&MaxNumberOfResults=500').body)
+
   end
 
   def merge_data(forest_data, sprint_data)
