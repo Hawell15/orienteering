@@ -67,7 +67,6 @@ class ExcelResultsParser < BaseParser
       gender:           extract_gender(cell_value.call(:gender)),
       category_id:      Category.find_by(category_name: cell_value.call(:category)).id,
       best_category_id: Category.find_by(category_name: cell_value.call(:best_category)).id,
-      category_valid:   (cell_value.call(:dob) + 2.years).as_json
     }.compact
   end
 
