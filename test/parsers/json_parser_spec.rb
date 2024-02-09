@@ -11,7 +11,7 @@ RSpec.describe JsonParser, type: :model do
 
   describe '#convert' do
     it 'passes flow with json data' do
-      path   = Rails.root.join('test', 'fixtures', 'files', 'baculina.json')
+      path   = Rails.root.join('test', 'fixtures', 'files', 'rezultate.json')
       parser = JsonParser.new(path)
       expect { @competition = parser.convert }
       .to change { Competition.count }.by(1)
