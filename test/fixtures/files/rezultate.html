@@ -1,0 +1,1947 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    
+    <title>Results - SportOrg</title>
+    
+<script>
+    var MAX_ORG_NAME = 30;
+    var MAX_PERSON_NAME = 30;
+
+    var TableGenerator = (function () {
+        var Table = function () {
+            return document.createElement('table');
+        };
+        var THead = function () {
+            return document.createElement('thead');
+        };
+        var TBody = function () {
+            return document.createElement('tbody');
+        };
+        var Tr = function () {
+            return document.createElement('tr');
+        };
+        var Th = function () {
+            return document.createElement('th');
+        };
+        var Td = function () {
+            return document.createElement('td');
+        };
+
+        function TableGenerator(data, fields) {
+            this.data = data;
+            this.fields = fields;
+        }
+
+        TableGenerator.prototype.getTable = function (options) {
+            var table = Table();
+            if (options && options.className) table.className = options.className;
+            table.appendChild(this.getHead());
+            table.appendChild(this.getBody());
+            return table;
+        };
+
+        TableGenerator.prototype.getHead = function () {
+            var tr = Tr();
+            for (var _i = 0, _a = this.headers(); _i < _a.length; _i++) {
+                var key = _a[_i];
+                var th = Th();
+                var title = this.getHeaderName(key);
+                if (title instanceof Node) {
+                    th.appendChild(title);
+                }
+                else {
+                    th.appendChild(document.createTextNode(title));
+                }
+                tr.appendChild(th);
+            }
+            var thead = THead();
+            thead.appendChild(tr);
+            return thead;
+        };
+
+        TableGenerator.prototype.getBody = function () {
+            var tbody = TBody();
+            var cols = this.headers().length;
+            for (var _b = 0, _c = this.data; _b < _c.length; _b++) {
+                var obj = _c[_b];
+                var tr = Tr();
+                if (obj instanceof Node || typeof obj === 'string') {
+                    var td = Td();
+                    td.colSpan = cols;
+                    if (typeof obj === 'string') {
+                        td.appendChild(document.createTextNode(obj));
+                    }
+                    else {
+                        td.appendChild(obj);
+                    }
+                    tr.appendChild(td);
+                }
+                else {
+                    for (var _i = 0, _a = this.headers(); _i < _a.length; _i++) {
+                        var key = _a[_i];
+                        var td = Td();
+                        if (obj[key]) {
+                            if (obj[key] instanceof Node) {
+                                td.appendChild(obj[key]);
+                            }
+                            else {
+                                td.appendChild(document.createTextNode(obj[key]));
+                            }
+                        }
+                        tr.appendChild(td);
+                    }
+                }
+                tbody.appendChild(tr);
+            }
+            return tbody;
+        };
+
+        TableGenerator.prototype.headers = function () {
+            if (this._headers) {
+                return this._headers
+            }
+            if (!this.fields) {
+                var headers = {};
+                for (var _i = 0, _a = this.data; _i < _a.length; _i++) {
+                    var obj = _a[_i];
+                    for (var key in obj) {
+                        headers[key] = true;
+                    }
+                }
+                this._headers = Object.keys(headers)
+            } else if (this.fields instanceof Array) {
+                this._headers = [];
+                for (var _i = 0, _a = this.fields; _i < _a.length; _i++) {
+                    var field = _a[_i];
+                    if (typeof field === 'string') {
+                        this._headers.push(field);
+                    }
+                    else if (field.active !== false) {
+                        this._headers.push(field.key);
+                    }
+                }
+            }
+            return this._headers;
+        };
+
+        TableGenerator.prototype.getHeaderName = function (key) {
+            if (this.fields && this.fields instanceof Array) {
+                for (var _i = 0, _a = this.fields; _i < _a.length; _i++) {
+                    var field = _a[_i];
+                    if (typeof field === 'object' && field.key === key) {
+                        return field.title;
+                    }
+                }
+            }
+            return key;
+        };
+
+        return TableGenerator
+    }());
+
+    var TableTextGenerator = (function () {
+
+        function TableTextGenerator(data, fields) {
+            this.data = data;
+            this.fields = fields;
+        }
+
+        TableTextGenerator.prototype.getTable = function (options) {
+            var node = document.createElement('pre');
+            if (options && options.className) node.className = options.className;
+            node.appendChild(this.getHead());
+            node.appendChild(this.getBody());
+            return node;
+        };
+
+        TableTextGenerator.prototype.getSliceText = function (text, size) {
+            if (text === undefined) {
+                text = '';
+            }
+            text = String(text);
+            if (size) {
+                text = text.slice(0, size);
+                if (text.length < size + 1) {
+                    var arr = [];
+                    for (var i = 0; i < size + 1 - text.length; i++) {
+                        arr.push(' ');
+                    }
+                    text += arr.join('');
+                }
+            } else {
+                text += '\t';
+            }
+            return text;
+        };
+
+        TableTextGenerator.prototype.getHead = function () {
+            var text = '';
+            for (var _i = 0, _a = this.headers(); _i < _a.length; _i++) {
+                var key = _a[_i];
+                var h = this.getHeaderObj(key);
+                var title = h && h.title;
+                var size = h && h.size;
+                if (size) {
+                    text += this.getSliceText(title, size);
+                } else {
+                    text += title;
+                }
+            }
+            text += '\n';
+            var blockU = document.createElement('u');
+            var blockB = document.createElement('b');
+            blockB.appendChild(document.createTextNode(text));
+            blockU.appendChild(blockB);
+            return blockU;
+        };
+
+        TableTextGenerator.prototype.getBody = function () {
+            var text = '';
+            for (var _b = 0, _c = this.data; _b < _c.length; _b++) {
+                var obj = _c[_b];
+                if (typeof obj === 'string') {
+                    text += obj;
+                } else {
+                    for (var _i = 0, _a = this.headers(); _i < _a.length; _i++) {
+                        var key = _a[_i];
+                        var h = this.getHeaderObj(key);
+                        var size = h && h.size;
+                        if (size) {
+                            text += this.getSliceText(obj[key], size);
+                        } else {
+                            text += obj[key];
+                        }
+                    }
+                }
+                text += '\n';
+            }
+            return document.createTextNode(text);
+        };
+
+        TableTextGenerator.prototype.headers = function () {
+            if (this._headers) {
+                return this._headers
+            }
+            if (!this.fields) {
+                var headers = {};
+                for (var _i = 0, _a = this.data; _i < _a.length; _i++) {
+                    var obj = _a[_i];
+                    for (var key in obj) {
+                        headers[key] = true;
+                    }
+                }
+                this._headers = Object.keys(headers)
+            } else if (this.fields instanceof Array) {
+                this._headers = [];
+                for (var _i = 0, _a = this.fields; _i < _a.length; _i++) {
+                    var field = _a[_i];
+                    if (typeof field === 'string') {
+                        this._headers.push(field);
+                    }
+                    else if (field.active !== false) {
+                        this._headers.push(field.key);
+                    }
+                }
+            }
+            return this._headers;
+        };
+
+        TableTextGenerator.prototype.getHeaderName = function (key) {
+            if (this.fields && this.fields instanceof Array) {
+                for (var _i = 0, _a = this.fields; _i < _a.length; _i++) {
+                    var field = _a[_i];
+                    if (typeof field === 'object' && field.key === key) {
+                        return field.title;
+                    }
+                }
+            }
+            return key;
+        };
+
+        TableTextGenerator.prototype.getHeaderObj = function (key) {
+            if (this.fields && this.fields instanceof Array) {
+                for (var _i = 0, _a = this.fields; _i < _a.length; _i++) {
+                    var field = _a[_i];
+                    if (typeof field === 'object' && field.key === key) {
+                        return field;
+                    }
+                }
+            }
+        };
+
+        return TableTextGenerator
+    }());
+
+    var SettingsGenerator = (function () {
+        var Block = function () {
+            var el = document.createElement('div');
+            el.className = 'sportorg-settings';
+            return el
+        };
+        var Row = function () {
+            var el = document.createElement('div');
+            el.className = 'sportorg-settings-row';
+            return el
+        };
+
+        function SettingsGenerator(settings) {
+            this.settings = settings;
+            this.isShow = true;
+        }
+
+        SettingsGenerator.prototype.show = function () {
+            var block = Block();
+            this.el = block;
+            for (var _i = 0, _a = this.settings; _i < _a.length; _i++) {
+                var setting = _a[_i];
+                var row = Row();
+                row.className = row.className + ' ' + 'sportorg-settings-hidden';
+                row.appendChild(this.getElBySetting(setting));
+                block.appendChild(row);
+            }
+            var btn = Row();
+            btn.appendChild(this.getHiddenButton());
+            block.appendChild(btn);
+            document.body.appendChild(block);
+            this.toggleHidden();
+        };
+        SettingsGenerator.prototype.getElBySetting = function (setting) {
+            if (typeof setting.value === 'boolean') {
+                var i = document.createElement('input');
+                i.type = 'checkbox';
+                if (setting.value) {
+                    i.checked = true;
+                }
+                if (setting.change) {
+                    i.onchange = function () {
+                        if (i.checked !== setting.value) {
+                            setting.change(i.checked);
+                            setting.value = i.checked;
+                        }
+                    }
+                }
+                var label = document.createElement('label');
+                label.appendChild(i);
+                label.appendChild(document.createTextNode(setting.title));
+                return label
+            } else if (setting.value instanceof Array) {
+                var s = document.createElement('select');
+                for (var _i = 0, _a = setting.value; _i < _a.length; _i++) {
+                    var obj = _a[_i];
+                    s.appendChild(new Option(obj.text, obj.value));
+                }
+                if (setting.change) {
+                    s.onchange = function () {
+                        var results = [];
+                        for (var _i = 0, _a = s.selectedOptions; _i < _a.length; _i++) {
+                            var item = _a[_i];
+                            results.push(item.value);
+                        }
+                        setting.change(results);
+                    };
+                }
+                var label = document.createElement('label');
+                label.appendChild(document.createTextNode(setting.title));
+                label.appendChild(s);
+                return label
+            }
+        };
+        SettingsGenerator.prototype.toggleHidden = function () {
+            var els = document.getElementsByClassName('sportorg-settings-hidden');
+            for (var _i = 0, els_ = els; _i < els_.length; _i++) {
+                var el = els_[_i];
+                if (this.isShow) {
+                    el.style.display = 'none';
+                    if (this.el) {
+                        this.el.style.opacity = '.3';
+                    }
+                }
+                else {
+                    el.style.display = 'block';
+                    if (this.el) {
+                        this.el.style.opacity = '1';
+                    }
+                }
+            }
+            this.isShow = !this.isShow;
+        };
+        SettingsGenerator.prototype.getHiddenButton = function () {
+            var el = document.createElement('button');
+            el.appendChild(document.createTextNode('SETTINGS'));
+            var _this = this;
+            el.onclick = function (ev) { _this.toggleHidden() };
+            return el;
+        };
+        return SettingsGenerator;
+    }());
+
+    function toHHMMSS(value) {
+        if (value === 0) {
+            return '00:00:00'
+        }
+        if (!value) return '';
+        value /= 1000;
+        var hours = Math.floor(value / 3600);
+        value %= 3600;
+        var minutes = Math.floor(value / 60);
+        var seconds = ~~(value % 60);
+
+        var date = new Date(2000, 0, 1, hours, minutes, seconds);
+
+        var with0 = function (dd) {
+            return (dd < 10 ? '0' + dd : dd) + '';
+        };
+
+        return with0(date.getHours()) + ':' + with0(date.getMinutes()) + ':' + with0(date.getSeconds());
+    }
+
+    function getById(list, id) {
+        if (id) {
+            for (var _i = 0, list_ = list; _i < list_.length; _i++) {
+                var obj = list_[_i];
+                if (obj.id === id) {
+                    return obj;
+                }
+            }
+        }
+        return null;
+    }
+
+    function racePreparation(race) {
+        for (var _i = 0, _a = race.persons; _i < _a.length; _i++) {
+            var obj = _a[_i];
+            obj.organization = getById(race.organizations, obj.organization_id);
+            obj.group = getById(race.groups, obj.group_id);
+        }
+        for (var _b = 0, _c = race.results; _b < _c.length; _b++) {
+            var obj = _c[_b];
+            obj.status = obj.status === 16 ? 1 : obj.status;
+            obj.person = getById(race.persons, obj.person_id);
+        }
+        for (var _d = 0, _e = race.groups; _d < _e.length; _d++) {
+            var obj = _e[_d];
+            obj.course = getById(race.courses, obj.course_id);
+        }
+        for (var _f = 0, _g = ['groups', 'courses', 'organizations']; _f < _g.length; _f++) {
+            var itemName = _g[_f];
+            race[itemName].sort(function (a, b) {
+                if (a.name.toUpperCase() < b.name.toUpperCase())
+                    return -1;
+                if (a.name.toUpperCase() > b.name.toUpperCase())
+                    return 1;
+                return 0;
+            });
+        }
+        return race;
+    }
+
+    function getGroupsBlockElement(race) {
+        var groupBlock = document.createElement('div');
+        groupBlock.className = 'no-print';
+        for (var _i = 0, _a = race.groups; _i < _a.length; _i++) {
+            var group = _a[_i];
+            var a = document.createElement('a');
+            a.href = '#' + group.name;
+            a.appendChild(document.createTextNode(group.name + ' '));
+            groupBlock.appendChild(a);
+        }
+        return groupBlock;
+    }
+
+    function dateFormat(date) {
+        date = date ? new Date(date) : new Date();
+		return date.getDate().toString().padStart(2,'0')  + '.' + (date.getMonth() + 1).toString().padStart(2,'0') + '.' + date.getFullYear();
+    }
+
+    var Qualification = {
+        '': 'б/р',
+        0: 'б/р',
+        3: 'IIIю',
+        2: 'IIю',
+        1: 'Iю',
+        6: 'III',
+        5: 'II',
+        4: 'I',
+        7: 'КМС',
+        8: 'МС',
+        9: 'МСМК'
+    };
+
+    var STATUS_PRIORITY = [8, 4, 3, 5, 13];
+
+    function guid() {
+        function s4() {
+            return Math.floor((1 + Math.random()) * 0x10000)
+                .toString(16)
+                .substring(1);
+        }
+        return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+    }
+</script>
+
+</head>
+<body>
+<div id="content">
+<div class="text-center">
+    <h3>
+Ultralong <br>19.11.2023 </h3>
+    <h2>Proces Verbal privind rezultatele competiției</h2>
+</div>
+<div id="results-tables"></div>
+<div>
+    <table class="empty-table">
+        <tr>
+            <td><b>Arbitru principal:</b></td>
+            <td width="150px"></td>
+            <td><b></b></td>
+        </tr>
+        <tr>
+            <td><b>Șef servicii secretariat:</b></td>
+            <td width="150px"></td>
+            <td><b></b></td>
+        </tr>
+    </table>
+</div>
+<script>
+    var race = {
+    "courses": [
+    {
+        "bib": 0,
+        "climb": 0,
+        "controls": [],
+        "corridor": 0,
+        "id": "f92d4fdf-3fc8-4bde-9284-4800365109ac",
+        "length": 7100,
+        "name": "M Mediu",
+        "object": "Course"
+    },
+    {
+        "bib": 0,
+        "climb": 0,
+        "controls": [],
+        "corridor": 0,
+        "id": "caad336a-f869-4460-8e6b-8f6c4a885d8c",
+        "length": 5000,
+        "name": "W Mediu",
+        "object": "Course"
+    }],
+    "data":
+    {
+        "chief_referee": "",
+        "description": "\nUltralong",
+        "end_datetime": null,
+        "location": "",
+        "race_type": 0,
+        "relay_leg_count": 3,
+        "secretary": "",
+        "start_datetime": "2023-11-19 00:00:00",
+        "title": "Maratonul Nemuritorilor",
+        "url": ""
+    },
+    "groups": [
+        {
+            "__type": null,
+            "count_finished": 2,
+            "count_person": 2,
+            "course_id": "caad336a-f869-4460-8e6b-8f6c4a885d8c",
+            "first_number": 0,
+            "id": "77032c18-9dba-4b3f-a976-a2047eddb8ad",
+            "is_any_course": false,
+            "long_name": "W Middle",
+            "max_age": 0,
+            "max_time": 0,
+            "max_year": 0,
+            "min_age": 0,
+            "min_year": 0,
+            "name": "W Middle",
+            "object": "Group",
+            "order_in_corridor": 0,
+            "price": 50,
+            "ranking":
+            {
+                "is_active": true,
+                "rank": [
+                {
+                    "is_active": false,
+                    "max_place": "2",
+                    "max_time": null,
+                    "min_scores": null,
+                    "percent": 0,
+                    "qual": 8,
+                    "use_scores": false
+                },
+                {
+                    "is_active": false,
+                    "max_place": "6",
+                    "max_time": null,
+                    "min_scores": null,
+                    "percent": 0,
+                    "qual": 7,
+                    "use_scores": false
+                },
+                {
+                    "is_active": true,
+                    "max_place": "0",
+                    "max_time": null,
+                    "min_scores": null,
+                    "percent": 0,
+                    "qual": 4,
+                    "use_scores": true
+                },
+                {
+                    "is_active": true,
+                    "max_place": "0",
+                    "max_time": null,
+                    "min_scores": null,
+                    "percent": 0,
+                    "qual": 5,
+                    "use_scores": true
+                },
+                {
+                    "is_active": true,
+                    "max_place": "0",
+                    "max_time": null,
+                    "min_scores": null,
+                    "percent": 0,
+                    "qual": 6,
+                    "use_scores": true
+                },
+                {
+                    "is_active": false,
+                    "max_place": "0",
+                    "max_time": null,
+                    "min_scores": null,
+                    "percent": 0,
+                    "qual": 1,
+                    "use_scores": true
+                },
+                {
+                    "is_active": false,
+                    "max_place": "0",
+                    "max_time": null,
+                    "min_scores": null,
+                    "percent": 0,
+                    "qual": 2,
+                    "use_scores": true
+                },
+                {
+                    "is_active": false,
+                    "max_place": "0",
+                    "max_time": null,
+                    "min_scores": null,
+                    "percent": 0,
+                    "qual": 3,
+                    "use_scores": true
+                }],
+                "rank_scores": -1
+            },
+            "relay_legs": 0,
+            "sex": 0,
+            "start_corridor": 0,
+            "start_interval": 180000
+        },
+
+        {
+            "__type": null,
+            "count_finished": 10,
+            "count_person": 15,
+            "course_id": "f92d4fdf-3fc8-4bde-9284-4800365109ac",
+            "first_number": 0,
+            "id": "4a4ee714-20ef-402b-a3c7-fede1a0319ca",
+            "is_any_course": false,
+            "long_name": "M Middle",
+            "max_age": 0,
+            "max_time": 0,
+            "max_year": 0,
+            "min_age": 0,
+            "min_year": 0,
+            "name": "M Middle",
+            "object": "Group",
+            "order_in_corridor": 0,
+            "price": 50,
+            "ranking":
+            {
+                "is_active": true,
+                "rank": [
+                {
+                    "is_active": false,
+                    "max_place": "2",
+                    "max_time": null,
+                    "min_scores": null,
+                    "percent": 0,
+                    "qual": 8,
+                    "use_scores": false
+                },
+                {
+                    "is_active": false,
+                    "max_place": "6",
+                    "max_time": null,
+                    "min_scores": null,
+                    "percent": 0,
+                    "qual": 7,
+                    "use_scores": false
+                },
+                {
+                    "is_active": true,
+                    "max_place": "0",
+                    "max_time": 4625830,
+                    "min_scores": null,
+                    "percent": 121,
+                    "qual": 4,
+                    "use_scores": true
+                },
+                {
+                    "is_active": true,
+                    "max_place": "0",
+                    "max_time": 5199280,
+                    "min_scores": null,
+                    "percent": 136,
+                    "qual": 5,
+                    "use_scores": true
+                },
+                {
+                    "is_active": true,
+                    "max_place": "0",
+                    "max_time": 5887420,
+                    "min_scores": null,
+                    "percent": 154,
+                    "qual": 6,
+                    "use_scores": true
+                },
+                {
+                    "is_active": false,
+                    "max_place": "0",
+                    "max_time": null,
+                    "min_scores": null,
+                    "percent": 0,
+                    "qual": 1,
+                    "use_scores": true
+                },
+                {
+                    "is_active": false,
+                    "max_place": "0",
+                    "max_time": null,
+                    "min_scores": null,
+                    "percent": 0,
+                    "qual": 2,
+                    "use_scores": true
+                },
+                {
+                    "is_active": false,
+                    "max_place": "0",
+                    "max_time": null,
+                    "min_scores": null,
+                    "percent": 0,
+                    "qual": 3,
+                    "use_scores": true
+                }],
+                "rank_scores": 435.0
+            },
+            "relay_legs": 0,
+            "sex": 0,
+            "start_corridor": 0,
+            "start_interval": 180000
+        }
+    ],
+    "id": "54b8c19b-5de0-4e2b-a028-f358d3e88e85",
+    "object": "Race",
+    "organizations": [
+        {
+            "code": "",
+            "contact": "Фомичев Анатолий",
+            "count_person": 0,
+            "country": "",
+            "id": "1885cc77-2f59-4efe-b82e-b7767dbcad30",
+            "name": "CS Tiras-Orient, Молдова",
+            "object": "Organization",
+            "region": "",
+            "sex": 0
+        },
+        {
+            "code": "",
+            "contact": "Deliu Ecaterina",
+            "count_person": 0,
+            "country": "",
+            "id": "fff7261f-056b-435b-99b7-913d2382dfa1",
+            "name": "CMTT Chișinău, Молдова",
+            "object": "Organization",
+            "region": "",
+            "sex": 0
+        },
+        {
+            "code": "",
+            "contact": "Cerescu Pavel",
+            "count_person": 0,
+            "country": "",
+            "id": "d706b56a-154b-47e1-95f2-36fab3e766b8",
+            "name": "Run Kompass, Молдова",
+            "object": "Organization",
+            "region": "",
+            "sex": 0
+        },
+        {
+            "code": "",
+            "contact": "Скляров Александр",
+            "count_person": 0,
+            "country": "",
+            "id": "f2346aa0-84e3-4a54-a12b-832933b6f3ed",
+            "name": "Молдова, лично",
+            "object": "Organization",
+            "region": "",
+            "sex": 0
+        },
+        {
+            "code": "",
+            "contact": "Davîdov Iaroslav",
+            "count_person": 0,
+            "country": "",
+            "id": "1a1f6a1b-d2c4-4e99-b72e-e7960e659881",
+            "name": "ТСДЮШОР гр. и ст, Молдова",
+            "object": "Organization",
+            "region": "",
+            "sex": 0
+        }
+
+    ],
+    "persons": [
+    {
+        "bib": 151,
+        "birth_date": "1966-01-01",
+        "card_number": 1300226,
+        "comment": "",
+        "group_id": "77032c18-9dba-4b3f-a976-a2047eddb8ad",
+        "id": "013dd8e8-5ab0-42ac-89c7-cd72e4e7409a",
+        "is_out_of_competition": false,
+        "is_paid": false,
+        "is_personal": false,
+        "is_rented_card": false,
+        "name": "Olga",
+        "national_code": "0",
+        "object": "Person",
+        "organization_id": "1885cc77-2f59-4efe-b82e-b7767dbcad30",
+        "qual": 4,
+        "sex": 0,
+        "start_group": 0,
+        "start_time": 42720000,
+        "surname": "Cecan",
+        "world_code": "1088982-0001",
+        "year": 1966
+    },
+    {
+        "bib": 143,
+        "birth_date": "1962-01-01",
+        "card_number": 1000408,
+        "comment": "",
+        "group_id": "77032c18-9dba-4b3f-a976-a2047eddb8ad",
+        "id": "31921d9d-70cd-4a21-8ffd-19640f3e013c",
+        "is_out_of_competition": false,
+        "is_paid": false,
+        "is_personal": false,
+        "is_rented_card": false,
+        "name": "Elena",
+        "national_code": "0",
+        "object": "Person",
+        "organization_id": "fff7261f-056b-435b-99b7-913d2382dfa1",
+        "qual": 5,
+        "sex": 0,
+        "start_group": 0,
+        "start_time": 42660000,
+        "surname": "Marusceac",
+        "world_code": "1090073-0006",
+        "year": 1962
+    },
+    {
+        "bib": 162,
+        "birth_date": "1993-01-01",
+        "card_number": 8639466,
+        "comment": "",
+        "group_id": "4a4ee714-20ef-402b-a3c7-fede1a0319ca",
+        "id": "ba5a6e92-121d-4795-9c46-b99932f6984e",
+        "is_out_of_competition": false,
+        "is_paid": false,
+        "is_personal": false,
+        "is_rented_card": false,
+        "name": "Sergiu",
+        "national_code": "0",
+        "object": "Person",
+        "organization_id": "f2346aa0-84e3-4a54-a12b-832933b6f3ed",
+        "qual": 7,
+        "sex": 0,
+        "start_group": 0,
+        "start_time": 44460000,
+        "surname": "Fala",
+        "world_code": "1089556-0001",
+        "year": 1993
+    },
+    {
+        "bib": 159,
+        "birth_date": "1963-01-01",
+        "card_number": 8477990,
+        "comment": "",
+        "group_id": "4a4ee714-20ef-402b-a3c7-fede1a0319ca",
+        "id": "6e185fc7-96ef-4e7b-813f-e69bafe46f28",
+        "is_out_of_competition": false,
+        "is_paid": false,
+        "is_personal": false,
+        "is_rented_card": false,
+        "name": "Pavel",
+        "national_code": "0",
+        "object": "Person",
+        "organization_id": "d706b56a-154b-47e1-95f2-36fab3e766b8",
+        "qual": 7,
+        "sex": 0,
+        "start_group": 0,
+        "start_time": 46560000,
+        "surname": "Cerescu",
+        "world_code": "1083374-0001",
+        "year": 1963
+    },
+    {
+        "bib": 169,
+        "birth_date": "2007-01-01",
+        "card_number": 8032707,
+        "comment": "",
+        "group_id": "4a4ee714-20ef-402b-a3c7-fede1a0319ca",
+        "id": "d066e3a9-69f0-47d2-9271-a906bd6183e0",
+        "is_out_of_competition": false,
+        "is_paid": false,
+        "is_personal": false,
+        "is_rented_card": true,
+        "name": "Sveatoslav",
+        "national_code": "0",
+        "object": "Person",
+        "organization_id": "1a1f6a1b-d2c4-4e99-b72e-e7960e659881",
+        "qual": 4,
+        "sex": 0,
+        "start_group": 0,
+        "start_time": 43380000,
+        "surname": "Moțnîi",
+        "world_code": "1081205-0001",
+        "year": 2007
+    }],
+    "results": [
+    {
+        "assigned_rank": 0,
+        "bib": 0,
+        "can_win_count": 0,
+        "card_number": 1000408,
+        "created_at": 1700393408.524111,
+        "credit_time": null,
+        "days": 0,
+        "diff": 888000,
+        "diff_scores": 0,
+        "final_result_time": "01:34:03",
+        "finish_msec": 48303003,
+        "finish_time": 48303003,
+        "id": "fe0ed96e-d6f7-444e-8ab6-b36affae9f13",
+        "object": "ResultSportident",
+        "order": 0,
+        "penalty_laps": 0,
+        "penalty_time": null,
+        "person_id": "31921d9d-70cd-4a21-8ffd-19640f3e013c",
+        "place": 2,
+        "result": "01:34:03",
+        "result_msec": 5643000,
+        "result_relay": "01:34:03",
+        "result_relay_msec": 5643000,
+        "scores": 0,
+        "scores_rogain": 0,
+        "speed": "18:48/km",
+        "splits": [],
+        "start_msec": 42660000,
+        "start_time": null,
+        "status": 1,
+        "status_comment": "",
+        "system_type": 2
+    },
+    {
+        "assigned_rank": 0,
+        "bib": 0,
+        "can_win_count": 0,
+        "card_number": 1300226,
+        "created_at": 1700392570.9327204,
+        "credit_time": null,
+        "days": 0,
+        "diff": 0,
+        "diff_scores": 0,
+        "final_result_time": "01:19:15",
+        "finish_msec": 47475003,
+        "finish_time": 47475003,
+        "id": "71f5d5b5-b43e-49f5-afee-bd93de061d44",
+        "object": "ResultSportident",
+        "order": 0,
+        "penalty_laps": 0,
+        "penalty_time": null,
+        "person_id": "013dd8e8-5ab0-42ac-89c7-cd72e4e7409a",
+        "place": 1,
+        "result": "01:19:15",
+        "result_msec": 4755000,
+        "result_relay": "01:19:15",
+        "result_relay_msec": 4755000,
+        "scores": 0,
+        "scores_rogain": 0,
+        "speed": "15:51/km",
+        "splits": [],
+        "start_msec": 42720000,
+        "start_time": null,
+        "status": 1,
+        "status_comment": "",
+        "system_type": 2
+    },
+    {
+        "assigned_rank": 4,
+        "bib": 0,
+        "can_win_count": 0,
+        "card_number": 8639466,
+        "created_at": 1700393363.2126095,
+        "credit_time": null,
+        "days": 0,
+        "diff": 0,
+        "diff_scores": 0,
+        "final_result_time": "01:03:43",
+        "finish_msec": 48283003,
+        "finish_time": 48283003,
+        "id": "461cd98f-f80d-4746-a2ca-366790e4b761",
+        "object": "ResultSportident",
+        "order": 0,
+        "penalty_laps": 0,
+        "penalty_time": null,
+        "person_id": "ba5a6e92-121d-4795-9c46-b99932f6984e",
+        "place": 1,
+        "result": "01:03:43",
+        "result_msec": 3823000,
+        "result_relay": "01:03:43",
+        "result_relay_msec": 3823000,
+        "scores": 0,
+        "scores_rogain": 0,
+        "speed": "08:58/km",
+        "splits": [],
+        "start_msec": 44460000,
+        "start_time": null,
+        "status": 1,
+        "status_comment": "",
+        "system_type": 2
+    },
+    {
+        "assigned_rank": 5,
+        "bib": 0,
+        "can_win_count": 0,
+        "card_number": 8477990,
+        "created_at": 1700396268.0695744,
+        "credit_time": null,
+        "days": 0,
+        "diff": 974000,
+        "diff_scores": 0,
+        "final_result_time": "01:19:57",
+        "finish_msec": 51357003,
+        "finish_time": 51357003,
+        "id": "08aeff97-f5ea-4831-870b-34ccf992e231",
+        "object": "ResultSportident",
+        "order": 0,
+        "penalty_laps": 0,
+        "penalty_time": null,
+        "person_id": "6e185fc7-96ef-4e7b-813f-e69bafe46f28",
+        "place": 2,
+        "result": "01:19:57",
+        "result_msec": 4797000,
+        "result_relay": "01:19:57",
+        "result_relay_msec": 4797000,
+        "scores": 0,
+        "scores_rogain": 0,
+        "speed": "11:15/km",
+        "splits": [],
+        "start_msec": 46560000,
+        "start_time": null,
+        "status": 1,
+        "status_comment": "",
+        "system_type": 2
+    },
+    {
+        "assigned_rank": 5,
+        "bib": 0,
+        "can_win_count": 6,
+        "card_number": 8032707,
+        "created_at": 1700393082.2639494,
+        "credit_time": null,
+        "days": 0,
+        "diff": 976000,
+        "diff_scores": 0,
+        "final_result_time": "13:39:59",
+        "finish_msec": 48179003,
+        "finish_time": 48179003,
+        "id": "fd6a1b64-70d5-48a6-8528-aa281f88fb30",
+        "object": "ResultSportident",
+        "order": 0,
+        "penalty_laps": 0,
+        "penalty_time": null,
+        "person_id": "d066e3a9-69f0-47d2-9271-a906bd6183e0",
+        "place": 3,
+        "result": "01:19:59",
+        "result_msec": 4799000,
+        "result_relay": "01:19:59",
+        "result_relay_msec": 4799000,
+        "scores": 0,
+        "scores_rogain": 0,
+        "speed": "11:15/km",
+        "splits": [],
+        "start_msec": 43380000,
+        "start_time": null,
+        "status": 1,
+        "status_comment": "",
+        "system_type": 2
+    }],
+    "settings":
+    {
+        "ignore_readout_before_start": false,
+        "is_corridor_minute_number": false,
+        "is_corridor_order_number": false,
+        "is_fixed_number_interval": true,
+        "is_fixed_start_interval": true,
+        "is_mix_groups": false,
+        "is_split_regions": false,
+        "is_split_start_groups": false,
+        "is_split_teams": true,
+        "is_start_preparation_draw": true,
+        "is_start_preparation_numbers": false,
+        "is_start_preparation_reserve": false,
+        "is_start_preparation_time": true,
+        "live_enabled": false,
+        "marked_route_dont_dsq": false,
+        "marked_route_if_counting_lap": true,
+        "marked_route_if_station_check": false,
+        "marked_route_max_penalty_by_cp": false,
+        "marked_route_mode": "off",
+        "marked_route_penalty_time": 60000,
+        "marked_route_station_code": 80,
+        "numbers_first": 100,
+        "numbers_interval": 1,
+        "print_margin_bottom": 5.0,
+        "print_margin_left": 5.0,
+        "print_margin_right": 5.0,
+        "print_margin_top": 5.0,
+        "readout_duplicate_timeout": 15000,
+        "reserve_count": 1,
+        "reserve_percent": 0,
+        "reserve_prefix": "_Резерв",
+        "result_processing_fixed_score_value": 1,
+        "result_processing_mode": "time",
+        "result_processing_score_mode": "rogain",
+        "result_processing_scores_allow_duplicates": false,
+        "result_processing_scores_minute_penalty": 1,
+        "scores_array": "40,37,35,33,32,31,30,29,28,27,26,25,24,23,22,21,20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1",
+        "scores_formula": "200 - 100 * time / leader",
+        "scores_mode": "off",
+        "split_printout": true,
+        "split_template": "Стандартный шаблон",
+        "start_first_time": 1080000,
+        "start_interval": 180000,
+        "start_one_minute_qty": 1,
+        "system_assign_chip_reading": "off",
+        "system_assignment_mode": false,
+        "system_duplicate_chip_processing": "several_results",
+        "system_finish_cp_number": 90,
+        "system_finish_source": "station",
+        "system_missed_finish": "zero",
+        "system_port": "",
+        "system_start_cp_number": 31,
+        "system_start_source": "protocol",
+        "time_accuracy": 0,
+        "time_format_24": "less24",
+        "time_rounding": "math"
+    }
+};
+    var selected = {"courses": [], "groups": [], "organizations": [], "persons": [], "results": []};
+    racePreparation(race);
+
+    function getResultsByGroup(group, count) {
+        count = +count || 0;
+        var isRelay = group.__type ? group.__type === 3 : race.data.race_type === 3;
+        var results = [];
+        for (var _i = 0, _a = race.results; _i < _a.length; _i++) {
+            var result = _a[_i];
+            if (result.status !== 13 && result.person && result.person.group && result.person.group.id === group.id && (count ? result.place <= count && result.place > 0 : 1)) {
+                var r = {
+                    index: 0,
+                    name: (result.person.surname + ' ' + result.person.name).slice(0, MAX_PERSON_NAME),
+                    org: (result.person.organization && String(result.person.organization.name).slice(0, MAX_ORG_NAME)) || '',
+                    qual: Qualification[result.person.qual],
+                    bib: result.person.bib,
+                    year: result.person.birth_date ? (new Date(result.person.birth_date)).getFullYear() : '',
+                    penalty_time: toHHMMSS(result.penalty_time),
+                    penalty_laps: result.penalty_laps,
+                    result: result.result,
+                    result_relay: result.result_relay,
+                    result_msec: result.result_msec,
+                    diff: race.settings.result_processing_mode === 'scores' ? result.diff_scores : toHHMMSS(result.diff),
+                    place: result.place,
+                    status: result.status,
+                    scores: result.scores,
+                    place_show: result.person.is_out_of_competition ? 'в/к' : result.place === 0 ? '' : result.place === -1 ? '' : result.place,
+                    is_out_of_competition: result.person.is_out_of_competition,
+                    speed: result.speed,
+                    speed_kmh:  group.course ? (group.course.length * 3600 / result.result_msec).toFixed(1) + 'км/ч' : '',
+                    data: result,
+                    order: result.order
+                };
+                if (result.status !== 1) {
+                    r.diff = '';
+                    r.place_show = '';
+                    r.speed = '';
+                    r.speed_kmh = '';
+                    r.scores = '';
+                    r.penalty_time = '';
+                    r.penalty_laps = '';
+                }
+
+                // SPLITS
+                var control_index = 0;
+                if (result.splits) {
+                    var getTrBlock = function (t, p) {
+                        var tr = document.createElement('tr');
+                        var td1 = document.createElement('td');
+                        td1.className = 'result-' + p;
+                        td1.appendChild(document.createTextNode(t));
+                        tr.appendChild(td1);
+                        return tr;
+                    };
+                    var lastSplit = 0;
+                    for (var _b = 0, _c = result.splits; _b < _c.length; _b++) {
+                        var split = _c[_b];
+                        if (split.is_correct) {
+
+                            var tbl = document.createElement('table');
+                            tbl.className = 'table-split';
+                            tbl.appendChild(getTrBlock(toHHMMSS(split.leg_time) + ' (' + split.leg_place + ')', split.leg_place));
+                            tbl.appendChild(getTrBlock(toHHMMSS(split.relative_time) + ' (' + split.relative_place + ')', split.relative_place));
+                            r[control_index + '_' + split.code] = tbl;
+                            control_index++;
+                            lastSplit = split.relative_time;
+                        }
+                    }
+
+                    var finishMsec = r.result_msec - lastSplit;
+
+                    if (r.status === 1 && finishMsec > 0) {
+                        var tblF = document.createElement('table');
+                        tblF.className = 'table-split';
+                        tblF.appendChild(getTrBlock(toHHMMSS(finishMsec), 0));
+                        var place_str = r.place > 0 ? r.place : 'в/к';
+                        tblF.appendChild(getTrBlock(toHHMMSS(r.result_msec) + ' (' + place_str + ')', r.place));
+                        r.finish_split = tblF;
+                    }
+                }
+
+                var getMultipleTrBlock = function () {
+                    var tr = document.createElement('tr');
+                    for (var i = 0; i < arguments.length; i++) {
+                        var td1 = document.createElement('td');
+                        td1.appendChild(document.createTextNode(arguments[i]));
+                        tr.appendChild(td1);
+                    }
+                    return tr;
+                };
+
+                // ALL PUNCHES
+                var splitTable = document.createElement('table');
+                splitTable.className = 'table-split';
+                var splitTr = document.createElement('tr');
+                splitTable.appendChild(splitTr);
+                var prevTime = result.start_msec;
+                for (var _b = 0, _c = result.splits; _b < _c.length; _b++) {
+                    var split = _c[_b];
+                    var tbl = document.createElement('table');
+                    tbl.className = 'table-split';
+                    tbl.appendChild(getMultipleTrBlock('( ' + split.code + ' )', toHHMMSS(split.time - prevTime)));
+                    tbl.appendChild(getMultipleTrBlock('', toHHMMSS(split.time - result.start_msec)));
+                    var splitTd = document.createElement('td');
+                    splitTd.appendChild(tbl);
+                    splitTr.appendChild(splitTd);
+                    prevTime = split.time;
+                }
+                r.all_splits = splitTable;
+
+                results.push(r);
+            }
+        }
+        results.sort(function (a, b) {
+            if (isRelay) {
+
+                if (a.order === b.order) {
+                    return ~~(a.bib / 1000) - ~~(b.bib / 1000)
+                }
+                return a.order - b.order
+
+            } else {
+                if (a.status !== 1 && b.status !== 1) {
+                    return STATUS_PRIORITY.indexOf(a.status) - STATUS_PRIORITY.indexOf(b.status);
+                }
+                if (a.status !== 1) {
+                    return 1
+                }
+                if (b.status !== 1) {
+                    return -1
+                }
+                if (a.is_out_of_competition || b.is_out_of_competition) {
+                    if (race.settings.result_processing_mode === 'scores' && a.scores !== b.scores) {
+                        return a.scores - b.scores;
+                    }
+                    return a.result_msec - b.result_msec;
+                }
+                if (a.place < 1) {
+                    return 1
+                }
+                if (b.place < 1) {
+                    return -1
+                }
+                return a.place - b.place
+            }
+        });
+        var index = 0;
+        if (isRelay) {
+            var prevBib = 0;
+            var resultsList = results.slice();
+            results = [];
+            for (var _i = 0, resultsList_ = resultsList; _i < resultsList_.length; _i++) {
+                var r = resultsList_[_i];
+                r.index = '';
+                if (r.bib % 1000 !== prevBib) {
+                    index++;
+                    results.push({index: index});
+                    prevBib = r.bib % 1000;
+                }
+                results.push(r);
+            }
+        } else {
+            results.forEach(function (elem) {
+                index++;
+                elem.index = index;
+            })
+        }
+        return results;
+    }
+	function getResultsByCourse(group, count) {
+		count = +count || 0;
+        var isRelay = group.__type ? group.__type === 3 : race.data.race_type === 3;
+        var results = [];
+        var splits_recalc_times = {};
+        var splits_recalc_times_total = {};
+        group.controls.forEach(function (control, index) {
+            splits_recalc_times[index + '_' + control.code] = [];
+            splits_recalc_times_total[index + '_' + control.code] = [];
+        });
+        for (var _i = 0, _a = race.results; _i < _a.length; _i++) {
+            var result = _a[_i];
+            if (result.status !== 13 && result.person && result.person.group && result.person.group.course && result.person.group.course.id === group.id) { //} && (count ? result.place <= count && result.place > 0 : 1)) {
+                var r = {
+                    index: 0,
+                    name: (result.person.surname + ' ' + result.person.name).slice(0, MAX_PERSON_NAME),
+                    org: (result.person.organization && String(result.person.organization.name).slice(0, MAX_ORG_NAME)) || '',
+                    qual: Qualification[result.person.qual],
+                    bib: result.person.bib,
+                    year: result.person.birth_date ? (new Date(result.person.birth_date)).getFullYear() : '',
+                    penalty_time: toHHMMSS(result.penalty_time),
+                    penalty_laps: result.penalty_laps,
+                    result: result.result,
+                    result_msec: result.result_msec,
+                    diff: race.settings.result_processing_mode === 'scores' ? result.diff_scores : toHHMMSS(result.diff),
+                    place: result.place,
+                    status: result.status,
+                    scores: result.scores,
+                    place_show: result.person.is_out_of_competition ? 'в/к' : result.place === 0 ? '' : result.place === -1 ? '' : result.place,
+                    is_out_of_competition: result.person.is_out_of_competition,
+                    speed: result.speed,
+                    speed_kmh:  (result.person.group.course.length * 3600 / result.result_msec).toFixed(1) + 'км/ч',
+					group: result.person.group.name,
+                    data: result
+                };
+                if (result.status !== 1) {
+                    r.diff = '';
+                    r.place_show = '';
+                    r.speed = '';
+                    r.speed_kmh = '';
+                    r.scores = '';
+                    r.penalty_time = '';
+                    r.penalty_laps = '';
+                }
+
+                // SPLITS
+                var control_index = 0;
+                if (result.splits) {
+                    for (var _b = 0, _c = result.splits; _b < _c.length; _b++) {
+                        var split = _c[_b];
+                        if (split.is_correct) {
+                            if ((control_index + '_' + split.code) in splits_recalc_times){
+                                splits_recalc_times[control_index + '_' + split.code].push(split.leg_time);
+                                splits_recalc_times_total[control_index + '_' + split.code].push(split.relative_time);
+                            }
+                            control_index++;
+                        }
+                    }
+                }
+
+                var getMultipleTrBlock = function () {
+                    var tr = document.createElement('tr');
+                    for (var i = 0; i < arguments.length; i++) {
+                        var td1 = document.createElement('td');
+                        td1.appendChild(document.createTextNode(arguments[i]));
+                        tr.appendChild(td1);
+                    }
+                    return tr;
+                };
+
+                // ALL PUNCHES
+                var splitTable = document.createElement('table');
+                splitTable.className = 'table-split';
+                var splitTr = document.createElement('tr');
+                splitTable.appendChild(splitTr);
+                var prevTime = result.start_msec;
+                for (var _b = 0, _c = result.splits; _b < _c.length; _b++) {
+                    var split = _c[_b];
+                    var tbl = document.createElement('table');
+                    tbl.className = 'table-split';
+                    tbl.appendChild(getMultipleTrBlock('( ' + split.code + ' )', toHHMMSS(split.time - prevTime)));
+                    tbl.appendChild(getMultipleTrBlock('', toHHMMSS(split.time - result.start_msec)));
+                    var splitTd = document.createElement('td');
+                    splitTd.appendChild(tbl);
+                    splitTr.appendChild(splitTd);
+                    prevTime = split.time;
+                }
+                r.all_splits = splitTable;
+
+                results.push(r);
+            }
+        }
+        results.sort(function (a, b) {
+            if (isRelay) {
+                if (a.order === b.order) {
+                    return ~~(a.bib / 1000) - ~~(b.bib / 1000)
+                }
+                return a.order - b.order
+            } else {
+                if (a.status !== 1 && b.status !== 1) {
+                    return STATUS_PRIORITY.indexOf(a.status) - STATUS_PRIORITY.indexOf(b.status);
+                }
+                if (a.status !== 1) {
+                    return 1
+                }
+                if (b.status !== 1) {
+                    return -1
+                }
+                if (a.is_out_of_competition || b.is_out_of_competition) {
+                    if (race.settings.result_processing_mode === 'scores' && a.scores !== b.scores) {
+                        return a.scores - b.scores;
+                    }
+                    return a.result_msec - b.result_msec;
+                }
+                if (a.place < 1) {
+                    return 1
+                }
+                if (b.place < 1) {
+                    return -1
+                }
+                return a.result_msec - b.result_msec;
+            }
+        });
+        var sort_splits_recalc_fnc = function(a,b){
+            return a-b;
+        }
+        group.controls.forEach(function (control, index) {
+            splits_recalc_times[index + '_' + control.code].sort(sort_splits_recalc_fnc);
+            splits_recalc_times_total[index + '_' + control.code].sort(sort_splits_recalc_fnc);
+        });
+        var index = 0;
+        if (isRelay) {
+            var prevBib = 0;
+            var resultsList = results.slice();
+            results = [];
+            for (var _i = 0, resultsList_ = resultsList; _i < resultsList_.length; _i++) {
+                var r = resultsList_[_i];
+                r.index = '';
+                if (r.bib % 1000 !== prevBib) {
+                    index++;
+                    results.push({index: index});
+                    prevBib = r.bib % 1000;
+                }
+                results.push(r);
+            }
+        } else {
+			var newplace = 1;
+			var doubleplace = -1;
+			var best_result_msec = results[0] ? results[0].result_msec : 0;
+			var last_result_msec = results[0] ? results[0].result_msec : 0;
+            var binary_search = function(arr,required){
+				if (!arr){
+					return 0;
+				}
+                var l = -1;
+                var r = arr.length-1;
+                while (r-l>1){
+                    var m = Math.floor((l+r)/2);
+                    if (arr[m]>=required){
+                        r = m;
+                    } else {
+                        l = m;
+                    }
+                }
+                if (arr[r]==required){
+                    return r+1;
+                }
+                return 0;
+            }
+            results.forEach(function (elem) {
+                index++;
+                elem.index = index;
+				if (!elem.data.person.is_out_of_competition && elem.place !== 0 && elem.place !== -1) {
+					if (last_result_msec < elem.result_msec){
+						newplace += 1 + doubleplace;
+						doubleplace = 0;
+						last_result_msec = elem.result_msec;
+					} else {
+						doubleplace++;
+					}
+					elem.diff = race.settings.result_processing_mode === 'scores' ? elem.diff_scores : toHHMMSS(elem.result_msec - best_result_msec);
+					elem.place = newplace;
+					elem.place_show = newplace;
+                }
+                var control_index = 0;
+                if (elem.data.splits) {
+                    var getTrBlock = function (t, p) {
+                        var tr = document.createElement('tr');
+                        var td1 = document.createElement('td');
+                        td1.className = 'result-' + p;
+                        td1.appendChild(document.createTextNode(t));
+                        tr.appendChild(td1);
+                        return tr;
+                    };
+                    var lastSplit = 0;
+                    for (var _b = 0, _c = elem.data.splits; _b < _c.length; _b++) {
+                        var split = _c[_b];
+                        if (split.is_correct) {
+                            var leg_place = binary_search(splits_recalc_times[control_index + '_' + split.code],split.leg_time);
+                            var relative_place = binary_search(splits_recalc_times_total[control_index + '_' + split.code],split.relative_time);
+                            if (leg_place>0 && relative_place>0){
+                                var tbl = document.createElement('table');
+                                tbl.className = 'table-split';
+                                tbl.appendChild(getTrBlock(toHHMMSS(split.leg_time) + ' (' + leg_place + ')', leg_place));
+                                tbl.appendChild(getTrBlock(toHHMMSS(split.relative_time) + ' (' + relative_place + ')', relative_place));
+                                elem[control_index + '_' + split.code] = tbl;
+                            }
+                            control_index++;
+                            lastSplit = split.relative_time;
+                        }
+                    }
+
+                    var finishMsec = elem.result_msec - lastSplit;
+
+                    if (elem.status === 1 && finishMsec > 0) {
+                        var tblF = document.createElement('table');
+                        tblF.className = 'table-split';
+                        tblF.appendChild(getTrBlock(toHHMMSS(finishMsec), 0));
+                        tblF.appendChild(getTrBlock(toHHMMSS(elem.result_msec) + ' (' + elem.place_show + ')', elem.place));
+                        elem.finish_split = tblF;
+                    }
+                }
+            });
+        }
+        return results;
+    }
+
+    function getRankingByGroup(group) {
+        var rankingBlock = document.createElement('span');
+        var ranking = group.ranking;
+        if (ranking && ranking.is_active && ranking.rank_scores > 0) {
+            var text = 'Rangul grupei (puncte): ' + ranking.rank_scores.toFixed(0);
+            rankingBlock.appendChild(document.createTextNode(text));
+
+            for (var _i = 0; _i < ranking.rank.length; _i++) {
+                var rank = ranking.rank[_i];
+                if (rank.is_active) {
+                    if (rank.max_place > 0) {
+                        var text = Qualification[rank.qual] + ' - pînă la locul ' + rank.max_place ;
+                        rankingBlock.appendChild(document.createElement("br"));
+                        rankingBlock.appendChild(document.createTextNode(text));
+                    }
+                    else {
+                        if (rank.min_scores && rank.min_scores > 0) {
+                            var text = Qualification[rank.qual] + ' - ' + rank.min_scores + ' puncte';
+                            if (rank.percent > 0) {
+                                text += ' (' + rank.percent + '%)';
+                            }
+                            rankingBlock.appendChild(document.createElement("br"));
+                            rankingBlock.appendChild(document.createTextNode(text));
+                        }
+                        else {
+                            if (rank.max_time > 0) {
+                                var text = Qualification[rank.qual] + ' - ' + toHHMMSS(rank.max_time);
+                                if (rank.percent > 0) {
+                                    text += ' (' + rank.percent + '%)';
+                                }
+                                rankingBlock.appendChild(document.createElement("br"));
+                                rankingBlock.appendChild(document.createTextNode(text));
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        else {
+            var text = 'Rangul nu a fost calculat';
+            rankingBlock.appendChild(document.createTextNode(text));
+        }
+
+        return rankingBlock;
+    }
+
+    var Fields = {
+        fields: [
+            {key: 'index', title: '№', size: 4},
+            {key: 'group', title: 'Grupa', size: 10, active: false},
+            {key: 'name', title: 'Nume Prenume', size: 30},
+            {key: 'org', title: 'Echipa', size: 20},
+            {key: 'year', title: 'AN', size: 5},
+            {key: 'qual', title: 'Cat. sp.', size: 7},
+            {key: 'bib', title: 'Număr', size: 6},
+            {key: 'penalty_time', title: 'Штраф', size: 9, active: false},
+            {key: 'penalty_laps', title: 'Штраф', size: 9, active: false},
+            {key: 'result', title: 'Rezultat', size: 17},
+            {key: 'result_relay', title: 'Rez. echipa', size: 14},
+            {key: 'diff', title: 'Diferența', size: 11},
+            {key: 'speed', title: 'Tempou', size: 8, active: false},
+            {key: 'speed_kmh', title: 'Viteza', size: 8, active: false},
+            {key: 'place_show', title: 'Clasament', size: 6},
+            {key: 'scores', title: 'Puncte', size: 5, active: false},
+            {key: 'all_splits', title: 'Splituri', active: false}
+        ],
+        active: function (key, val) {
+            for (var _i = 0, _a = this.fields; _i < _a.length; _i++) {
+                var obj = _a[_i];
+                if (key === obj.key) {
+                    obj.active = val;
+                }
+            }
+        },
+        isActive: function (key) {
+            for (var _i = 0, _a = this.fields; _i < _a.length; _i++) {
+                var obj = _a[_i];
+                if (key === obj.key) {
+                    if (obj.active === void 0) {
+                        return true;
+                    }
+                    else {
+                        return !!obj.active;
+                    }
+                }
+            }
+            return false;
+        },
+        getField: function (key) {
+            for (var _i = 0, _a = this.fields; _i < _a.length; _i++) {
+                var obj = _a[_i];
+                if (key === obj.key) {
+                    return obj
+                }
+            }
+        },
+        getCopyFields: function () {
+            return JSON.parse(JSON.stringify(this.fields))
+        },
+        init: function () {
+            try {
+                var isRelay = race.data.race_type === 3
+                this.getField('all_splits').active = location.href.indexOf('all_splits=1') > -1;
+                this.getField('scores').active = location.href.indexOf('scores=1') > -1;
+                this.getField('penalty_time').active = location.href.indexOf('penalty_time=1') > -1;
+
+                this.getField('result_relay').active = isRelay
+            } catch (e){}
+            return this;
+        }
+    }.init();
+
+    store = {
+        showLinkForGroups: true
+    };
+
+    try {
+        store.splitsShow = (
+            location.href.indexOf('s_splits=1') > -1 ||
+            location.href.indexOf('&splits=1') > -1 ||
+            location.href.indexOf('?splits=1') > -1
+        );
+        store.rankingShow = location.href.indexOf('ranking=1') > -1;
+        store.showProtocolByCourse = location.href.indexOf('by_course=1') > -1;
+    } catch (e) {}
+
+    function render() {
+        var resultBlock = document.getElementById('results-tables');
+        resultBlock.innerHTML = '';
+        Fields.active('group', store.showProtocolByCourse);
+        if (store.showProtocolByCourse){
+            var _a = race.courses;
+        } else {
+            var _a = race.groups;
+        }
+        for (var _i = 0; _i < _a.length; _i++) {
+            if (store.showProtocolByCourse){
+                var course = _a[_i];
+                var rows = getResultsByCourse(course, store.count);
+                var groupName = course.name;
+            } else {
+                var group = _a[_i];
+                var rows = getResultsByGroup(group, store.count);
+                var course = group.course;
+                var groupName = group.name;
+            }
+            if (!rows.length) {
+                continue;
+            }
+            var titleBlock = document.createElement('h2');
+            titleBlock.id = groupName;
+            var groupTitle = groupName;
+            if (course && course.controls && course.controls.length){
+                groupTitle += ', ' + course.controls.length + ' КП';
+            }
+            if (course && course.length){
+                groupTitle += ', ' + course.length / 1000 + ' км';
+            }
+            titleBlock.appendChild(document.createTextNode(groupTitle));
+            resultBlock.appendChild(titleBlock);
+            if (!store.showProtocolByCourse && store.showLinkForGroups) {
+                resultBlock.appendChild(getGroupsBlockElement(race));
+            }
+            var fields = Fields.getCopyFields();
+            if (store.splitsShow && course) {
+                course.controls.forEach(function (control, index) {
+                    fields.push({key: index + '_' + control.code, title: control.code})
+                });
+                fields.push({key: 'finish_split', title: 'F'})
+            }
+            if (!store.tableView && !store.splitsShow && !Fields.isActive('all_splits')) {
+                resultBlock.appendChild(new TableTextGenerator(rows, fields).getTable());
+            } else {
+                resultBlock.appendChild(new TableGenerator(rows, fields).getTable({className: 'sportorg-table'}));
+            }
+            //show ranking information
+            if (!store.showProtocolByCourse && store.rankingShow) {
+                resultBlock.appendChild(getRankingByGroup(group))
+            }
+            if (store.newPage && _i < _a.length - 1) {
+                var newPage = document.createElement('div');
+                newPage.className = 'new-page';
+                resultBlock.appendChild(newPage);
+            }
+        }
+        var query = {
+            s_splits: store.splitsShow ? 1 : 0,
+            ranking: store.rankingShow ? 1 : 0,
+            by_course: store.showProtocolByCourse ? 1 : 0,
+            all_splits: Fields.isActive('all_splits') ? 1 : 0,
+            scores: Fields.isActive('scores') ? 1 : 0,
+            penalty_time: Fields.isActive('penalty_time') ? 1 : 0
+        };
+        var queryString = '?';
+        Object.keys(query).forEach(function (key) {
+            if (query[key]) {
+                queryString += key + '=' + query[key] + '&';
+            }
+        });
+        queryString += 'sportorg=1';
+        try {
+            var href = location.href.split('?')[0];
+            history.pushState({}, null, href + queryString);
+        } catch (e) {}
+    }
+
+    render();
+
+    var Scrolling = {
+        direction: 1,
+        enabled: false,
+        lock: false,
+        prev: 0,
+        intervalTimer: 0,
+        init: function () {
+            var _this = this;
+            if (_this.intervalTimer) {
+                clearInterval(_this.intervalTimer)
+            }
+            _this.intervalTimer = setInterval(function () {
+                _this.lock = !_this.lock;
+            }, 5000);
+            window.onscroll = function () {
+                var d = document.documentElement;
+                var offset = d.scrollTop + window.innerHeight;
+                var height = d.offsetHeight;
+
+                if (offset === height) {
+                    _this.direction = -1;
+                }
+                if (offset <= window.innerHeight) {
+                    _this.direction = 1;
+                }
+            };
+            this.pageScroll();
+            return this;
+        },
+        pageScroll: function () {
+            var _this = this;
+            if (_this.enabled && ! _this.lock) {
+                window.scrollBy(10, _this.direction);
+            }
+            setTimeout(function () {
+                _this.pageScroll();
+            }, 10);
+        }
+    }.init();
+
+    new SettingsGenerator([
+        {
+            title: 'Spre grupe',
+            value: !!store.showLinkForGroups,
+            change: function (checked) {
+                store.showLinkForGroups = checked;
+                render()
+            }
+        },
+        {
+            title: 'Clasament pe distanțe',
+            value: !!store.showProtocolByCourse,
+            change: function (checked) {
+                store.showProtocolByCourse = checked;
+                render()
+            }
+        },
+        {
+            title: 'Tabel',
+            value: !!store.tableView,
+            change: function (checked) {
+                store.tableView = checked;
+                render()
+            }
+        },
+        {
+            title: 'Număr',
+            value: Fields.isActive('bib'),
+            change: function (checked) {
+                Fields.active('bib', checked);
+                render()
+            }
+        },
+        {
+            title: 'Penalizare',
+            value: Fields.isActive('penalty_time'),
+            change: function (checked) {
+                Fields.active('penalty_time', checked);
+                render()
+            }
+        },
+        {
+            title: 'Cercuri de penalizare',
+            value: Fields.isActive('penalty_laps'),
+            change: function (checked) {
+                Fields.active('penalty_laps', checked);
+                render()
+            }
+        },
+        {
+            title: 'Diferența',
+            value: Fields.isActive('diff'),
+            change: function (checked) {
+                Fields.active('diff', checked);
+                render()
+            }
+        },
+        {
+            title: 'Tempou',
+            value: Fields.isActive('speed'),
+            change: function (checked) {
+                Fields.active('speed', checked);
+                render()
+            }
+        },
+        {
+            title: 'Viteza',
+            value: Fields.isActive('speed_kmh'),
+            change: function (checked) {
+                Fields.active('speed_kmh', checked);
+                render()
+            }
+        },
+        {
+            title: 'Splituri (distanța)',
+            value: !!store.splitsShow,
+            change: function (checked) {
+                store.splitsShow = checked;
+                render()
+            }
+        },
+        {
+            title: 'Splituri (toate punctele)',
+            value: Fields.isActive('all_splits'),
+            change: function (checked) {
+                Fields.active('all_splits', checked);
+                render()
+            }
+        },
+        {
+            title: 'Puncte',
+            value: Fields.isActive('scores'),
+            change: function (checked) {
+                Fields.active('scores', checked);
+                render()
+            }
+        },
+        {
+            title: 'Categorii sportive',
+            value: store.rankingShow,
+            change: function (checked) {
+                store.rankingShow = checked;
+                render()
+            }
+        },
+        {
+            title: 'Primii: ',
+            value: [
+                {text: 'Все результаты', value: 0},
+                {text: '1', value: 1},
+                {text: '3', value: 3},
+                {text: '6', value: 6},
+                {text: '10', value: 10}
+            ],
+            change: function (arr) {
+                store.count = arr[0];
+                render();
+            }
+        },
+        {
+            title: 'Imprimare pe pagini diferite',
+            value: false,
+            change: function (checked) {
+                store.newPage = checked;
+                render()
+            }
+        },
+        {
+            title: 'Auto scroll',
+            value: Scrolling.enabled,
+            change: function (checked) {
+                Scrolling.enabled = checked;
+            }
+        },
+    ]).show();
+</script>
+
+</div>
+<div id="footer">
+    
+    <a href="https://sportorg.readthedocs.io">ПО SportOrg v1.6.0</a>
+    <script type="text/javascript">
+        var l = new Date();
+        document.write ('<span class="print-only">Время печати: ' + l.toLocaleString() + '</span>');
+    </script>
+    
+</div>
+</body>
+</html>

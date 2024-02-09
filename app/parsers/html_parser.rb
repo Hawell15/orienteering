@@ -57,13 +57,12 @@ class HtmlParser < BaseParser
     club = json['organizations'].detect { |org| org['id'] == runner['organization_id'] }['name']
 
     {
-      runner_name:      runner['surname'],
-      surname:          runner['name'],
-      dob:              runner['birth_date'],
-      gender:           gender,
-      category_id:      current_category,
-      best_category_id: current_category,
-      club:             club
+      runner_name: runner['surname'],
+      surname:     runner['name'],
+      dob:         runner['birth_date'],
+      gender:      gender,
+      category_id: current_category,
+      club:        club
     }.compact
   end
 

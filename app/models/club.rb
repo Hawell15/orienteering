@@ -10,7 +10,7 @@ class Club < ApplicationRecord
     params = params.with_indifferent_access
 
     formatted_name = format_name(params["club_name"])
-    club = Club.find(0) if params["club_name"].blank?
+    club = Club.find(0) if formatted_name.blank?
     club ||= Club.find_by(formatted_name: formatted_name) if formatted_name
     club ||= Club.where("alternative_club_name LIKE ?", "%#{formatted_name}%").first
     club ||= Club.create!(params)
