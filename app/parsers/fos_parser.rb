@@ -37,9 +37,10 @@ class FosParser < BaseParser
       date = (tr.css("td")[headers_index[:category_valid]].text.to_date - 2.years).as_json rescue nil
 
       {
-        date:    date,
+        date:        date,
         category_id: convert_category(tr.css("td")[headers_index[:current_category]].text).id,
-        runner:  extract_runner_details(tr, headers_index)
+        runner:      extract_runner_details(tr, headers_index),
+        status:      "confirmed"
       }
     end.compact
   end
@@ -53,10 +54,8 @@ class FosParser < BaseParser
       dob:              "#{tr.css("td")[headers_index[:dob]].text}-01-01",
       gender:           tr.css("td")[headers_index[:gender]].text.presence || detect_gender(surname),
       club:             tr.css("td")[headers_index[:club]].text.presence || Club.find(0).club_name,
-      category_id:      convert_category(tr.css("td")[headers_index[:current_category]].text).id,
       best_category_id: convert_category(tr.css("td")[headers_index[:best_category]].text).id,
-      category_valid: tr.css("td")[headers_index[:category_valid]].text.to_date.as_json
-
+      id:               tr.css("td")[headers_index[:id]].text.to_i
     }.compact
   end
 
