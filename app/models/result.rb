@@ -7,7 +7,7 @@ class Result < ApplicationRecord
 
   before_save :add_date
 
-  def self.add_result(params)
+  def self.add_result(params, status = "unconfirmed")
     params = params.with_indifferent_access
 
     check_params =
@@ -18,7 +18,7 @@ class Result < ApplicationRecord
 
     check_params.merge!(date: params["date"]) if params["date"]
 
-    Result.find_or_create_by(check_params) do |result|
+    result = Result.find_or_create_by(check_params) do |result|
       result.place       = params["place"]       if params["place"]
       result.runner_id   = params["runner_id"]
       result.time        = params["time"]        if params["time"]
@@ -27,14 +27,12 @@ class Result < ApplicationRecord
       result.date        = params["date"]        if params["category_id"]
       result.wre_points  = params["wre_points"]  if params["category_id"]
     end
-  end
 
-  def self.add_result_and_entry(params, status = "unconfirmed")
-    params = params.with_indifferent_access
+    if (result.category_id.to_i < result.runner.category_id.to_i) || result.group_id == 1
+      Entry.add_entry(result.slice(:runner_id, :date, :category_id).merge(result_id: result.id), status )
+    end
 
-    result = add_result(params)
-
-    Entry.create!(params.slice("runner_id", "category_id").merge(result_id: result.id, status: status))
+    result
   end
 
   private

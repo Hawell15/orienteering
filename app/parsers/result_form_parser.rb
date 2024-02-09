@@ -64,7 +64,8 @@ class ResultFormParser < BaseParser
         runner_id:   json["runner_id"],
         category_id: json["category_id"],
         wre_points:  json["wre_points"],
-        date:        date
+        date:        date,
+        status:      "confirmed"
     }.compact]
   end
 
