@@ -77,8 +77,5 @@ class IofResultsParser < BaseParser
 
   def update_wre_data(runner, hash)
     runner.update!(hash.slice(:wre_id, :sprint_wre_rang, :forest_wre_rang, :sprint_wre_place, :forest_wre_place))
-
   end
-
-
 end

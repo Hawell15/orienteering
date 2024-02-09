@@ -65,7 +65,7 @@ class ExcelCompetitionParser < BaseParser
 
   def extract_runner(sheet, index, indexes, gender)
     cell_value = ->(index_name) { sheet.cell(index, indexes.dig(:headers_index, index_name)) }
-    current_category     = convert_category(cell_value.call(:category))
+    current_category     = convert_category(cell_value.call(:category)).id
 
     {
       runner_name:      cell_value.call(:runner_name),
@@ -73,8 +73,8 @@ class ExcelCompetitionParser < BaseParser
       dob:              cell_value.call(:dob).as_json,
       gender:           gender,
       category_id:      current_category,
-      best_category_id: current_category,
-      club:             cell_value.call(:club)
+      club:             cell_value.call(:club),
+      id:               cell_value.call(:id)
     }.compact
   end
 
