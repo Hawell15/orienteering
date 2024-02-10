@@ -38,10 +38,12 @@ class Runner < ApplicationRecord
   def self.update_runner_category_from_entry(params)
     runner = Runner.find(params["runner_id"])
 
+    category_valid = params["category_id"] == 10 ? "2100-01-01" : (params["date"].to_date + 2.years).as_json
+
     runner.update!(
       category_id: params["category_id"],
       best_category_id: [runner.best_category_id, params["category_id"]].min,
-      category_valid: (params["date"].to_date + 2.years).as_json
+      category_valid: category_valid
       )
   end
 

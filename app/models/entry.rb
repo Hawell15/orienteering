@@ -4,7 +4,7 @@ class Entry < ApplicationRecord
   belongs_to :result
 
   def self.add_entry(params, status = "unconfirmed")
-    params.with_indifferent_access
+    params = params.with_indifferent_access
 
     Entry.create!(params.merge(status: status))
     if status == "confirmed"
