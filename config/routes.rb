@@ -9,7 +9,9 @@ Rails.application.routes.draw do
   resources :results
   resources :runners
   resources :clubs
+  get 'categories/expired', to: 'categories#expired'
   resources :categories
+
   resources :groups
   devise_for :users
   resources :competitions
