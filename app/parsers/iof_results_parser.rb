@@ -42,10 +42,11 @@ class IofResultsParser < BaseParser
       next if result["rank"].zero?
 
       {
-        place:      result["rank"],
-        time:       convert_time(result["result"]),
-        wre_points: result["points"].to_i,
-        runner_id:  result["runner_id"]
+        place:       result["rank"],
+        time:        convert_time(result["result"]),
+        wre_points:  result["points"].to_i,
+        runner_id:   result["runner_id"],
+        category_id: get_wre_category(result["points"].to_i)
       }
     end.compact
   end
@@ -66,7 +67,7 @@ class IofResultsParser < BaseParser
 
   def get_runner_results(runner)
     ["F", "FS"].map do |distance_type|
-      json = JSON.parse(Net::HTTP.get(URI("https://ranking.orienteering.org/api/person/#{runner.wre_id}/results/#{distance_type}")))
+      json = request_runner_results(runner.wre_id, distance_type)
       json.each do |hash|
         hash["gender"] = runner.gender
         hash["runner_wre_id"] = runner.wre_id
@@ -75,7 +76,22 @@ class IofResultsParser < BaseParser
     end.flatten
   end
 
+  def request_runner_results(wre_id, distance_type)
+    JSON.parse(Net::HTTP.get(URI("https://ranking.orienteering.org/api/person/#{wre_id}/results/#{distance_type}")))
+  end
+
   def update_wre_data(runner, hash)
     runner.update!(hash.slice(:wre_id, :sprint_wre_rang, :forest_wre_rang, :sprint_wre_place, :forest_wre_place))
   end
+
+  def get_wre_category(points)
+    category_id = case points
+    when 700..999   then 4
+    when 900..1099  then 3
+    when 1100..1299 then 2
+    when 1300..1500 then 1
+    else 10
+    end
+  end
 end
+

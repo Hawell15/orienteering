@@ -1,0 +1,25 @@
+[
+{
+    "raceDate": "2023-10-29T00:00:00",
+    "raceName": "Moldavian Knock-Out Sprint Championship 2023",
+    "raceId": 7831,
+    "raceFormat": "KnockOutSprint",
+    "region": "",
+    "rank": 6,
+    "result": "00:01",
+    "points": 920.0,
+    "wcup": -1,
+    "wcup23": -1
+},
+{
+    "raceDate": "2023-10-29T00:00:00",
+    "raceName": "Moldavian Knock-Out Sprint Championship 2023",
+    "raceId": 1007831,
+    "raceFormat": "KnockOutSprint",
+    "region": "",
+    "rank": 1,
+    "result": "11:01",
+    "points": 1148.0,
+    "wcup": -1,
+    "wcup23": -1
+}]

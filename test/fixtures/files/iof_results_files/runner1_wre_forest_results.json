@@ -1,0 +1,25 @@
+[
+{
+    "raceDate": "2023-09-16T00:00:00",
+    "raceName": "Moldavian Middle Distance Championship",
+    "raceId": 7997,
+    "raceFormat": "Middle",
+    "region": "",
+    "rank": 12,
+    "result": "52:26",
+    "points": 716.0,
+    "wcup": -1,
+    "wcup23": -1
+},
+{
+    "raceDate": "2023-05-14T00:00:00",
+    "raceName": "Moldavian Long Distance Championship",
+    "raceId": 7829,
+    "raceFormat": "Long",
+    "region": "",
+    "rank": 7,
+    "result": "132:44",
+    "points": 866.0,
+    "wcup": -1,
+    "wcup23": -1
+}]

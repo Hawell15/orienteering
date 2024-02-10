@@ -28,7 +28,7 @@ RSpec.describe IofRunnersParser, type: :model do
       .and change { Runner.count }.by(3)
       .and change { Club.count }.by(0)
       .and change { Entry.count }.by(0)
-      values = ["id", "runner_name", "surname", "dob", "checksum", "gender", "forest_wre_place", "forest_wre_rang", "sprint_wre_place", "sprint_wre_rang"]
+      values = ["id", "runner_name", "surname", "dob", "checksum", "gender", "forest_wre_place", "forest_wre_rang", "sprint_wre_place", "sprint_wre_rang", "wre_id"]
 
       expect(Runner.all.map { |runner| runner.attributes.slice(*values).compact }).to eq([
         {
@@ -38,6 +38,7 @@ RSpec.describe IofRunnersParser, type: :model do
           "dob"              => "1997-05-26".to_date,
           "gender"           => "M",
           "checksum"         => (Digest::SHA2.new << "Fomiciov-Anatolii-1997-M").to_s,
+          "wre_id"           => 22504,
           "sprint_wre_place" => 241,
           "sprint_wre_rang"  => 5695
         },
@@ -48,6 +49,7 @@ RSpec.describe IofRunnersParser, type: :model do
           "dob"              => "2024-01-23".to_date,
           "gender"           => "M",
           "checksum"         =>  (Digest::SHA2.new << "Ciobanu-Roman-2024-M").to_s,
+          "wre_id"           => 8458,
           "forest_wre_place" => 1385,
           "forest_wre_rang"  => 2644,
           "sprint_wre_place" => 353,
@@ -60,6 +62,7 @@ RSpec.describe IofRunnersParser, type: :model do
           "dob"              => "1989-01-01".to_date,
           "gender"           => "W",
           "checksum"         =>  (Digest::SHA2.new << "Ribediuc-Galina-1989-W").to_s,
+          "wre_id"           => 4779,
           "forest_wre_place" => 144,
           "forest_wre_rang"  => 6051
         },
@@ -70,6 +73,7 @@ RSpec.describe IofRunnersParser, type: :model do
           "dob"              => "2007-01-01".to_date,
           "gender"           => "W",
           "checksum"         =>  (Digest::SHA2.new << "Nosenco-Victoria-2007-W").to_s,
+          "wre_id"           => 37897,
           "forest_wre_place" => 407,
           "forest_wre_rang"  => 5287,
           "sprint_wre_place" => 252,
@@ -82,6 +86,7 @@ RSpec.describe IofRunnersParser, type: :model do
           "dob"              => "1989-01-01".to_date,
           "gender"           => "W",
           "checksum"         =>  (Digest::SHA2.new << "Cecan-Olesea-1989-W").to_s,
+          "wre_id"           => 3694,
           "sprint_wre_place" => 276,
           "sprint_wre_rang"  => 4993
         }
