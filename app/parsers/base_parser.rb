@@ -84,6 +84,7 @@ class BaseParser
     string.gsub!(/MS$/, 'MSRM')
 
     string = case string
+             when 'MIS'   then 'MISRM'
              when 'BR'    then 'f/c'
              when 'KMSRM' then 'CMSRM'
              else string

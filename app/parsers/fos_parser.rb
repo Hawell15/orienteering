@@ -52,7 +52,7 @@ class FosParser < BaseParser
       runner_name:      runner_name,
       surname:          surname,
       dob:              "#{tr.css("td")[headers_index[:dob]].text}-01-01",
-      gender:           tr.css("td")[headers_index[:gender]].text.presence || detect_gender(surname),
+      gender:           extract_gender(tr.css("td")[headers_index[:gender]].text.presence || detect_gender(surname)),
       club:             tr.css("td")[headers_index[:club]].text.presence || Club.find(0).club_name,
       best_category_id: convert_category(tr.css("td")[headers_index[:best_category]].text).id,
       id:               tr.css("td")[headers_index[:id]].text.to_i
@@ -60,7 +60,12 @@ class FosParser < BaseParser
   end
 
   def connect
-    cookie = get_cookies
+    cookie = begin
+      get_cookies
+    rescue
+      ""
+    end
+
     sleep 2
     url = URI("http://orienteering.md/categorii-sportive/?sort=id")
 
@@ -77,6 +82,9 @@ class FosParser < BaseParser
     jetpack_protect_num = html.at_css("label[for='jetpack_protect_answer']").text.split("+").map {|el| el[/\d+/].to_i}.sum
     sleep 2
      url = URI("http://orienteering.md/wp-login.php")
+
+    username = ""
+    password = ""
 
     http = Net::HTTP.new(url.host, url.port);
     request = Net::HTTP::Post.new(url)

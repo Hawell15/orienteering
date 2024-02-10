@@ -3,7 +3,11 @@ class EntriesController < ApplicationController
 
   # GET /entries or /entries.json
   def index
-    @entries = Entry.all
+     @entries = if params[:status]
+       Entry.where(status: params[:status])
+    else
+      Entry.all
+    end
   end
 
   # GET /entries/1 or /entries/1.json
