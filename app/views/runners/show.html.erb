@@ -86,6 +86,9 @@
                     <%= link_to 'Categoria indeplinita' %>
                 </th>
                 <th>
+                    <%= link_to 'Data' %>
+                </th>
+                <th>
                     <%= link_to 'Competitia' %>
                 </th>
                 <th>
@@ -110,6 +113,9 @@
                 </td>
                 <td>
                     <%= result.category.category_name %>
+                </td>
+                <td>
+                    <%= result.date.as_json %>
                 </td>
                 <td>
                     <%= link_to "#{result.group.competition.competition_name} #{result.group.competition.date.year}", result.group.competition %>

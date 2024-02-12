@@ -14,11 +14,11 @@ class Runner < ApplicationRecord
       checksum: get_checksum(*options.values_at("runner_name", "surname", "dob", "gender")))
   }
 
-  def self.add_runner(params)
+  def self.add_runner(params, skip_matching = false )
     params = params.with_indifferent_access
 
     runner = matching_runner(params).first
-    runner ||= get_runner_by_matching(params)
+    runner ||= get_runner_by_matching(params) unless skip_matching
     runner ||= Runner.create!(params.except("category_id"))
 
     if params["category_id"] && params["category_id"].to_i < runner.category_id.to_i
@@ -56,6 +56,8 @@ class Runner < ApplicationRecord
   def self.get_runner_by_matching(options)
     threshold = 0.7
     runners = Runner.where(gender: options[:gender]).all.map do |runner|
+      next if (runner.dob.year -  options[:dob].to_date.year).abs > 1
+
       name_threshold = Text::Levenshtein.distance(runner.runner_name.downcase, options[:runner_name].downcase) / runner.runner_name.length.to_f
       surname_threshold = Text::Levenshtein.distance(runner.surname.downcase, options[:surname].downcase) / runner.surname.length.to_f
       next nil unless (name_threshold + surname_threshold)/2 < (1 -threshold)

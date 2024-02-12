@@ -1,5 +1,5 @@
 class GroupsController < ApplicationController
-  before_action :set_group, only: %i[ show edit update destroy ]
+  before_action :set_group, only: %i[ show edit update destroy count_rang]
 
   # GET /groups or /groups.json
 def index
@@ -63,6 +63,12 @@ end
       format.html { redirect_to groups_url, notice: "Group was successfully destroyed." }
       format.json { head :no_content }
     end
+  end
+
+  def count_rang
+    GroupCategoriesUpdater.new(@group).get_rang_and_categories
+
+    redirect_to group_path(@group.id)
   end
 
   private

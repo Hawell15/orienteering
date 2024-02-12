@@ -55,25 +55,27 @@ class FosParser < BaseParser
       gender:           extract_gender(tr.css("td")[headers_index[:gender]].text.presence || detect_gender(surname)),
       club:             tr.css("td")[headers_index[:club]].text.presence || Club.find(0).club_name,
       best_category_id: convert_category(tr.css("td")[headers_index[:best_category]].text).id,
-      id:               tr.css("td")[headers_index[:id]].text.to_i
+      id:               tr.css("td")[headers_index[:id]].text.to_i,
+      skip_matching:    true
     }.compact
   end
 
   def connect
-    cookie = begin
-      get_cookies
-    rescue
-      ""
-    end
+    # cookie = begin
+    #   get_cookies
+    # rescue
+    #   ""
+    # end
 
-    sleep 2
-    url = URI("http://orienteering.md/categorii-sportive/?sort=id")
+    # sleep 2
+    # url = URI("http://orienteering.md/categorii-sportive/?sort=id")
 
-    http = Net::HTTP.new(url.host, url.port)
-    request = Net::HTTP::Get.new(url)
-    request['Cookie'] = cookie
-    response = http.request(request)
-    Nokogiri::HTML(response.body)
+    # http = Net::HTTP.new(url.host, url.port)
+    # request = Net::HTTP::Get.new(url)
+    # request['Cookie'] = cookie
+    # response = http.request(request)
+    # Nokogiri::HTML(response.body)
+    Nokogiri::HTML(File.read("public/fos_rezultate.html"))
   end
 
   def get_cookies
