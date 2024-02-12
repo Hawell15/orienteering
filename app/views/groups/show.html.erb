@@ -26,6 +26,12 @@
         <strong>Rang</strong>
         <%= @group.rang %>
     </p>
+    <% if admin_user? %>
+        <%= form_tag(count_rang_path, method: :post) do %>
+            <%= hidden_field_tag :id, @group.id %>
+            <%= submit_tag 'Calculeaza categoriile' %>
+        <% end %>
+    <% end %>
      <table class="table table-striped table-bordered table-hover">
         <thead class="table-primary">
             <tr>
@@ -59,7 +65,7 @@
                     <%= link_to "#{result.runner.runner_name} #{result.runner.surname}", result.runner  %>
                 </td>
                  <td>
-                    <%= result.runner.category.category_name %>
+                    <%= Entry.where(status: "confirmed").where(runner_id: result.runner_id).where('date < ?', result.date).order(date: :desc).first&.category&.category_name %>
                 </td>
                 <td>
                     <%= Time.at(result.time).utc.strftime('%H:%M:%S') %>

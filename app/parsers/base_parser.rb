@@ -28,7 +28,7 @@ class BaseParser
 
     club_id = hash[:club_id] || Club.add_club({ club_name: hash[:club] }).id
 
-    runner = Runner.add_runner(hash.merge(club_id: club_id).except(:club))
+    runner = Runner.add_runner(hash.merge(club_id: club_id).except(:club, :skip_matching), hash[:skip_matching])
     @return_result = runner if @return_data == "runner"
 
     runner
@@ -84,9 +84,9 @@ class BaseParser
     string.gsub!(/MS$/, 'MSRM')
 
     string = case string
-             when 'MIS'   then 'MISRM'
-             when 'BR'    then 'f/c'
-             when 'KMSRM' then 'CMSRM'
+             when 'MIS'        then 'MISRM'
+             when 'BR', 'NONE' then 'f/c'
+             when 'KMSRM'      then 'CMSRM'
              else string
              end
 
@@ -95,7 +95,7 @@ class BaseParser
 
   def detect_gender(string)
     case string
-    when "Nichita", "Ilia", "Mircea" then "M"
+    when "Nichita", "Ilia", "Mircea", "Nikita" then "M"
     when "Irene", /a$/i then "F"
     else "M"
     end
