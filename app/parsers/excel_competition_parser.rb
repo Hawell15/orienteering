@@ -21,19 +21,20 @@ class ExcelCompetitionParser < BaseParser
     indexes = get_details_index(sheet)
 
     cell_value = ->(index_name) { sheet.cell(indexes.dig(:headers_index, index_name), indexes[:details_index]) }
+    date = cell_value.call(:date)
 
     @hash = {
       competition_name: cell_value.call(:competition_name),
-      date:             cell_value.call(:date).as_json,
+      date:             date.as_json,
       distance_type:    cell_value.call(:distance_type),
       location:         cell_value.call(:location),
       country:          cell_value.call(:country),
-      groups:           extract_groups_details(file, file.sheets - ["Detalii", "Exemplu"])
+      groups:           extract_groups_details(file, file.sheets - ["Detalii", "Exemplu"], date)
     }
 
   end
 
-  def extract_groups_details(file, group_names)
+  def extract_groups_details(file, group_names, date)
     group_names.map do |group_name|
       sheet = file.sheet(group_name)
       clasa = sheet.cell(
@@ -43,12 +44,12 @@ class ExcelCompetitionParser < BaseParser
       {
         group_name: group_name,
         clasa:      clasa,
-        results:    extract_results(sheet, extract_gender(group_name.first))
+        results:    extract_results(sheet, extract_gender(group_name.first), date)
       }
     end
   end
 
-  def extract_results(sheet, gender)
+  def extract_results(sheet, gender, date)
     indexes = get_result_index(sheet)
     (indexes[:details_index]..sheet.last_row).map do |index|
       cell_value = ->(index_name) { sheet.cell(index, indexes.dig(:headers_index, index_name)) }
@@ -58,12 +59,12 @@ class ExcelCompetitionParser < BaseParser
       {
         place:  cell_value.call(:place).to_i,
         time:   cell_value.call(:result),
-        runner: extract_runner(sheet, index, indexes, gender)
+        runner: extract_runner(sheet, index, indexes, gender, date)
       }
     end
   end
 
-  def extract_runner(sheet, index, indexes, gender)
+  def extract_runner(sheet, index, indexes, gender, date)
     cell_value = ->(index_name) { sheet.cell(index, indexes.dig(:headers_index, index_name)) }
     current_category     = convert_category(cell_value.call(:category)).id
 
@@ -74,7 +75,8 @@ class ExcelCompetitionParser < BaseParser
       gender:           gender,
       category_id:      current_category,
       club:             cell_value.call(:club),
-      id:               cell_value.call(:id)
+      id:               cell_value.call(:id),
+      date:             date - 1.days
     }.compact
   end
 

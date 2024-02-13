@@ -58,7 +58,7 @@ RSpec.describe JsonParser, type: :model do
 
       expect(Result.first.attributes.except('created_at', 'updated_at').compact).to eq({
         "id"          => 1,
-        "date"        => "2023-10-14".to_date,
+        "date"        => "2023-10-13".to_date,
         "runner_id"   => 1,
         "group_id"    => 0,
         "category_id" => 2,
@@ -76,7 +76,7 @@ RSpec.describe JsonParser, type: :model do
       })
 
       expect(Entry.first.attributes.except('created_at', 'updated_at').compact).to eq({
-        "date"        => "2023-10-14".to_date,
+        "date"        => "2023-10-13".to_date,
         "id"          => 1,
         "runner_id"   => 1,
         "category_id" => 2,

@@ -77,9 +77,6 @@
                     <%= link_to 'Locul' %>
                 </th>
                 <th>
-                    <%= link_to 'Sportiv'%>
-                </th>
-                <th>
                     <%= link_to 'Timpul'%>
                 </th>
                 <th>
@@ -100,13 +97,10 @@
             </tr>
         </thead>
         <tbody>
-            <% @runner.results.each do |result| %>
+            <% @runner.results.order(:date).each do |result| %>
             <tr>
                 <td>
                     <%= result.place %>
-                </td>
-                <td>
-                    <%= link_to "#{result.runner.runner_name} #{result.runner.surname}", result.runner  %>
                 </td>
                 <td>
                     <%= Time.at(result.time).utc.strftime('%H:%M:%S') %>
@@ -118,7 +112,7 @@
                     <%= result.date.as_json %>
                 </td>
                 <td>
-                    <%= link_to "#{result.group.competition.competition_name} #{result.group.competition.date.year}", result.group.competition %>
+                    <%= link_to "#{result.group.competition.competition_name} #{result.date.year}", result.group.competition %>
                 </td>
                 <td>
                     <%= link_to result.group.group_name, result.group %>

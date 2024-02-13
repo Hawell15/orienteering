@@ -16,37 +16,38 @@ class JsonParser < BaseParser
   end
 
   def extract_competition_details(json)
+    date = json["date"].to_date
     @hash = {
       competition_name: json["title"],
-      date:             json["date"].to_date.as_json,
+      date:             date.as_json,
       distance_type:    json["groups"].first["distance_type"],
-      groups:           extract_groups_details(json["groups"])
+      groups:           extract_groups_details(json["groups"], date)
     }
 
   end
 
-  def extract_groups_details(json)
+  def extract_groups_details(json, date)
     json.map do |group|
       {
         group_name: group["name"],
         clasa:      convert_group_class(group["distance_class"]),
-        results:    extract_results(group["results"], extract_gender(group["name"].first))
+        results:    extract_results(group["results"], extract_gender(group["name"].first), date)
       }
     end
   end
 
-  def extract_results(json, gender)
+  def extract_results(json, gender, date)
     json.map do |result|
       next if result.blank?
       {
         place:  result["place"],
         time:   convert_time(result["time"]),
-        runner: extract_runner(result, gender)
+        runner: extract_runner(result, gender, date)
       }
     end
   end
 
-  def extract_runner(result, gender)
+  def extract_runner(result, gender, date)
     runner_name, surname = result["runner_name"].split(" ", 2)
     current_category     = convert_category(result["currenct_category"]).id
 
@@ -57,7 +58,8 @@ class JsonParser < BaseParser
       gender:      gender,
       category_id: current_category,
       club:        result["club"],
-      id:          extract_runner_id(result["runner_id"])
+      id:          extract_runner_id(result["runner_id"]),
+      date:        date - 1.day
     }.compact
   end
 
