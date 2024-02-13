@@ -26,7 +26,7 @@ RSpec.describe IofResultsParser, type: :model do
       .and change { Result.count }.by(5)
       .and change { Runner.count }.by(0)
       .and change { Club.count }.by(0)
-      .and change { Entry.count }.by(1)
+      .and change { Entry.count }.by(3)
 
       expect(Competition.last.attributes.except('created_at', 'updated_at').compact).to eq(
         {
@@ -56,9 +56,9 @@ RSpec.describe IofResultsParser, type: :model do
         "wre_points"  => 716
       })
 
-      expect(Entry.first.attributes.except('created_at', 'updated_at').compact).to eq({
+      expect(Entry.second.attributes.except('created_at', 'updated_at').compact).to eq({
         "date"        => "2023-10-29".to_date,
-        "id"          => 1,
+        "id"          => 2,
         "runner_id"   => 1,
         "category_id" => 2,
         "result_id"   => 4,

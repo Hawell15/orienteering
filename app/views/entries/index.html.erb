@@ -12,6 +12,9 @@
                 <%= link_to 'Sportiv', sort: "runner"%>
             </th>
             <th>
+                <%= link_to 'Categoria actuală', sort: "runner"%>
+            </th>
+            <th>
                 <%= link_to 'Categoria indeplinita', sort: "category_id" %>
             </th>
             <th>
@@ -33,7 +36,10 @@
                 <%= entry.result.date %>
             </td>
             <td>
-                <%= link_to "#{entry.runner.runner_name} #{entry.runner.surname}", entry.runner  %>
+                <%= link_to "#{entry.runner.runner_name} #{entry.runner.surname} (#{entry.runner.id})", entry.runner  %>
+            </td>
+                   <td>
+                <%= entry.runner.category.category_name %>
             </td>
             <td>
                 <%= entry.category.category_name %>

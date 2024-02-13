@@ -62,7 +62,8 @@ class HtmlParser < BaseParser
       dob:         runner['birth_date'],
       gender:      gender,
       category_id: current_category,
-      club:        club
+      club:        club,
+      date:        (json.dig('data', 'start_datetime').to_date - 1.day).as_json
     }.compact
   end
 

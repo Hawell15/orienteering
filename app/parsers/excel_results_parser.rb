@@ -49,9 +49,10 @@ class ExcelResultsParser < BaseParser
     cell_value = ->(index_name) { sheet.cell(index, indexes.dig(:headers_index, index_name)) }
 
    [{
-      place:  cell_value.call(:place).to_i,
-      time:   cell_value.call(:result),
-      runner: extract_runner(sheet,indexes, index )
+      place:       cell_value.call(:place).to_i,
+      time:        cell_value.call(:result),
+      category_id: Category.find_by(category_name: cell_value.call(:category)).id,
+      runner:      extract_runner(sheet,indexes, index )
     }]
   end
 
@@ -65,7 +66,6 @@ class ExcelResultsParser < BaseParser
       dob:              cell_value.call(:dob).as_json,
       club:             cell_value.call(:club).as_json,
       gender:           extract_gender(cell_value.call(:gender)),
-      category_id:      Category.find_by(category_name: cell_value.call(:category)).id,
       best_category_id: Category.find_by(category_name: cell_value.call(:best_category)).id,
     }.compact
   end

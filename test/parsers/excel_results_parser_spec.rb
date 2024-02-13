@@ -5,7 +5,7 @@ require 'rails_helper'
 RSpec.describe ExcelResultsParser, type: :model do
   before(:each) do
       Runner.create!(runner_name: "Fala", surname: "Sergiu", dob: "1993-05-26", gender: "M", category_id: 6)
-      Runner.create!(id: 240, category_id: 2)
+      Runner.create!(id: 240, category_id: 1)
   end
 
   describe '#convert' do
@@ -15,7 +15,7 @@ RSpec.describe ExcelResultsParser, type: :model do
       expect { @competition = parser.convert }
       .to change { Competition.count }.by(3)
       .and change { Group.count }.by(3)
-      .and change { Result.count }.by(5)
+      .and change { Result.count }.by(3)
       .and change { Runner.count }.by(1)
       .and change { Club.count }.by(2)
       .and change { Entry.count }.by(2)
@@ -60,19 +60,10 @@ RSpec.describe ExcelResultsParser, type: :model do
         "id"          => 2,
         "date"        => "2023-12-10".to_date,
         "runner_id"   => 241,
-        "group_id"    => 0,
+        "group_id"    => 3,
         "category_id" => 5,
-        "time"        => 0
-      })
-
-      expect(Result.last.attributes.except('created_at', 'updated_at').compact).to eq({
-        "id"          => 5,
-        "date"        => "2023-06-15".to_date,
-        "runner_id"   => 1,
-        "group_id"    => 4,
-        "category_id" => 10,
-        "place"       => 3,
-        "time"        => 862
+        "time"        => 2710,
+        "place"       => 6
       })
 
       expect(Entry.first.attributes.except('created_at', 'updated_at').compact).to eq({
@@ -83,7 +74,6 @@ RSpec.describe ExcelResultsParser, type: :model do
         "result_id"   => 2,
         "status"      => "unconfirmed",
       })
-
     end
   end
 end

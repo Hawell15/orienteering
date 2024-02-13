@@ -55,7 +55,7 @@ class GroupCategoriesUpdater
   def get_rang_percents(rang)
     return [0, {}] if rang < 0.5
 
-    rang_array.detect { |row| row.first < rang }.last
+    rang_array.detect { |row| row.first <= rang }.last
   end
 
   def get_group_rang
@@ -65,7 +65,7 @@ class GroupCategoriesUpdater
                           .order(date: :desc)
                           .where(runner_id: @group.results.order(:place).limit(12).pluck(:runner_id))
                           .pluck('SUM(categories.points)')
-                          .first || 0).ceil
+                          .first || 0.0)
   end
 
   def get_time_hash

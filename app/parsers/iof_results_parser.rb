@@ -18,26 +18,27 @@ class IofResultsParser < BaseParser
 
   def extract_competition_details(json)
     @hash = json.map { |js| js.slice("raceDate", "raceName", "raceId", "raceFormat") }.uniq.map do |competition|
+      date = competition["raceDate"].to_date
       {
         competition_name: competition["raceName"],
-        date:             competition["raceDate"].to_date.as_json,
+        date:             date.as_json,
         distance_type:    competition["raceFormat"],
         wre_id:           competition["raceId"],
-        groups:           extract_groups_details(json.select { |js| js["raceId"] == competition["raceId"]})
+        groups:           extract_groups_details(json.select { |js| js["raceId"] == competition["raceId"]}, date)
       }
     end.compact
   end
 
-  def extract_groups_details(json)
+  def extract_groups_details(json, date)
     json.pluck("gender").uniq.map do |group|
       {
         group_name: "#{group.first.upcase}21E",
-        results:  extract_results(json.select { |js| js["gender"] == group })
+        results:  extract_results(json.select { |js| js["gender"] == group }, date)
       }
     end
   end
 
-  def extract_results(json)
+  def extract_results(json, date)
     json.map do |result|
       next if result["rank"].zero?
 
@@ -46,7 +47,7 @@ class IofResultsParser < BaseParser
         time:        convert_time(result["result"]),
         wre_points:  result["points"].to_i,
         runner_id:   result["runner_id"],
-        category_id: get_wre_category(result["points"].to_i)
+        category_id: get_wre_category(result["points"].to_i, date)
       }
     end.compact
   end
@@ -84,12 +85,14 @@ class IofResultsParser < BaseParser
     runner.update!(hash.slice(:wre_id, :sprint_wre_rang, :forest_wre_rang, :sprint_wre_place, :forest_wre_place))
   end
 
-  def get_wre_category(points)
+  def get_wre_category(points, date)
+    delta = date < "01.01.2024".to_date ? 50 : 0
+
     category_id = case points
-    when 700..999   then 4
-    when 900..1099  then 3
-    when 1100..1299 then 2
-    when 1300..1500 then 1
+    when 700..899                       then 4
+    when 900..(1049 + delta)            then 3
+    when (1050 + delta)..(1249 + delta) then 2
+    when (125- + delta)..1500           then 1
     else 10
     end
   end

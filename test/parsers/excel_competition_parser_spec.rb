@@ -59,7 +59,7 @@ RSpec.describe ExcelCompetitionParser, type: :model do
 
       expect(Result.first.attributes.except('created_at', 'updated_at').compact).to eq({
         "id"          => 1,
-        "date"        => "2024-01-01".to_date,
+        "date"        => "2023-12-31".to_date,
         "runner_id"   => 321,
         "group_id"    => 0,
         "category_id" => 3,
@@ -77,7 +77,7 @@ RSpec.describe ExcelCompetitionParser, type: :model do
       })
 
       expect(Entry.first.attributes.except('created_at', 'updated_at').compact).to eq({
-        "date"        => "2024-01-01".to_date,
+        "date"        => "2023-12-31".to_date,
         "id"          => 1,
         "runner_id"   => 321,
         "category_id" => 3,
