@@ -1,5 +1,6 @@
 class Competition < ApplicationRecord
   has_many :groups , dependent: :destroy
+  accepts_nested_attributes_for :groups
 
   before_save :add_checksum
 

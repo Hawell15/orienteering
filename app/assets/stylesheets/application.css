@@ -25,3 +25,7 @@ a {
   text-align: center;
   background-color: #ccffcc;
 }
+
+.half-width-table {
+    width: 30%;
+}

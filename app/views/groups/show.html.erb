@@ -25,14 +25,49 @@
     <p>
         <strong>Rang</strong>
         <%= @group.rang %>
-    </p>
-    <% if admin_user? %>
-        <%= form_tag(count_rang_path, method: :post) do %>
-            <%= hidden_field_tag :id, @group.id %>
-            <%= submit_tag 'Calculeaza categoriile' %>
+        <% if @group.rang %>
+        <%  percent_and_time_data = GroupCategoriesUpdater.new(@group).get_percent_and_times %>
+        <div class="half-width-table">
+            <table class="table table-striped table-bordered table-hover">
+                <thead class="table-warning">
+                    <tr>
+                        <th scope="col"> Categoria
+                        </th>
+                        <th> Procente
+                        </th>
+                        <th> Timpul
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% percent_and_time_data.each do |cat| %>
+                    <tr>
+                        <td>
+                            <%= cat[:category] %>
+                        </td>
+                        <td>
+                            <%= "#{cat[:percent]} %" %>
+                        </td>
+                        <td>
+                            <%= cat[:time] %>
+                        </td>
+                    </tr>
+                    <% end %>
+                </tbody>
+            </table>
+        </div>
         <% end %>
+    </p>
+    <div>
+    <% if admin_user? %>
+    <%= form_tag(count_rang_path, method: :post) do %>
+    <%= hidden_field_tag :id, @group.id %>
+    <%= submit_tag 'Calculeaza categoriile', class: "btn btn-info btn-sm" %>
     <% end %>
-     <table class="table table-striped table-bordered table-hover">
+    <% end %>
+    </div>
+    <hr>
+    <table class="table table-striped table-bordered table-hover">
         <thead class="table-primary">
             <tr>
                 <th scope="col">
@@ -64,8 +99,8 @@
                 <td>
                     <%= link_to "#{result.runner.runner_name} #{result.runner.surname}", result.runner  %>
                 </td>
-                 <td>
-                    <%= Entry.where(status: "confirmed").where(runner_id: result.runner_id).where('date < ?', result.date).order(date: :desc).first&.category&.category_name %>
+                <td>
+                    <%= (Entry.where(status: "confirmed").where(runner_id: result.runner_id).where('date < ?', result.date).order(date: :desc).first&.category || Category.find(10))&.category_name %>
                 </td>
                 <td>
                     <%= Time.at(result.time).utc.strftime('%H:%M:%S') %>
