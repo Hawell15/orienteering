@@ -22,7 +22,7 @@
     <% @competitions.each do |competition| %>
       <tr>
         <td><%= competition.date %></td>
-        <td><%= competition.competition_name %></td>
+        <td><%= link_to competition.competition_name, competition %></td>
         <td><%= competition.location %></td>
         <td><%= competition.country %></td>
         <td><%= competition.distance_type %></td>

@@ -14,7 +14,14 @@ Rails.application.routes.draw do
 
   resources :groups
   devise_for :users
-  resources :competitions
+
+  resources :competitions do
+    member do
+      get 'group_clasa', to: 'competitions#group_clasa'
+      post 'group_clasa', to: 'competitions#update_group_clasa', as: 'update_group_clasa'
+    end
+  end
+
   get 'home/index'
   post 'result/modal_new', to: 'results#modal_new', as: "modal_result"
 

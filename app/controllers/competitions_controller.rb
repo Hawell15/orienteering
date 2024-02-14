@@ -1,5 +1,5 @@
 class CompetitionsController < ApplicationController
-  before_action :set_competition, only: %i[show edit update destroy]
+  before_action :set_competition, only: %i[show edit update destroy group_clasa update_group_clasa]
 
   # GET /competitions or /competitions.json
   def index
@@ -34,6 +34,7 @@ class CompetitionsController < ApplicationController
     end
   end
 
+
   # PATCH/PUT /competitions/1 or /competitions/1.json
   def update
     remove_groups
@@ -58,6 +59,15 @@ class CompetitionsController < ApplicationController
       format.html { redirect_to competitions_url, notice: 'Competition was successfully destroyed.' }
       format.json { head :no_content }
     end
+  end
+
+  def group_clasa
+  end
+
+  def update_group_clasa
+    @competition.update(group_clasa_params)
+
+    redirect_to competition_url(@competition)
   end
 
   private
@@ -86,4 +96,9 @@ class CompetitionsController < ApplicationController
     params.require(:competition).permit(:competition_name, :date, :location, :country, :distance_type, :wre_id,
                                         :checksum, :group_list)
   end
+
+  def group_clasa_params
+    params.require(:competition).permit(groups_attributes: [:id, :clasa])
+  end
+
 end

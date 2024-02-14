@@ -16,7 +16,7 @@
   <tbody>
     <% @groups.each do |group| %>
       <tr>
-        <td><%= group.group_name %></td>
+        <td><%= link_to group.group_name, group %></td>
         <td><%= link_to group.competition.competition_name, group.competition %></td>
         <td><%= group.competition.date %></td>
         <td><%= group.rang %></td>

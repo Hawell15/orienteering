@@ -16,6 +16,12 @@ class GroupCategoriesUpdater
     end
   end
 
+  def get_percent_and_times
+    winner_time = @group.results.order(:place).first.time
+
+    get_percent_hash(winner_time).map { |k, v| { category: Category.find(k).category_name, percent: v, time: Time.at(v * winner_time / 100 ).utc.strftime('%H:%M:%S')} }
+  end
+
   def rang_array
     [
       [1200, { 4 => 147, 5 => 174, 6 => 209, 7 => 300, 8 => nil, 9 => nil }.compact],
@@ -70,18 +76,25 @@ class GroupCategoriesUpdater
 
   def get_time_hash
     winner_time = @group.results.order(:place).first.time
-    clasa       = @group.clasa
+    percent_hash = get_percent_hash(winner_time)
 
-    percent_hash = get_rang_percents(@group.rang).map do |k, v|
+    percent_hash.transform_values { |v| v * winner_time / 100  }
+  end
+
+  def get_percent_hash(winner_time)
+    clasa       = @group.clasa
+    return {} if @group.results.size < 3
+
+    get_rang_percents(@group.rang).map do |k, v|
       case clasa
       when 'MSRM', 'CMSRM', 'Seniori'
         [k, v] if [4, 5, 6].include?(k)
+      when 'Seniori + Juniori'
+        [k, v] if [4, 5, 6, 7, 8, 9].include?(k)
       when 'Juniori'
         [k, v] if [7, 8, 9].include?(k)
       end
     end.compact.to_h
-
-    percent_hash.transform_values { |v| v * winner_time / 100 }
   end
 
   def update_result_category(res, time_hash)
