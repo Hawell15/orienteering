@@ -11,32 +11,28 @@
     </div>
   <% end %>
 
-  <div class="field">
-    <%= form.label :date %>
-    <%= form.date_select :date %>
-  </div>
+<div class="row">
+    <div class="col">
+        <%= form.label :date ,'Data'%>
+        <%= form.date_select :date, {order: [:day, :month, :year], use_month_numbers: true, end_year: Date.today.year, start_year: 2015 } , class: "date-select" %>
+    </div>
+</div>
 
-  <div class="field">
-    <%= form.label :runner_id %>
-    <%= form.text_field :runner_id %>
-  </div>
+<div class="row">
+    <div class="col">
+        <%= form.select :runner_id, options_for_select(Runner.all.map { |runner| ["#{runner.runner_name} #{runner.surname}", runner.id] }, selected: entry&.runner_id), {}, { class: "form-select form-group form-control" } %>
 
-  <div class="field">
-    <%= form.label :category_id %>
-    <%= form.text_field :category_id %>
-  </div>
+    </div>
+    <div class="col">
+        <%= form.select :category_id,  options_for_select(Category.all.map { |category| [category.category_name, category.id] }, selected: entry&.category_id), {},{class: "form-select form-group form-control"} %>
+    </div>
+        <div class="col">
+         <%= form.select :status, options_for_select(["confirmed", "unconfirmed", "pending"],selected: entry&.status), {},{class: "form-select form-group form-control"} %>
+    </div>
+</div>
 
-  <div class="field">
-    <%= form.label :result_id %>
-    <%= form.text_field :result_id %>
-  </div>
-
-  <div class="field">
-    <%= form.label :status %>
-    <%= form.text_field :status %>
-  </div>
-
-  <div class="actions">
-    <%= form.submit %>
-  </div>
+ <div class="actions">
+    <%= form.submit class: "btn btn-success btn-sm"%>
+    <%= link_to 'Inapoi', request.referer, class: "btn btn-secondary btn-sm" %>
+</div>
 <% end %>
