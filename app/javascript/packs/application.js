@@ -27,3 +27,23 @@ window.show_hide_new_competition = function(html) {
     }
 }
 
+
+$(document).ready(function() {
+    $('th.sortable').on('click', function() {
+      console.log("aaa");
+      var sort_by = $(this).data('sort-by');
+      var current_url = new URL(window.location.href);
+      var current_sort_by = current_url.searchParams.get('sort_by');
+      var new_sort_by = sort_by;
+      var new_direction = 'asc';
+
+      if (current_sort_by === sort_by) {
+        var current_direction = current_url.searchParams.get('direction');
+        new_direction = (current_direction === 'asc') ? 'desc' : 'asc';
+      }
+
+      current_url.searchParams.set('sort_by', new_sort_by);
+      current_url.searchParams.set('direction', new_direction);
+      window.location.href = current_url;
+    });
+  });
