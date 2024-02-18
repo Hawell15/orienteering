@@ -1,55 +1,174 @@
-<p id="notice"><%= notice %></p>
-
+<p id="notice">
+    <%= notice %>
+</p>
 <h1 style="text-align:center; color:green">Sportivi</h1>
-
-<table class="table table-striped table-bordered table-hover">
-  <thead class="table-primary">
-     <tr>
-      <% query_hash = { category: params["category"] }%>
-      <th scope="col"> <%= link_to 'FOS ID',  query_hash.merge(sort: "id") %></th>
-      <th><%= link_to 'Nume', query_hash.merge(sort: "runner") %></th>
-      <th><%= link_to 'Genul', query_hash.merge(sort: "gender") %></th>
-      <th><%= link_to 'Data Nastere', query_hash.merge(sort: "dob") %></th>
-      <th><%= link_to 'Club', query_hash.merge(sort: "club_id") %></th>
-      <th><%= link_to 'Titlul Sportiv', query_hash.merge(sort: "best_category_id") %></th>
-      <th><%= link_to 'Categorie Valida', query_hash.merge(sort: "category_id") %></th>
-      <th><%= link_to 'Valabilitate ', query_hash.merge(sort: "category_valid") %></th>
-      <th><%= link_to 'WRE ID', query_hash.merge(sort: "wre_id") %></th>
-      <th><%= link_to 'Sprint WRE', query_hash.merge(sort: "sprint_wre_rang") %></th>
-      <th><%= link_to 'Padure WRE', query_hash.merge(sort: "forest_wre_rang") %></th>
-      <th colspan="3">Acțiuni</th>
-    </tr>
-  </thead>
-
-  <tbody>
-    <% @runners.each do |runner| %>
-      <tr>
-        <td><%= runner.id %></td>
-        <td><%= "#{runner.runner_name} #{runner.surname}" %></td>
-        <td><%= runner.gender %></td>
-        <td><%= runner.dob.strftime("%d/%m/%Y") %></td>
-        <td><%= link_to runner.club&.club_name, runner.club %></td>
-        <td><%= Category.find_by_id(runner.best_category_id)&.category_name %></td>
-        <td><%= runner.category.category_name %></td>
-        <td><%= runner.category_valid&.strftime("%d/%m/%Y") %></td>
-        <td><%= runner.wre_id %></td>
-        <td><%= "#{runner.sprint_wre_place}/#{runner.sprint_wre_rang}p" %></td>
-        <td><%= "#{runner.forest_wre_place}/#{runner.forest_wre_rang}p" %></td>
-        <td><%= link_to 'Arată', runner, class: "btn btn-warning btn-sm"%></td>
-        <% if admin_user? || club_admin?(runner.club) %>
-          <td><%= link_to 'Editează', edit_polymorphic_path(runner), class: "btn btn-success btn-sm"%></td>
-          <td><%= link_to 'Șterge', runner, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-danger btn-sm" %></td>
-        <% end %>
-      </tr>
-    <% end %>
-  </tbody>
-   <div class="pagination">
-  <%= will_paginate @runners, renderer: WillPaginate::ActionView::BootstrapLinkRenderer %>
-</div>
-</table>
-
+<%= form_tag runners_path, method: :get, id: 'runners_search_form' do %>
+<%= text_field_tag :search, params[:search], id: 'search', placeholder: "Cauta dupa Nume sau Prenume", class: "form-control mb-2"%>
+<%= submit_tag "Cauta", class: "btn btn-info" %>
+<hr>
+<%= label_tag "club_id", "Clubul", class: "label-filter" %>
+<%= select_tag :club_id, options_for_select(Club.pluck(:club_name, :id), params[:club_id]), include_blank: "Toate Cluburile", class: "custom-select" %>
 <br>
+<%= label_tag "category_id", "Categoria actuală", class: "label-filter" %>
+<%= select_tag :category_id, options_for_select(Category.pluck(:category_name, :id), params[:category_id]), include_blank: "Toate Categoriile",class: "custom-select" %>
+<br>
+<%= label_tag "best_category_id", "Titlul Sportiv", class: "label-filter" %>
+<%= select_tag :best_category_id, options_for_select(Category.pluck(:category_name, :id), params[:best_category_id]), include_blank: "Toate Categoriile",class: "custom-select" %>
+<br>
+<%= label_tag "gender", "Genul", class: "label-filter" %>
+<%= select_tag :gender, options_for_select(["M", "W"]), include_blank: "Toate Genurile", class: "custom-select" %>
+<br>
+<%= label_tag "wre", "WRE ID",class: "label-filter" %>
+<%= check_box_tag :wre, 1, params[:wre], id: "wre" %>
+<br>
+<%= label_tag "dob_from", "Data nasterii: De la", class: "label-filter" %>
+<%= text_field_tag :dob_from, params[:dob_from] , id: 'dob_from', placeholder: "zz/ll/aaaa", class: "datepicker custom-select" %>
+<%= label_tag "dob_to", "Pina la" %>
+<%= text_field_tag :dob_to, params[:dob_to], id: 'dob_to', placeholder: "zz/ll/aaaa", class: "datepicker custom-select" %>
 
+
+  <br>
+<%= submit_tag "Filtreaza", class: "btn btn-info" %>
+<ul id="suggestions"></ul>
+<% end %>
+<table class="table table-striped table-bordered table-hover" id="runners-table">
+    <thead class="table-primary">
+        <tr>
+            <% query_hash = params.to_unsafe_h%>
+            <th scope="col" class="sortable" data-sort-by="id">
+                <%= link_to 'FOS ID',  query_hash.merge(sort: "id") %>
+            </th>
+            <th class="sortable" data-sort-by="runner">
+                <%= link_to 'Nume', query_hash.merge(sort: "runner") %>
+            </th>
+            <th class="sortable" data-sort-by="gender">
+                <%= link_to 'Genul', query_hash.merge(sort: "gender") %>
+            </th>
+            <th class="sortable" data-sort-by="dob">
+                <%= link_to 'Data Nastere', query_hash.merge(sort: "dob") %>
+            </th>
+            <th class="sortable" data-sort-by="club">
+                <%= link_to 'Club', query_hash.merge(sort: "club") %>
+            </th>
+            <th class="sortable" data-sort-by="best_category_id">
+                <%= link_to 'Titlul Sportiv', query_hash.merge(sort: "best_category_id") %>
+            </th>
+            <th class="sortable" data-sort-by="category_id">
+                <%= link_to 'Categorie Valida', query_hash.merge(sort: "category_id") %>
+            </th>
+            <th class="sortable" data-sort-by="category_valid">
+                <%= link_to 'Valabilitate ', query_hash.merge(sort: "category_valid") %>
+            </th>
+            <th class="sortable" data-sort-by="wre_id">
+                <%= link_to 'WRE ID', query_hash.merge(sort: "wre_id") %>
+            </th>
+            <th class="sortable" data-sort-by="sprint_wre_rang">
+                <%= link_to 'Sprint WRE', query_hash.merge(sort: "sprint_wre_rang") %>
+            </th>
+            <th class="sortable" data-sort-by="forest_wre_rang">
+                <%= link_to 'Padure WRE', query_hash.merge(sort: "forest_wre_rang") %>
+            </th>
+            <th colspan="3">Acțiuni</th>
+        </tr>
+    </thead>
+    <tbody>
+        <% @runners.each do |runner| %>
+        <tr>
+            <td>
+                <%= runner.id %>
+            </td>
+            <td>
+                <%= "#{runner.runner_name} #{runner.surname}" %>
+            </td>
+            <td>
+                <%= runner.gender %>
+            </td>
+            <td>
+                <%= runner.dob.strftime("%d/%m/%Y") %>
+            </td>
+            <td>
+                <%= link_to runner.club&.club_name, runner.club %>
+            </td>
+            <td>
+                <%= Category.find_by_id(runner.best_category_id)&.category_name %>
+            </td>
+            <td>
+                <%= runner.category.category_name %>
+            </td>
+            <td>
+                <%= runner.category_valid&.strftime("%d/%m/%Y") %>
+            </td>
+            <td>
+                <%= runner.wre_id %>
+            </td>
+            <td>
+                <%= "#{runner.sprint_wre_place}/#{runner.sprint_wre_rang}p" %>
+            </td>
+            <td>
+                <%= "#{runner.forest_wre_place}/#{runner.forest_wre_rang}p" %>
+            </td>
+            <td>
+                <%= link_to 'Arată', runner, class: "btn btn-warning btn-sm"%>
+            </td>
+            <% if admin_user? || club_admin?(runner.club) %>
+            <td>
+                <%= link_to 'Editează', edit_polymorphic_path(runner), class: "btn btn-success btn-sm"%>
+            </td>
+            <td>
+                <%= link_to 'Șterge', runner, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-danger btn-sm" %>
+            </td>
+            <% end %>
+        </tr>
+        <% end %>
+    </tbody>
+    <div class="pagination">
+        <%= will_paginate @runners, renderer: WillPaginate::ActionView::BootstrapLinkRenderer %>
+    </div>
+</table>
+<br>
 <% if admin_user? || club_admin? %>
 <%= link_to 'Sportiv Nou', new_runner_path, class: "btn btn-info" %>
 <% end %>
+<script type="text/javascript">
+$(document).ready(function() {
+    $('#search').on('input', function() {
+        var query = $(this).val();
+        if (query.length >= 1) { // Adjust minimum length as needed
+            $.ajax({
+                url: '/runners',
+                type: 'GET',
+                data: { search: query },
+                dataType: 'html',
+                success: function(response) {
+                    var tableData = $(response).find('#runners-table').html();
+                    $('#runners-table').html(tableData);
+                    $('#search').focus(); // Re-focus on search input
+                }
+            });
+        } else { // Show all runners when search input is empty
+            $.ajax({
+                url: '/runners',
+                type: 'GET',
+                dataType: 'html',
+                success: function(response) {
+                    var tableData = $(response).find('#runners-table').html();
+                    $('#runners-table').html(tableData);
+                }
+            });
+        }
+    });
+});
+</script>
+<script>
+  $(document).ready(function() {
+    $('.datepicker').datepicker({
+      dateFormat: 'dd/mm/yy', // Set the desired date format
+      changeMonth: true, // Allow changing month
+      changeYear: true, // Allow changing year
+      showButtonPanel: true, // Show buttons for selecting today and clearing input
+    });
+  });
+</script>
+  <!-- Include jQuery UI -->
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>

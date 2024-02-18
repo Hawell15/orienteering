@@ -3,20 +3,33 @@ class RunnersController < ApplicationController
 
   # GET /runners or /runners.json
   def index
-    if params[:wre]
-      @runners = Runner.all.where.not(wre_id: nil)
-    elsif params[:category]
-       @runners = Runner.all.where(category_id: params[:category])
-    else
-      @runners = Runner.all
-    end
+    @runners = Runner.all
 
-    @runners = case params[:sort]
-               when 'runner'
-                 @runners.order(:runner_name, :surname)
-               else
-                 @runners.order(params[:sort])
-               end
+    @runners = @runners.where.not(wre_id: nil)                             if params[:wre]
+    @runners = @runners.where(club_id: params[:club_id])                   if params[:club_id].present?
+    @runners = @runners.where(category_id: params[:category_id])           if params[:category_id].present?
+    @runners = @runners.where(best_category_id: params[:best_category_id]) if params[:best_category_id].present?
+    @runners = @runners.where(gender: params[:gender])                     if params[:gender].present?
+
+
+  if params[:dob_from].present? || params[:dob_to].present?
+    dob_from = Date.parse(params[:dob_from]) if params[:dob_from].presence
+    dob_to = Date.parse(params[:dob_to]) if params[:dob_to].presence
+    @runners = @runners.where(dob: dob_from..dob_to)
+  end
+
+    if params[:sort_by].present?
+      direction = params[:direction] == 'desc' ? 'desc' : 'asc'
+      @runners = if params[:sort_by] == "runner"
+        @runners.order("runner_name" => direction, "surname" => direction)
+      elsif params[:sort_by] == "club"
+        @runners.joins(:club).order("clubs.club_name #{direction}")
+      else
+       @runners.order(params[:sort_by] => direction)
+     end
+   end
+
+    @runners = @runners.where("runner_name LIKE :search OR surname LIKE :search OR (runner_name || ' ' || surname) OR (surname || ' ' || runner_name) LIKE :search", search: "%#{params[:search]}%") if params[:search].present?
 
     @runners = @runners.paginate(page: params[:page], per_page: 20)
   end

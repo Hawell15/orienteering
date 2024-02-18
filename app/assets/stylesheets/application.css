@@ -26,6 +26,21 @@ a {
   background-color: #ccffcc;
 }
 
+.custom-select {
+  word-wrap: normal;
+  width: 300px;
+  border-radius: 0.375rem;
+  text-align: center;
+  background-color: lightblue;
+}
+
+.label-filter {
+  width: 150px; /* Adjust the width as needed */
+  display: inline-block;
+  text-align: left; /* Align text to the left */
+  margin-bottom: 5px; /* Add some spacing between labels */
+}
+
 .half-width-table {
     width: 30%;
 }

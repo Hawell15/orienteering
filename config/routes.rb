@@ -8,6 +8,7 @@ Rails.application.routes.draw do
   end
   resources :results
   resources :runners
+  get 'clubs/suggestions', to: 'clubs#suggestions'
   resources :clubs
   get 'categories/expired', to: 'categories#expired'
   resources :categories
