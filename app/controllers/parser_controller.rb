@@ -1,5 +1,10 @@
 class ParserController < ApplicationController
+  def index
+  end
+
   def file_results
+    return  redirect_to '/422.html' unless admin_user?
+
     return unless params[:path]
 
     respond_to do |format|
@@ -21,7 +26,9 @@ class ParserController < ApplicationController
   end
 
   def iof_runners
-     respond_to do |format|
+    return  redirect_to '/422.html' unless admin_user?
+
+    respond_to do |format|
       parser = IofRunnersParser.new
       parser.convert
 
@@ -30,7 +37,9 @@ class ParserController < ApplicationController
   end
 
   def iof_results
-     respond_to do |format|
+    return  redirect_to '/422.html' unless admin_user?
+
+    respond_to do |format|
       parser = IofResultsParser.new
       parser.convert
 
@@ -39,7 +48,9 @@ class ParserController < ApplicationController
   end
 
   def fos_data
-     respond_to do |format|
+    return  redirect_to '/422.html' unless admin_user?
+
+    respond_to do |format|
       parser = FosParser.new
       parser.convert
 

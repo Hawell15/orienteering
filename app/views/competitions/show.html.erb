@@ -30,10 +30,11 @@
         <%= wre_id %>
     </p>
     <% end %>
+    <% if admin_user? %>
     <hr class="my-4">
     <%= link_to 'Actualizeaza Clasele Grupelor', update_group_clasa_competition_path(@competition), class: "btn btn-success btn-sm" %>
     <hr class="my-4">
-
+    <% end %>
 <ul class="nav nav-pills">
   <% @competition.groups.order(:group_name).each_with_index do |group, index| %>
   <li class="nav-item">

@@ -8,7 +8,6 @@ Rails.application.routes.draw do
   end
   resources :results
   resources :runners
-  get 'clubs/suggestions', to: 'clubs#suggestions'
   resources :clubs
   get 'categories/expired', to: 'categories#expired'
   resources :categories
@@ -27,7 +26,7 @@ Rails.application.routes.draw do
   post 'result/modal_new', to: 'results#modal_new', as: "modal_result"
 
   root "home#index"
-
+  get 'parser/index', as: "parser"
   get 'parser/file_results', as: 'file_results'
   post 'parser/file_results'
   get 'parser/iof_runners', as: 'iof_runners'

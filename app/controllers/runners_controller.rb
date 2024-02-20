@@ -43,7 +43,10 @@ class RunnersController < ApplicationController
   end
 
   # GET /runners/1/edit
-  def edit; end
+  def edit
+    return unless admin_user?
+
+  end
 
   # POST /runners or /runners.json
   def create

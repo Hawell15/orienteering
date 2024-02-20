@@ -112,7 +112,7 @@
                     <%= result.date.as_json %>
                 </td>
                 <td>
-                    <%= link_to "#{result.group.competition.competition_name} #{result.date.year}", result.group.competition %>
+                    <%= link_to result.group.competition.competition_name, result.group.competition %>
                 </td>
                 <td>
                     <%= link_to result.group.group_name, result.group %>
