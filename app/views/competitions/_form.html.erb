@@ -18,7 +18,7 @@
         <%= form.text_field :competition_name, placeholder: "Numele Competitiei", class: "form-control"  %>
     </div>
     <div class="col">
-         <%= form.select :distance_type,  ["Sprint", "Medie", "Lunga", "Alegere", "Sprint Stafeta", "Stafeta", "Knock Out Sprint", "Alta"], {},{class: "form-select form-group form-control"} %>
+        <%= form.select :distance_type,  ["Sprint", "Medie", "Lunga", "Alegere", "Sprint Stafeta", "Stafeta", "Knock Out Sprint", "Alta"], {},{class: "form-select form-group form-control"} %>
     </div>
     <div class="col">
         <%= form.text_field :wre_id, placeholder: "WRE ID", class: "form-control"  %>
@@ -54,7 +54,5 @@
 </div>
 <% end %>
 <% else %>
-
 <h3> Doar administratorul poate adăuga competiție </h3>
 <% end %>
-

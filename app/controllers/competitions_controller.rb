@@ -3,10 +3,31 @@ class CompetitionsController < ApplicationController
 
   # GET /competitions or /competitions.json
   def index
-    @competitions = if params[:wre]
-       Competition.where.not(wre_id: nil)
-    else
-      Competition.all
+    @competitions = Competition.all
+
+    @competitions = @competitions.where.not(wre_id: nil) if params[:wre]
+    @competitions = @competitions.where(distance_type: params[:distance_type]) if params[:distance_type].present?
+    if params[:country].present?
+      @competitions = if params[:country] == 'Internationale'
+                        @competitions.where.not(country: 'Moldova')
+                      else
+                        @competitions.where(country: params[:country])
+                      end
+    end
+
+    if params[:date_from].present? || params[:date_to].present?
+      date_from = Date.parse(params[:date_from]) if params[:date_from].presence
+      date_to = Date.parse(params[:date_to]) if params[:date_to].presence
+      @competitions = @competitions.where(date: date_from..date_to)
+    end
+
+    if params[:sort_by].present?
+      direction = params[:direction] == 'desc' ? 'desc' : 'asc'
+      @competitions = @competitions.order(params[:sort_by] => direction)
+    end
+    if params[:search].present?
+      @competitions = @competitions.where('competition_name LIKE :search',
+                                          search: "%#{params[:search]}%")
     end
 
     @competitions = @competitions.paginate(page: params[:page], per_page: 10)
@@ -34,7 +55,6 @@ class CompetitionsController < ApplicationController
     end
   end
 
-
   # PATCH/PUT /competitions/1 or /competitions/1.json
   def update
     remove_groups
@@ -61,8 +81,7 @@ class CompetitionsController < ApplicationController
     end
   end
 
-  def group_clasa
-  end
+  def group_clasa; end
 
   def update_group_clasa
     @competition.update(group_clasa_params)
@@ -98,7 +117,6 @@ class CompetitionsController < ApplicationController
   end
 
   def group_clasa_params
-    params.require(:competition).permit(groups_attributes: [:id, :clasa])
+    params.require(:competition).permit(groups_attributes: %i[id clasa])
   end
-
 end
