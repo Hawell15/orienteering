@@ -12,6 +12,7 @@ import * as ActiveStorage from "@rails/activestorage"
 import "channels"
 import 'jquery';
 import "./application";
+import 'images/logo_fos.png';
 
 Rails.start()
 Turbolinks.start()

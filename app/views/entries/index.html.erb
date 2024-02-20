@@ -65,6 +65,7 @@
             <td>
                 <%= entry.status %>
             </td>
+            <% if admin_user? %>
             <td>
                 <%= link_to confirm_entry_path(entry), method: :patch do %>
                   <%= image_tag "/confirm.png", alt: "Approve", size: "35x30" %>
@@ -84,6 +85,10 @@
             <td><%= link_to 'Editează', edit_polymorphic_path(entry), class: "btn btn-success btn-sm"%>
 
             </td>
+            <% else %>
+            <td>
+            </td>
+        <% end %>
 
         </tr>
         <% end %>

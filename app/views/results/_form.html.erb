@@ -1,3 +1,4 @@
+<% if admin_user? %>
 <%= form_with(model: result) do |form| %>
 <% if result.errors.any? %>
 <div id="error_explanation">
@@ -14,10 +15,7 @@
 <% end %>
 <div class="row">
     <%= form.fields_for :group_attributes do |form_group| %>
-
     <%= render 'results_script', form_group: form_group, form: form %>
-
-
     <div class="col">
         <%= form_group.label :competition_id ,'Competitia'%>
         <%= form_group.select :competition_id,  options_for_select(Competition.all.map { |comp| [comp.competition_name, comp.id] } + [["Competitie Noua", nil]], selected: result&.group&.competition_id || 2), {},{class: "form-select form-group form-control"} %>
@@ -30,10 +28,8 @@
 <br>
 <% end %>
 <div class="row">
-
     <div class="col">
         <%= form.select :runner_id, options_for_select(Runner.all.map { |runner| ["#{runner.runner_name} #{runner.surname}", runner.id] }, selected: result&.runner_id), {}, { class: "form-select form-group form-control" } %>
-
     </div>
     <div class="col">
         <%= form.select :category_id,  options_for_select(Category.all.map { |category| [category.category_name, category.id] },selected: result&.category_id), {},{class: "form-select form-group form-control"} %>
@@ -75,4 +71,7 @@
     <%= form.submit class: "btn btn-success btn-sm"%>
     <%= link_to 'Inapoi', request.referer, class: "btn btn-secondary btn-sm" %>
 </div>
+<% end %>
+<% else %>
+<h3> Doar administratorul poate adăuga rezultat </h3>
 <% end %>

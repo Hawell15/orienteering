@@ -1,7 +1,13 @@
+<% if admin_user? %>
 <%= form_tag file_results_path, multipart: true  do %>
 
   <%= file_field_tag :path %>
 
   <%= submit_tag "Încarcă", class: "btn btn-primary" %>
 <% end %>
+<% else %>
+
+<h3> Doar administratorul poate accesa aceasta pagina </h3>
+<% end %>
+
 

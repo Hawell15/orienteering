@@ -1,0 +1,15 @@
+<% if admin_user? %>
+
+<%= link_to "WRE Ranking", iof_runners_path, class: "btn btn-primary" %>
+<br>
+<br>
+<%= link_to "WRE Rezultate", iof_results_path, class: "btn btn-primary" %>
+<br>
+<br>
+<%= link_to "FOS Date", iof_results_path, class: "btn btn-primary" %>
+<br>
+<br>
+<%= link_to "Categorii Expirate", categories_expired_path, class: "btn btn-primary" %>
+<% else %>
+<h3>Numai administratorul poate accesa aceasta pagina</h3>
+<% end %>

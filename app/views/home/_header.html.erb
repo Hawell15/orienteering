@@ -1,12 +1,13 @@
 <header class="navbar navbar-expand-lg navbar-light" style="background-color: #85de6a;">
     <div class="container-fluid">
-     <li> <%=link_to  image_tag("http://orienteering.md/wp-content/uploads/2021/05/logo_fos.png", class: "header-logo"), root_path, class: "logo nav-link" %></li>
+        <li>
+           <%= link_to image_tag(asset_pack_path('media/images/logo_fos.png'), class: "header-logo"), root_path, class: "logo nav-link" %>
+        </li>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-
                 <li class="nav-item">
                     <a class="nav-link" href="#"></a>
                 </li>
@@ -38,24 +39,28 @@
                         <%=link_to "Adauga Grupa",      new_group_path,       class: "dropdown-item" %>
                         <%=link_to "Adauga Rezultat",   new_result_path,      class: "dropdown-item" %>
                         <% if admin_user? %>
+                        <%=link_to "Adauga Din Fisier", file_results_path,      class: "dropdown-item" %>
                         <% end %>
                     </ul>
                 </li>
                 <% end %>
+                <% if admin_user? %>
                 <li class="nav-item">
+                    <%=link_to "Actualizează datele", parser_path, class: "nav-link" %>
                 </li>
+                 <% end %>
+                    <li class="nav-item">
+                    </li>
             </ul>
             <div class="col-md-3 text-end">
-
-        <% if user_signed_in? %>
-        <%=link_to 'Edit Profile', edit_user_registration_path, class: "btn btn-primary" %>
-        <%=link_to 'Sign Out', destroy_user_session_path, method: :delete, class: "btn btn-danger" %>
-        <% else %>
-        <%=link_to 'Sign Up', new_user_registration_path, class: "btn btn-success me-2" %>
-        <%=link_to 'Sign In', new_user_session_path, class: "btn btn-info" %>
-        <% end %>
-    </div>
-
+                <% if user_signed_in? %>
+                <%=link_to 'Edit Profile', edit_user_registration_path, class: "btn btn-primary" %>
+                <%=link_to 'Sign Out', destroy_user_session_path, method: :delete, class: "btn btn-danger" %>
+                <% else %>
+                <%=link_to 'Sign Up', new_user_registration_path, class: "btn btn-success me-2" %>
+                <%=link_to 'Sign In', new_user_session_path, class: "btn btn-info" %>
+                <% end %>
+            </div>
         </div>
     </div>
 </header>
