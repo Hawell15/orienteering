@@ -48,3 +48,33 @@ $(document).ready(function() {
       window.location.href = current_url;
     });
   });
+
+$(document).ready(function() {
+    $('#search').on('input', function() {
+        var query = $(this).val();
+        var data = location.pathname.replace('/', '');
+        if (query.length >= 1) { // Adjust minimum length as needed
+            $.ajax({
+                url: '/' + data,
+                type: 'GET',
+                data: { search: query },
+                dataType: 'html',
+                success: function(response) {
+                    var tableData = $(response).find('#'+ data + '-table').html();
+                    $('#'+ data + '-table').html(tableData);
+                    $('#search').focus(); // Re-focus on search input
+                }
+            });
+        } else {
+            $.ajax({
+                url: '/' + data,
+                type: 'GET',
+                dataType: 'html',
+                success: function(response) {
+                    var tableData = $(response).find('#'+ data + '-table').html();
+                    $('#'+ data + '-table').html(tableData);
+                }
+            });
+        }
+    });
+});

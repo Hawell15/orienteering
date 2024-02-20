@@ -51,7 +51,7 @@
                     <tr>
                         <td><strong>WRE ID: </strong></td>
                         <td>
-                            <%= @runner.wre_id %>
+                            <%= link_to @runner.wre_id, "https://ranking.orienteering.org/PersonView?person=#{@runner.wre_id}" %>
                         </td>
                     </tr>
                     <tr>

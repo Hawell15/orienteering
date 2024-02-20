@@ -29,7 +29,7 @@ class RunnersController < ApplicationController
      end
    end
 
-    @runners = @runners.where("runner_name LIKE :search OR surname LIKE :search OR (runner_name || ' ' || surname) OR (surname || ' ' || runner_name) LIKE :search", search: "%#{params[:search]}%") if params[:search].present?
+    @runners = @runners.where("runner_name LIKE :search OR surname LIKE :search OR (runner_name || ' ' || surname) LIKE :search OR (surname || ' ' || runner_name) LIKE :search", search: "%#{params[:search]}%") if params[:search].present?
 
     @runners = @runners.paginate(page: params[:page], per_page: 20)
   end
@@ -43,10 +43,7 @@ class RunnersController < ApplicationController
   end
 
   # GET /runners/1/edit
-  def edit
-    return unless admin_user?
-
-  end
+  def edit; end
 
   # POST /runners or /runners.json
   def create

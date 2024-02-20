@@ -25,9 +25,7 @@
 <%= text_field_tag :dob_from, params[:dob_from] , id: 'dob_from', placeholder: "zz/ll/aaaa", class: "datepicker custom-select" %>
 <%= label_tag "dob_to", "Pina la" %>
 <%= text_field_tag :dob_to, params[:dob_to], id: 'dob_to', placeholder: "zz/ll/aaaa", class: "datepicker custom-select" %>
-
-
-  <br>
+<br>
 <%= submit_tag "Filtreaza", class: "btn btn-info" %>
 <% end %>
 <table class="table table-striped table-bordered table-hover" id="runners-table">
@@ -130,44 +128,11 @@
 <% end %>
 <script type="text/javascript">
 $(document).ready(function() {
-    $('#search').on('input', function() {
-        var query = $(this).val();
-        if (query.length >= 1) { // Adjust minimum length as needed
-            $.ajax({
-                url: '/runners',
-                type: 'GET',
-                data: { search: query },
-                dataType: 'html',
-                success: function(response) {
-                    var tableData = $(response).find('#runners-table').html();
-                    $('#runners-table').html(tableData);
-                    $('#search').focus(); // Re-focus on search input
-                }
-            });
-        } else { // Show all runners when search input is empty
-            $.ajax({
-                url: '/runners',
-                type: 'GET',
-                dataType: 'html',
-                success: function(response) {
-                    var tableData = $(response).find('#runners-table').html();
-                    $('#runners-table').html(tableData);
-                }
-            });
-        }
+    $('.datepicker').datepicker({
+        dateFormat: 'dd/mm/yy',
+        changeMonth: true,
+        changeYear: true,
+        showButtonPanel: true,
     });
 });
 </script>
-<script>
-  $(document).ready(function() {
-    $('.datepicker').datepicker({
-      dateFormat: 'dd/mm/yy', // Set the desired date format
-      changeMonth: true, // Allow changing month
-      changeYear: true, // Allow changing year
-      showButtonPanel: true, // Show buttons for selecting today and clearing input
-    });
-  });
-</script>
-  <!-- Include jQuery UI -->
-  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
