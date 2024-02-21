@@ -92,7 +92,7 @@ class IofResultsParser < BaseParser
     when 700..899                       then 4
     when 900..(1049 + delta)            then 3
     when (1050 + delta)..(1249 + delta) then 2
-    when (125- + delta)..1500           then 1
+    when (1250 + delta)..1500           then 1
     else 10
     end
   end
