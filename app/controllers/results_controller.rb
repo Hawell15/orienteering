@@ -14,6 +14,12 @@ class ResultsController < ApplicationController
     @results = @results.where(category_id: params[:category_id]) if params[:category_id].present?
     @results = @results.where('wre_points > 0') if params[:wre]
 
+    if params[:date_from].present? || params[:date_to].present?
+      date_from = Date.parse(params[:date_from]) if params[:date_from].presence
+      date_to   = Date.parse(params[:date_to]) if params[:date_to].presence
+      @results  = @results.where(date: date_from..date_to)
+    end
+
     if params[:sort_by].present?
       direction = params[:direction] == 'desc' ? 'desc' : 'asc'
       @results = if params[:sort_by] == 'runner_name'

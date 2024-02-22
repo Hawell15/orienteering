@@ -9,11 +9,16 @@
 <%= label_tag "competition_id", "Competitia", class: "label-filter" %>
 <%= select_tag :competition_id, options_for_select(Competition.all.map { |comp| ["#{comp.competition_name} #{comp.date.year} #{comp.distance_type}", comp.id] }, params[:competition_id]), include_blank: "Toate Competitiile", class: "custom-select" %>
 <br>
-<%= label_tag "category_id", "Clubul", class: "label-filter" %>
+<%= label_tag "category_id", "Categoria indeplinita", class: "label-filter" %>
 <%= select_tag :category_id, options_for_select(Category.pluck(:category_name, :id), params[:category_id]), include_blank: "Toate Categoriile", class: "custom-select" %>
 <br>
 <%= label_tag "wre", "Doar Rezultate WRE",class: "label-filter" %>
 <%= check_box_tag :wre, 1, params[:wre], id: "wre" %>
+<br>
+<%= label_tag "date_from", "Data: De la", class: "label-filter" %>
+<%= text_field_tag :date_from, params[:date_from] , id: 'date_from', placeholder: "zz/ll/aaaa", class: "datepicker custom-select" %>
+<%= label_tag "date_to", "Pina la" %>
+<%= text_field_tag :date_to, params[:date_to], id: 'date_to', placeholder: "zz/ll/aaaa", class: "datepicker custom-select" %>
 <br>
 <%= submit_tag "Filtreaza", class: "btn btn-info" %>
 <% end %>
@@ -95,3 +100,13 @@
 <% if admin_user? || club_admin? %>
 <%= link_to 'Rezultat Nou', new_result_path, class: "btn btn-info" %>
 <% end %>
+<script type="text/javascript">
+$(document).ready(function() {
+    $('.datepicker').datepicker({
+        dateFormat: 'dd/mm/yy',
+        changeMonth: true,
+        changeYear: true,
+        showButtonPanel: true,
+    });
+});
+</script>
