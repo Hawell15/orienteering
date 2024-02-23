@@ -4,6 +4,15 @@ class CategoriesController < ApplicationController
   # GET /categories or /categories.json
   def index
     @categories = Category.all
+
+    if params[:sort_by].present?
+      direction = params[:direction] == 'desc' ? 'desc' : 'asc'
+      @categories = if params[:sort_by] == 'count_runners'
+         @categories.joins(:runners).group(:id).order("COUNT(runners.id) #{direction}")
+       else
+        @categories.order(params[:sort_by] => direction)
+      end
+    end
   end
 
   # GET /categories/1 or /categories/1.json
