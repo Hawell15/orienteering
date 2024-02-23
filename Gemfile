@@ -29,6 +29,7 @@ gem 'text'
 gem 'nokogiri'
 gem 'csv'
 gem 'roo'
+gem 'has_scope'
 
 # Use Redis adapter to run Action Cable in production
 # gem 'redis', '~> 4.0'
