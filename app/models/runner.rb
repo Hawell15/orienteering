@@ -2,6 +2,7 @@ class Runner < ApplicationRecord
   belongs_to :club
   belongs_to :category
   has_many :results
+  has_many :entries
 
   accepts_nested_attributes_for :results
 
