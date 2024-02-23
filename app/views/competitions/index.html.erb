@@ -23,27 +23,26 @@
     <br>
     <%= submit_tag "Filtreaza", class: "btn btn-info" %>
     <% end %>
-    <table class="table table-bordered table-hover table-striped"  id="competitions-table">
+    <table class="table table-bordered table-hover table-striped" id="competitions-table">
         <thead class="table-primary">
             <tr>
-                <% query_hash = params.to_unsafe_h%>
                 <th scope="col" class="sortable" data-sort-by="date">
-                    <%= link_to 'Data', query_hash.merge(sort: "date") %>
+                    <%= link_to 'Data' %>
                 </th>
                 <th class="sortable" data-sort-by="competition_name">
-                    <%= link_to 'Nume', query_hash.merge(sort: "competition_name")%>
+                    <%= link_to 'Nume'%>
                 </th>
                 <th class="sortable" data-sort-by="location">
-                    <%= link_to 'Oras', query_hash.merge(sort: "location")%>
+                    <%= link_to 'Oras'%>
                 </th>
                 <th class="sortable" data-sort-by="country">
-                    <%= link_to 'Tara', query_hash.merge(sort: "country")%>
+                    <%= link_to 'Tara'%>
                 </th>
                 <th class="sortable" data-sort-by="distance_type">
-                    <%= link_to 'Tipul distantei', query_hash.merge(sort: "distance_type")%>
+                    <%= link_to 'Tipul distantei'%>
                 </th>
                 <th class="sortable" data-sort-by="wre_id">
-                    <%= link_to 'Wre ID', query_hash.merge(sort: "wre_id")%>
+                    <%= link_to 'Wre ID'%>
                 </th>
                 <th colspan="3">Acțiuni</th>
             </tr>

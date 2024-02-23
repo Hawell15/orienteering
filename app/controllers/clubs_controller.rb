@@ -3,7 +3,16 @@ class ClubsController < ApplicationController
 
   # GET /clubs or /clubs.json
   def index
-    @clubs = Club.order("#{params[:sort]}")
+    @clubs = Club.all
+    if params[:sort_by].present?
+      direction = params[:direction] == 'desc' ? 'desc' : 'asc'
+      @clubs = @clubs.order(params[:sort_by] => direction)
+    end
+
+    if params[:search].present?
+      @clubs = @clubs.where('club_name LIKE :search OR territory LIKE :search OR representative LIKE :search OR email LIKE :search OR phone LIKE :search',
+                                          search: "%#{params[:search]}%")
+    end
   end
 
   # GET /clubs/1 or /clubs/1.json
