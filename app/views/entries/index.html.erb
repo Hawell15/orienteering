@@ -8,7 +8,7 @@
 <br>
 <%= label_tag "date[from]", "Data: De la", class: "label-filter", for: "date[from]" %>
 <%= text_field_tag "date[from]", params.dig("date","from"), id: "date[from]", placeholder: "zz/ll/aaaa", class: "datepicker custom-select" %>
-<%= label_tag "date[to]", "Data: De la", class: "label-filter" %>
+<%= label_tag "date[to]", "Pina la", class: "label-filter", for: "date[to]" %>
 <%= text_field_tag "date[to]", params.dig("date","to"), id: "date[to]", placeholder: "zz/ll/aaaa", class: "datepicker custom-select" %>
 <hr>
 <%= check_box_tag 'status[]', 'confirmed', params[:status]&.include?('confirmed'), id: 'confirmed-checkbox' %>
@@ -99,13 +99,3 @@
 </table>
 <br>
 <%= link_to 'New Entry', new_entry_path %>
-<script type="text/javascript">
-$(document).ready(function() {
-    $('.datepicker').datepicker({
-        dateFormat: 'dd/mm/yy',
-        changeMonth: true,
-        changeYear: true,
-        showButtonPanel: true,
-    });
-});
-</script>

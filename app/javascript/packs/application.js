@@ -31,7 +31,7 @@ window.show_hide_new_competition = function(html) {
 
 $(document).ready(function() {
     $('th.sortable').on('click', function() {
-      console.log("aaa");
+
       var sort_by = $(this).data('sort-by');
       var current_url = new URL(window.location.href);
       var current_sort_by = current_url.searchParams.get('sort_by');
@@ -78,3 +78,36 @@ $(document).ready(function() {
         }
     });
 });
+
+$(document).ready(function() {
+    $('#show_search').on('input', function() {
+        var query =$('#show_search').val();
+        var data = $('#show_search').attr('table_type');
+
+        if (query.length >= 1) { // Adjust minimum length as needed
+            $.ajax({
+                url: location.pathname,
+                type: 'GET',
+                data: { search: query },
+                dataType: 'html',
+                success: function(response) {
+                    var tableData = $(response).find('#'+ data + '-table').html();
+                    $('#'+ data + '-table').html(tableData);
+                    $('#show_search').focus(); // Re-focus on search input
+                }
+            });
+        } else {
+            $.ajax({
+                 url: location.pathname,
+                type: 'GET',
+                dataType: 'html',
+                success: function(response) {
+                    var tableData = $(response).find('#'+ data + '-table').html();
+                    $('#'+ data + '-table').html(tableData);
+                }
+            });
+        }
+    });
+});
+
+
