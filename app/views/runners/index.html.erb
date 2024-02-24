@@ -16,15 +16,15 @@
 <%= select_tag :best_category_id, options_for_select(Category.pluck(:category_name, :id), params[:best_category_id]), include_blank: "Toate Categoriile",class: "custom-select" %>
 <br>
 <%= label_tag "gender", "Genul", class: "label-filter" %>
-<%= select_tag :gender, options_for_select(["M", "W"]), include_blank: "Toate Genurile", class: "custom-select" %>
+<%= select_tag :gender, options_for_select(["M", "W"], params[:gender]), include_blank: "Toate Genurile", class: "custom-select" %>
 <br>
 <%= label_tag "wre", "WRE ID",class: "label-filter" %>
-<%= check_box_tag :wre, 1, params[:wre], id: "wre" %>
+<%= check_box_tag :wre, true, params[:wre], id: "wre" %>
 <br>
-<%= label_tag "dob_from", "Data nasterii: De la", class: "label-filter" %>
-<%= text_field_tag :dob_from, params[:dob_from] , id: 'dob_from', placeholder: "zz/ll/aaaa", class: "datepicker custom-select" %>
-<%= label_tag "dob_to", "Pina la" %>
-<%= text_field_tag :dob_to, params[:dob_to], id: 'dob_to', placeholder: "zz/ll/aaaa", class: "datepicker custom-select" %>
+<%= label_tag "dob[from]", "Data nasterii: De la", class: "label-filter", for: "dob[from]" %>
+<%= text_field_tag "dob[from]", params.dig("dob", "from") , id: 'dob[from]', placeholder: "zz/ll/aaaa", class: "datepicker custom-select" %>
+<%= label_tag "dob[to]", "Pina la", class: "label-filter", for: "dob[to]" %>
+<%= text_field_tag "dob[to]", params.dig("dob","to"), id: "dob[to]", placeholder: "zz/ll/aaaa", class: "datepicker custom-select" %>
 <br>
 <%= submit_tag "Filtreaza", class: "btn btn-info" %>
 <% end %>
@@ -125,13 +125,3 @@
 <% if admin_user? || club_admin? %>
 <%= link_to 'Sportiv Nou', new_runner_path, class: "btn btn-info" %>
 <% end %>
-<script type="text/javascript">
-$(document).ready(function() {
-    $('.datepicker').datepicker({
-        dateFormat: 'dd/mm/yy',
-        changeMonth: true,
-        changeYear: true,
-        showButtonPanel: true,
-    });
-});
-</script>

@@ -100,13 +100,3 @@
 <% if admin_user? || club_admin? %>
 <%= link_to 'Rezultat Nou', new_result_path, class: "btn btn-info" %>
 <% end %>
-<script type="text/javascript">
-$(document).ready(function() {
-    $('.datepicker').datepicker({
-        dateFormat: 'dd/mm/yy',
-        changeMonth: true,
-        changeYear: true,
-        showButtonPanel: true,
-    });
-});
-</script>

@@ -7,6 +7,24 @@ class Runner < ApplicationRecord
   accepts_nested_attributes_for :results
 
   before_save :add_checksum
+  scope :wre, -> { where.not(wre_id: nil) }
+  scope :club_id, -> (club_id) { where(club_id: club_id) }
+  scope :category_id, -> (category_id) { where(category_id: category_id) }
+  scope :best_category_id, -> (best_category_id) { where(best_category_id: best_category_id) }
+  scope :gender, -> (gender) { where(gender: gender) }
+  scope :search, -> (search) { where("runner_name LIKE :search OR surname LIKE :search OR (runner_name || ' ' || surname) LIKE :search OR (surname || ' ' || runner_name) LIKE :search", search: "%#{search}%")}
+  scope :dob, -> (from, to) { where dob: from..to }
+
+  scope :sorting, ->(sort_by, direction) {
+    case sort_by
+    when "runner"
+      order("runner_name #{direction}, surname #{direction}")
+    when "club"
+      joins(:club).order("clubs.club_name #{direction}")
+    else
+      order("#{sort_by} #{direction}")
+    end
+  }
 
   scope :matching_runner, ->(options) {
     where("wre_id = :wre_id or id = :id or checksum = :checksum",

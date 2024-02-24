@@ -1,36 +1,22 @@
 class RunnersController < ApplicationController
   before_action :set_runner, only: %i[show edit update destroy]
+  # has_scope :sorting, using: [:sorting, :direction]
+  has_scope :club_id
+  has_scope :category_id
+  has_scope :best_category_id
+  has_scope :gender
+  has_scope :search
+  has_scope :dob, using: %i[from to], type: :hash
+  has_scope :wre, type: :boolean
 
   # GET /runners or /runners.json
   def index
-    @runners = Runner.all
+    @runners = apply_scopes(Runner).all
 
-    @runners = @runners.where.not(wre_id: nil)                             if params[:wre]
-    @runners = @runners.where(club_id: params[:club_id])                   if params[:club_id].present?
-    @runners = @runners.where(category_id: params[:category_id])           if params[:category_id].present?
-    @runners = @runners.where(best_category_id: params[:best_category_id]) if params[:best_category_id].present?
-    @runners = @runners.where(gender: params[:gender])                     if params[:gender].present?
+    params[:dob][:to] = '31/12/2999' if params[:dob].present? && params.dig('dob', 'to').blank?
+    params[:dob][:from] = '01/01/0000' if params[:dob].present? && params.dig('dob', 'from').blank?
 
-
-  if params[:dob_from].present? || params[:dob_to].present?
-    dob_from = Date.parse(params[:dob_from]) if params[:dob_from].presence
-    dob_to = Date.parse(params[:dob_to]) if params[:dob_to].presence
-    @runners = @runners.where(dob: dob_from..dob_to)
-  end
-
-    if params[:sort_by].present?
-      direction = params[:direction] == 'desc' ? 'desc' : 'asc'
-      @runners = if params[:sort_by] == "runner"
-        @runners.order("runner_name" => direction, "surname" => direction)
-      elsif params[:sort_by] == "club"
-        @runners.joins(:club).order("clubs.club_name #{direction}")
-      else
-       @runners.order(params[:sort_by] => direction)
-     end
-   end
-
-    @runners = @runners.where("runner_name LIKE :search OR surname LIKE :search OR (runner_name || ' ' || surname) LIKE :search OR (surname || ' ' || runner_name) LIKE :search", search: "%#{params[:search]}%") if params[:search].present?
-
+    @runners = @runners.sorting(params[:sort_by], params[:direction]) if params[:sort_by]
     @runners = @runners.paginate(page: params[:page], per_page: 20)
   end
 
