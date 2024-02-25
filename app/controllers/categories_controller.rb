@@ -17,6 +17,18 @@ class CategoriesController < ApplicationController
 
   # GET /categories/1 or /categories/1.json
   def show
+    @runners = @category.runners
+    filtering_params = params.slice(:club_id, :best_category_id, :gender, :wre, :search, :sort_by, :dob)
+    filtering_params.each do |key, value|
+      next if value.blank?
+
+      @runners = case key
+      when "wre"     then @runners.wre
+      when "sort_by" then @runners.sorting(value, params[:direction])
+      when "dob"     then @runners.dob(value[:from].presence, value[:to].presence)
+      else @runners.public_send(key, value)
+      end
+    end
   end
 
   # GET /categories/new

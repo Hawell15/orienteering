@@ -16,43 +16,10 @@
     </p>
     <p>
         <strong>Numarul de sportivi:</strong>
-        <%= link_to @category.runners.count, runners_path(category: @category.id) %>
+        <%= link_to @category.runners.count, runners_path(category_id: @category.id) %>
     </p>
-    <table class="table table-striped table-bordered table-hover">
-        <thead class="table-primary">
-            <th scope="col">
-                <%= link_to 'FOS ID' %>
-            </th>
-            <th>
-                <%= link_to 'Nume' %>
-            </th>
-            <th>
-                <%= link_to 'Club' %>
-            </th>
-            <th>
-                <%= link_to 'Categorie Valida' %>
-            </th>
-        </thead>
-        <tbody>
-            <% @category.runners.order(:category_valid).each do |runner| %>
-            <tr>
-                <td>
-                    <%= runner.id %>
-                </td>
-                <td>
-                    <%= "#{runner.runner_name} #{runner.surname}" %>
-                </td>
-                <td>
-                    <%= link_to runner.club&.club_name, runner.club %>
-                </td>
+    <%= render partial: 'runners/runners_table', locals: { category: @category, runners: @runners, show_pagination: false, controller: "category"  } %>
 
-                <td>
-                    <%= runner.category_valid&.strftime("%d/%m/%Y") %>
-                </td>
-            </tr>
-            <% end %>
-        </tbody>
-    </table>
     <p class="lead">
         <% if admin_user? %>
         <%= link_to 'Editează', edit_polymorphic_path(@category), class: "btn btn-success btn-sm" %>
