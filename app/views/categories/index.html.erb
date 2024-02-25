@@ -33,7 +33,7 @@
                 <%= category.points %>
             </td>
             <td>
-                <%= link_to category.runners.count, runners_path(category: category.id) %>
+                <%= link_to category.runners.count, runners_path(category_id: category.id) %>
             </td>
             <td>
                 <%= link_to 'Arată', category, class: "btn btn-warning btn-sm"%>
