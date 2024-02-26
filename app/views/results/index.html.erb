@@ -2,7 +2,7 @@
     <%= notice %>
 </p>
 <h1 style="text-align:center; color:green">Rezultate</h1>
-<%= render partial: 'results_table', locals: { results: @results, show_pagination: true, controller: "category"  } %>
+<%= render partial: 'results_table', locals: { results: @results, runner: nil, show_pagination: true, controller: "category"  } %>
 
 <br>
 <% if admin_user? || club_admin? %>
