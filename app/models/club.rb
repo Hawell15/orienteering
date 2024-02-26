@@ -4,8 +4,8 @@ class Club < ApplicationRecord
 
   before_save :add_formatted_name
   before_save :add_formatted_alternative_names
-  scope :search, -> (search) { where('club_name LIKE :search OR territory LIKE :search OR representative LIKE :search OR email LIKE :search OR phone LIKE :search',
-                          search: "%#{search}%")}
+  scope :search, -> (search) { where('LOWER(club_name) LIKE :search OR LOWER(territory) LIKE :search OR LOWER(representative) LIKE :search OR LOWER(email) LIKE :search OR LOWER(phone)CONCAT LIKE :search',
+                          search: "%#{search.downcase}%")}
    scope :sorting, ->(sort_by, direction) { order("#{sort_by} #{direction}")}
 
 

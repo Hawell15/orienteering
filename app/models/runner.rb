@@ -12,7 +12,8 @@ class Runner < ApplicationRecord
   scope :category_id, -> (category_id) { where(category_id: category_id) }
   scope :best_category_id, -> (best_category_id) { where(best_category_id: best_category_id) }
   scope :gender, -> (gender) { where(gender: gender) }
-  scope :search, -> (search) { where("runner_name LIKE :search OR surname LIKE :search OR (runner_name || ' ' || surname) LIKE :search OR (surname || ' ' || runner_name) LIKE :search", search: "%#{search}%")}
+  scope :search, -> (search) { where("LOWER(CONCAT(runner_name, ' ', surname)) LIKE :search OR LOWER(CONCAT(surname, ' ', runner_name)) LIKE :search", search: "%#{search.downcase}%")
+}
   scope :dob, -> (from, to) { where dob: from..to }
 
   scope :sorting, ->(sort_by, direction) {

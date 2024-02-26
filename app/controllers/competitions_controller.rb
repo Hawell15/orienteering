@@ -26,8 +26,8 @@ class CompetitionsController < ApplicationController
       @competitions = @competitions.order(params[:sort_by] => direction)
     end
     if params[:search].present?
-      @competitions = @competitions.where('competition_name LIKE :search',
-                                          search: "%#{params[:search]}%")
+      @competitions = @competitions.where(' LOWER(competition_name) LIKE :search',
+                                          search: "%#{params[:search].downcase}%")
     end
 
     @competitions = @competitions.paginate(page: params[:page], per_page: 10)
