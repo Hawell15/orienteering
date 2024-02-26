@@ -12,6 +12,9 @@
 
 ActiveRecord::Schema.define(version: 2024_02_07_212327) do
 
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
+
   create_table "categories", force: :cascade do |t|
     t.string "category_name"
     t.string "full_name"
@@ -46,9 +49,9 @@ ActiveRecord::Schema.define(version: 2024_02_07_212327) do
 
   create_table "entries", force: :cascade do |t|
     t.date "date"
-    t.integer "runner_id", null: false
-    t.integer "category_id", null: false
-    t.integer "result_id"
+    t.bigint "runner_id", null: false
+    t.bigint "category_id", null: false
+    t.bigint "result_id"
     t.string "status", default: "unconfirmed"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
@@ -59,7 +62,7 @@ ActiveRecord::Schema.define(version: 2024_02_07_212327) do
 
   create_table "groups", force: :cascade do |t|
     t.string "group_name"
-    t.integer "competition_id", default: 0
+    t.bigint "competition_id", default: 0
     t.integer "rang"
     t.string "clasa"
     t.datetime "created_at", precision: 6, null: false
@@ -69,10 +72,10 @@ ActiveRecord::Schema.define(version: 2024_02_07_212327) do
 
   create_table "results", force: :cascade do |t|
     t.integer "place"
-    t.integer "runner_id", null: false
+    t.bigint "runner_id", null: false
     t.integer "time", default: 0
-    t.integer "category_id", default: 10, null: false
-    t.integer "group_id", default: 0, null: false
+    t.bigint "category_id", default: 10, null: false
+    t.bigint "group_id", default: 0, null: false
     t.integer "wre_points"
     t.date "date"
     t.datetime "created_at", precision: 6, null: false
@@ -86,11 +89,11 @@ ActiveRecord::Schema.define(version: 2024_02_07_212327) do
     t.string "runner_name"
     t.string "surname"
     t.date "dob", default: "2024-01-23"
-    t.integer "club_id", default: 0
+    t.bigint "club_id", default: 0
     t.string "gender"
     t.integer "wre_id"
-    t.integer "best_category_id", default: 10
-    t.integer "category_id", default: 10
+    t.bigint "best_category_id", default: 10
+    t.bigint "category_id", default: 10
     t.date "category_valid", default: "2100-01-01"
     t.integer "sprint_wre_rang"
     t.integer "forest_wre_rang"

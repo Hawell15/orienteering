@@ -11,7 +11,8 @@ end %>
 <br>
 <% end %>
 <%= label_tag "competition_id", "Competitia", class: "label-filter" %>
-<%= select_tag :competition_id, options_for_select( Competition.joins(groups: :results).where('results.id IN (?)', runner.results.map(&:id)).map { |comp| ["#{comp.competition_name} #{comp.date.year} #{comp.distance_type}", comp.id] }, params[:competition_id]), include_blank: "Toate Competitiile", class: "custom-select" %>
+<% competition_list = runner ? Competition.joins(groups: :results).where('results.id IN (?)', runner.results.map(&:id)) : Competition.all %>
+<%= select_tag :competition_id, options_for_select(competition_list.map { |comp| ["#{comp.competition_name} #{comp.date.year} #{comp.distance_type}", comp.id] }, params[:competition_id]), include_blank: "Toate Competitiile", class: "custom-select" %>
 <br>
 <%= label_tag "category_id", "Categoria indeplinita", class: "label-filter" %>
 <%= select_tag :category_id, options_for_select(Category.pluck(:category_name, :id), params[:category_id]), include_blank: "Toate Categoriile", class: "custom-select" %>
