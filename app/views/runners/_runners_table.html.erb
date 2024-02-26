@@ -74,7 +74,9 @@ end %>
             <th class="sortable" data-sort-by="forest_wre_rang">
                 <%= link_to 'Padure WRE' %>
             </th>
+            <% unless controller %>
             <th colspan="3">Acțiuni</th>
+             <% end %>
         </tr>
     </thead>
     <tbody>
@@ -117,6 +119,7 @@ end %>
             <td>
                 <%= "#{runner.forest_wre_place}/#{runner.forest_wre_rang}p" %>
             </td>
+             <% unless controller  %>
             <td>
                 <%= link_to 'Arată', runner, class: "btn btn-warning btn-sm"%>
             </td>
@@ -128,6 +131,7 @@ end %>
                 <%= link_to 'Șterge', runner, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-danger btn-sm" %>
             </td>
             <% end %>
+             <% end %>
         </tr>
         <% end %>
     </tbody>
