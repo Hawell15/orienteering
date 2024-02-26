@@ -33,5 +33,4 @@ Rails.application.routes.draw do
   get 'parser/iof_results', as: 'iof_results'
   get 'parser/fos_data', as: 'fos_data'
   post 'groups/count_rang', as: 'count_rang'
-  # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
 end
