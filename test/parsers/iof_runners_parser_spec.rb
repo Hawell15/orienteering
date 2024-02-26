@@ -32,17 +32,6 @@ RSpec.describe IofRunnersParser, type: :model do
 
       expect(Runner.all.map { |runner| runner.attributes.slice(*values).compact }).to eq([
         {
-          "id"               => 1,
-          "runner_name"      => "Fomiciov",
-          "surname"          => "Anatolii",
-          "dob"              => "1997-05-26".to_date,
-          "gender"           => "M",
-          "checksum"         => (Digest::SHA2.new << "Fomiciov-Anatolii-1997-M").to_s,
-          "wre_id"           => 22504,
-          "sprint_wre_place" => 241,
-          "sprint_wre_rang"  => 5695
-        },
-        {
           "id"               => 270,
           "runner_name"      => "Ciobanu",
           "surname"          => "Roman",
@@ -56,7 +45,18 @@ RSpec.describe IofRunnersParser, type: :model do
           "sprint_wre_rang"  => 4982
         },
         {
-          "id"               => 271,
+          "id"               => 1,
+          "runner_name"      => "Fomiciov",
+          "surname"          => "Anatolii",
+          "dob"              => "1997-05-26".to_date,
+          "gender"           => "M",
+          "checksum"         => (Digest::SHA2.new << "Fomiciov-Anatolii-1997-M").to_s,
+          "wre_id"           => 22504,
+          "sprint_wre_place" => 241,
+          "sprint_wre_rang"  => 5695
+        },
+        {
+          "id"               => 2,
           "runner_name"      => "Ribediuc",
           "surname"          => "Galina",
           "dob"              => "1989-01-01".to_date,
@@ -67,7 +67,7 @@ RSpec.describe IofRunnersParser, type: :model do
           "forest_wre_rang"  => 6051
         },
         {
-          "id"               => 272,
+          "id"               => 3,
           "runner_name"      => "Nosenco",
           "surname"          => "Victoria",
           "dob"              => "2007-01-01".to_date,
@@ -80,7 +80,7 @@ RSpec.describe IofRunnersParser, type: :model do
           "sprint_wre_rang"  => 5309
         },
         {
-          "id"               => 273,
+          "id"               => 4,
           "runner_name"      => "Cecan",
           "surname"          => "Olesea",
           "dob"              => "1989-01-01".to_date,

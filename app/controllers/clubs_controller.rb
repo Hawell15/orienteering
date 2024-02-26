@@ -63,7 +63,7 @@ class ClubsController < ApplicationController
 
   # DELETE /clubs/1 or /clubs/1.json
   def destroy
-    @club.runners.update_all(club_id: 0)
+    @club.runners.update_all(club_id: 1)
 
     @club.destroy
 

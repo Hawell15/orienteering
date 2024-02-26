@@ -23,7 +23,7 @@ RSpec.describe ExcelCompetitionParser, type: :model do
       expect(@competition).to eq(Competition.last)
 
       expect(@competition.attributes.except('created_at', 'updated_at').compact).to eq({
-        'id'               => 2,
+        'id'               => 3,
         'competition_name' => 'Test dsadsa',
         'date'             => '2024-01-01'.to_date,
         'distance_type'    => 'Sprint',
@@ -33,13 +33,13 @@ RSpec.describe ExcelCompetitionParser, type: :model do
       })
 
       expect(Group.last.attributes.except('created_at', 'updated_at').compact).to eq({
-        "id"             => 3,
+        "id"             => 4,
         "group_name"     => "M21",
-        "competition_id" => 2,
+        "competition_id" => 3,
         "clasa"          => "MSRM"
       })
       expect(Club.last.attributes.except('created_at', 'updated_at').compact).to eq({
-        "id"                    => 2,
+        "id"                    => 3,
         "club_name"             => "Dinamo-Old",
         "formatted_name"        => "dinamoold"
       })
@@ -54,14 +54,14 @@ RSpec.describe ExcelCompetitionParser, type: :model do
         "category_id"      => 10,
         "best_category_id" => 10,
         "category_valid"   => "2100-01-01".to_date,
-        "club_id"          => 1
+        "club_id"          => 2
       })
 
       expect(Result.first.attributes.except('created_at', 'updated_at').compact).to eq({
         "id"          => 1,
         "date"        => "2023-12-31".to_date,
         "runner_id"   => 321,
-        "group_id"    => 0,
+        "group_id"    => 1,
         "category_id" => 3,
         "time"        => 0
       })
@@ -70,7 +70,7 @@ RSpec.describe ExcelCompetitionParser, type: :model do
         "id"          => 5,
         "date"        => "2024-01-01".to_date,
         "runner_id"   => 273,
-        "group_id"    => 3,
+        "group_id"    => 4,
         "category_id" => 10,
         "place"       => 2,
         "time"        => 1271

@@ -17,14 +17,14 @@ class FosParser < BaseParser
 
   def extract_competition_details(html)
     @hash = {
-      competition_id: 0,
+      competition_id: 1,
       groups: extract_groups_details(html)
     }
   end
 
   def extract_groups_details(html)
       [{
-        group_id: 0,
+        group_id: 1,
         results:  extract_results(html)
       }]
   end
@@ -53,7 +53,7 @@ class FosParser < BaseParser
       surname:          surname,
       dob:              "#{tr.css("td")[headers_index[:dob]].text}-01-01",
       gender:           extract_gender(tr.css("td")[headers_index[:gender]].text.presence || detect_gender(surname)),
-      club:             tr.css("td")[headers_index[:club]].text.presence || Club.find(0).club_name,
+      club:             tr.css("td")[headers_index[:club]].text.presence || Club.find(1).club_name,
       best_category_id: convert_category(tr.css("td")[headers_index[:best_category]].text).id,
       id:               tr.css("td")[headers_index[:id]].text.to_i,
       skip_matching:    true

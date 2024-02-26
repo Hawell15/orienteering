@@ -33,6 +33,18 @@ end
 # load "#{Rails.root}/db/seeds.rb"
 
 RSpec.configure do |config|
+    config.before(:each) do
+    # Reset primary key sequences for all models
+    Rails.application.eager_load!
+    ActiveRecord::Base.descendants.each do |model|
+      if model.table_exists?
+        if ActiveRecord::Base.connection.adapter_name.downcase.include?("postgresql")
+          ActiveRecord::Base.connection.reset_pk_sequence!(model.table_name)
+        end
+      end
+    end
+  end
+  # load "#{Rails.root}/db/seeds.rb"
 
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
   config.fixture_path = Rails.root.join('test/fixtures')

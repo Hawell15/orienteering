@@ -18,7 +18,7 @@
     <%= render 'results_script', form_group: form_group, form: form %>
     <div class="col">
         <%= form_group.label :competition_id ,'Competitia'%>
-        <%= form_group.select :competition_id,  options_for_select(Competition.all.map { |comp| [comp.competition_name, comp.id] } + [["Competitie Noua", nil]], selected: result&.group&.competition_id || 2), {},{class: "form-select form-group form-control"} %>
+        <%= form_group.select :competition_id,  options_for_select(Competition.all.map { |comp| [comp.competition_name, comp.id] } + [["Competitie Noua", nil]], selected: result&.group&.competition_id || 3), {},{class: "form-select form-group form-control"} %>
     </div>
     <div class="col" id="group-data">
     </div>

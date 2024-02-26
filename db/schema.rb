@@ -89,7 +89,7 @@ ActiveRecord::Schema.define(version: 2024_02_07_212327) do
     t.string "runner_name"
     t.string "surname"
     t.date "dob", default: "2024-01-23"
-    t.bigint "club_id", default: 0
+    t.bigint "club_id", default: 1
     t.string "gender"
     t.integer "wre_id"
     t.bigint "best_category_id", default: 10

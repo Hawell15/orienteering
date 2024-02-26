@@ -32,14 +32,14 @@ RSpec.describe FosParser, type: :model do
         "category_id"      => 2,
         "best_category_id" => 2,
         "category_valid"   => "2024-09-25".to_date,
-        "club_id"          => 1
+        "club_id"          => 2
       })
 
       expect(Result.first.attributes.except('created_at', 'updated_at').compact).to eq({
         "id"          => 1,
         "date"        => "2022-09-25".to_date,
         "runner_id"   => 1,
-        "group_id"    => 0,
+        "group_id"    => 1,
         "category_id" => 2,
         "time"        => 0
       })

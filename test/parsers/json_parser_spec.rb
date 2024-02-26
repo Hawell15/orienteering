@@ -5,7 +5,7 @@ require 'rails_helper'
 RSpec.describe JsonParser, type: :model do
   before(:each) do
       Runner.create!(runner_name: "Ciobanu", surname: "Roman", dob: "1991-02-15", gender: "M", category_id: 6)
-      Runner.create!(id: 2, category_id: 2)
+      Runner.create!(category_id: 2)
       Runner.create!(runner_name: "Gutur", surname: "Daria", dob: "2009-02-15", gender: "W", category_id: 2)
   end
 
@@ -24,7 +24,7 @@ RSpec.describe JsonParser, type: :model do
       expect(@competition).to eq(Competition.last)
 
       expect(@competition.attributes.except('created_at', 'updated_at').compact).to eq({
-        'id'               => 2,
+        'id'               => 3,
         'competition_name' => 'Some Competition',
         'date'             => '2023-10-14'.to_date,
         'distance_type'    => 'заданка',
@@ -32,13 +32,13 @@ RSpec.describe JsonParser, type: :model do
       })
 
       expect(Group.last.attributes.except('created_at', 'updated_at').compact).to eq({
-        "id"             => 3,
+        "id"             => 4,
         "group_name"     => "W14",
-        "competition_id" => 2,
+        "competition_id" => 3,
         "clasa"          => "Juniori"
       })
       expect(Club.last.attributes.except('created_at', 'updated_at').compact).to eq({
-        "id"                    => 3,
+        "id"                    => 4,
         "club_name"             => "CMTT Chișinău",
         "formatted_name"        => "cmttchisinau"
       })
@@ -53,14 +53,14 @@ RSpec.describe JsonParser, type: :model do
         "category_id"      => 10,
         "best_category_id" => 10,
         "category_valid"   => "2100-01-01".to_date,
-        "club_id"          => 3
+        "club_id"          => 4
       })
 
       expect(Result.first.attributes.except('created_at', 'updated_at').compact).to eq({
         "id"          => 1,
         "date"        => "2023-10-13".to_date,
         "runner_id"   => 1,
-        "group_id"    => 0,
+        "group_id"    => 1,
         "category_id" => 2,
         "time"        => 0
       })
@@ -69,7 +69,7 @@ RSpec.describe JsonParser, type: :model do
         "id"          => 6,
         "date"        => "2023-10-14".to_date,
         "runner_id"   => 4,
-        "group_id"    => 3,
+        "group_id"    => 4,
         "category_id" => 10,
         "place"       => 2,
         "time"        => 702

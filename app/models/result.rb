@@ -46,7 +46,7 @@ class Result < ApplicationRecord
       result.wre_points  = params["wre_points"]  if params["category_id"]
     end
 
-    if (result.category_id.to_i <= result.runner.category_id.to_i) || result.group_id == 1
+    if (result.category_id.to_i <= result.runner.category_id.to_i) || result.group_id == 2
       Entry.add_entry(result.slice(:runner_id, :date, :category_id).merge(result_id: result.id), status )
     end
 

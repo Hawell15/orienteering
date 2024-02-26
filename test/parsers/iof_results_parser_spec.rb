@@ -34,22 +34,22 @@ RSpec.describe IofResultsParser, type: :model do
           'date'             => '2022-08-25'.to_date,
           'distance_type'    => 'Sprint',
           'wre_id'           => 7421,
-          'id'               => 6,
+          'id'               => 7,
           'checksum'         => (Digest::SHA2.new << "South-East European Orienteering Championship – Sprint-2022-08-25-Sprint-7421").to_s
         }
       )
 
       expect(Group.last.attributes.except('created_at', 'updated_at').compact).to eq({
-        "id"             => 6,
+        "id"             => 7,
         "group_name"     => "W21E",
-        "competition_id" => 6
+        "competition_id" => 7
       })
 
       expect(Result.first.attributes.except('created_at', 'updated_at').compact).to eq({
         "id"          => 1,
         "date"        => "2023-09-16".to_date,
         "runner_id"   => 1,
-        "group_id"    => 2,
+        "group_id"    => 3,
         "category_id" => 4,
         "time"        => 3146,
         "place"       => 12,
