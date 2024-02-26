@@ -25,8 +25,8 @@ class GroupsController < ApplicationController
 
     return unless params[:search].present?
 
-    @groups = @groups.where('group_name LIKE :search',
-                            search: "%#{params[:search]}%")
+    @groups = @groups.where('LOWER(group_name) LIKE :search',
+                            search: "%#{params[:search].downcase}%")
   end
 
   # GET /groups/1 or /groups/1.json
