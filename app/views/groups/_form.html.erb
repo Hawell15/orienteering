@@ -19,7 +19,7 @@
         <%= form.text_field :group_name, placeholder: "Numele Grupei", class: "form-control"  %>
     </div>
     <div class="col">
-        <%= form.select :competition_id,  options_for_select(Competition.all.map { |comp| [comp.competition_name, comp.id] } + [["Competitie Noua", nil]], selected: (@group.competition_id || 2)), {},{class: "form-select form-group form-control", onChange: "show_hide_new_competition('#{j(render(partial: 'competitions/create_competition', locals: { form: @form }))}')"} %>
+        <%= form.select :competition_id,  options_for_select(Competition.all.map { |comp| [comp.competition_name, comp.id] } + [["Competitie Noua", nil]], selected: (@group.competition_id || 3)), {},{class: "form-select form-group form-control", onChange: "show_hide_new_competition('#{j(render(partial: 'competitions/create_competition', locals: { form: @form }))}')"} %>
     </div>
 </div>
 <br>

@@ -31,7 +31,7 @@ $(document).ready(function() {
     $('[id*="_group_attributes_competition_id"]').on('change', function() {
         var id = $(this).val();
 
-        if (id != "" && id < 2) {
+        if (id != "" && id < 3) {
             $('#result-details').hide();
             $('#date-details').show();
             showHideNewCompetition();
@@ -48,7 +48,7 @@ $(document).ready(function() {
 window.competitionChange = function() {
     var id = $('[id*="_group_attributes_competition_id"]').val();
 
-    if (id != "" && id < 2) {
+    if (id != "" && id < 3) {
            $('#result-details').hide();
            $('#date-details').show();
            showHideNewCompetition();

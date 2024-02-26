@@ -40,7 +40,7 @@ class ResultFormParser < BaseParser
   def extract_groups_details(params)
     json = params["group_attributes"]
 
-    if (params["group_id"]  = ["0", "1"].detect { |id| id == params.dig("group_attributes", "competition_id") })
+    if (params["group_id"]  = ["1", "2"].detect { |id| id == params.dig("group_attributes", "competition_id") })
     end
 
     [{
@@ -53,7 +53,7 @@ class ResultFormParser < BaseParser
   end
 
   def  extract_results(json)
-    if json["date(1i)"] && ["0", "1"].include?(params.dig("group_attributes", "competition_id"))
+    if json["date(1i)"] && ["1", "2"].include?(params.dig("group_attributes", "competition_id"))
       date_params = json.slice('date(1i)', 'date(2i)', 'date(3i)').values.map(&:to_i)
       date        = Date.new(*date_params).as_json
     end

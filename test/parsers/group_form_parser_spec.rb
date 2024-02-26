@@ -5,8 +5,8 @@ require 'rails_helper'
 RSpec.describe GroupFormParser, type: :model do
   describe '#convert' do
     it 'passes flow with existing competition' do
-      Competition.create!(id: 2)
-      params = { 'group_name' => 'Test Group', 'competition_id' => '2', 'rang' => '1', 'clasa' => 'Seniori' }
+      Competition.create!(id: 3)
+      params = { 'group_name' => 'Test Group', 'competition_id' => '3', 'rang' => '1', 'clasa' => 'Seniori' }
       group_form_parser = GroupFormParser.new(params)
 
       expect { @group = group_form_parser.convert}
@@ -21,9 +21,9 @@ RSpec.describe GroupFormParser, type: :model do
 
       expect(@group.attributes.except('created_at', 'updated_at')).to eq(
         {
-          'id'             => 2,
+          'id'             => 3,
           'group_name'     => 'TestGroup',
-          'competition_id' => 2,
+          'competition_id' => 3,
           'rang'           => 1,
           'clasa'          => 'Seniori'
         }
@@ -31,7 +31,7 @@ RSpec.describe GroupFormParser, type: :model do
     end
 
     it 'passes flow with new competition' do
-      Competition.create!(id: 2)
+      Competition.create!
       params = {
         'group_name' => 'Test Group',
         'competition_id' => '',
@@ -62,9 +62,9 @@ RSpec.describe GroupFormParser, type: :model do
 
       expect(@group.attributes.except('created_at', 'updated_at')).to eq(
         {
-          'id'             => 2,
+          'id'             => 3,
           'group_name'     => 'TestGroup',
-          'competition_id' => 3,
+          'competition_id' => 4,
           'rang'           => 1,
           'clasa'          => 'MSRM'
         }
@@ -72,7 +72,7 @@ RSpec.describe GroupFormParser, type: :model do
       expect(@group).to eq(Group.last)
       expect(Competition.last.attributes.except('created_at', 'updated_at')).to eq(
         {
-          'id'               => 3,
+          'id'               => 4,
           'competition_name' => 'Test Comp',
           'date'             => '2024-02-01'.to_date,
           'distance_type'    => 'Sprint',

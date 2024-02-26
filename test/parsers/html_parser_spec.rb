@@ -23,7 +23,7 @@ RSpec.describe HtmlParser, type: :model do
       expect(@competition).to eq(Competition.last)
 
       expect(@competition.attributes.except('created_at', 'updated_at').compact).to eq({
-        'id'               => 2,
+        'id'               => 3,
         'competition_name' => 'Maratonul Nemuritorilor',
         'date'             => '2023-11-19'.to_date,
         'distance_type'    => 'Ultralong',
@@ -31,12 +31,12 @@ RSpec.describe HtmlParser, type: :model do
       })
 
       expect(Group.last.attributes.except('created_at', 'updated_at').compact).to eq({
-        "id"             => 3,
+        "id"             => 4,
         "group_name"     => "MMiddle",
-        "competition_id" => 2,
+        "competition_id" => 3,
       })
       expect(Club.last.attributes.except('created_at', 'updated_at').compact).to eq({
-        "id"                    => 3,
+        "id"                    => 4,
         "club_name"             => "Run Kompass, Молдова",
         "formatted_name"        => "runcompass"
       })
@@ -51,14 +51,14 @@ RSpec.describe HtmlParser, type: :model do
         "category_id"      => 10,
         "best_category_id" => 10,
         "category_valid"   => "2100-01-01".to_date,
-        "club_id"          => 3
+        "club_id"          => 4
       })
 
       expect(Result.first.attributes.except('created_at', 'updated_at').compact).to eq({
         "id"          => 1,
         "date"        => "2023-11-18".to_date,
         "runner_id"   => 3,
-        "group_id"    => 0,
+        "group_id"    => 1,
         "category_id" => 4,
         "time"        => 0
       })
@@ -67,7 +67,7 @@ RSpec.describe HtmlParser, type: :model do
         "id"          => 8,
         "date"        => "2023-11-19".to_date,
         "runner_id"   => 2,
-        "group_id"    => 3,
+        "group_id"    => 4,
         "category_id" => 10,
         "place"       => 3,
         "time"        => 4799

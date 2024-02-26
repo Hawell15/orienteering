@@ -4,13 +4,13 @@ require 'rails_helper'
 
 RSpec.describe ResultFormParser, type: :model do
   before(:each) do
-    Runner.create!("id": 1, "club_id": 0, "category_id": 6, "best_category_id": 6)
+    Runner.create!("id": 1, "club_id": 1, "category_id": 6, "best_category_id": 6)
   end
 
 
   describe '#convert' do
     it 'passes flow with Fara Competitie lower category' do
-      params = {"place"=>"", "runner_id"=>"1", "time"=>"0", "category_id"=>"7", "wre_points"=>"", "date(3i)"=>"1", "date(2i)"=>"2", "date(1i)"=>"2024", "group_attributes"=>{"competition_id"=>"0"}}
+      params = {"place"=>"", "runner_id"=>"1", "time"=>"0", "category_id"=>"7", "wre_points"=>"", "date(3i)"=>"1", "date(2i)"=>"2", "date(1i)"=>"2024", "group_attributes"=>{"competition_id"=>"1"}}
       result_form_parser = ResultFormParser.new(params)
       expect { @result = result_form_parser.convert}
       .to change { Competition.count }.by(0)
@@ -27,7 +27,7 @@ RSpec.describe ResultFormParser, type: :model do
           'id'          => 1,
           'date'        => "2024-2-1".to_date,
           'runner_id'   => 1,
-          'group_id'    => 0,
+          'group_id'    => 1,
           'category_id' => 7,
           'time'        => 0
         }
@@ -35,7 +35,7 @@ RSpec.describe ResultFormParser, type: :model do
     end
 
     it 'passes flow with Fara Competitie better category' do
-      params = {"place"=>"", "runner_id"=>"1", "time"=>"0", "category_id"=>"5", "wre_points"=>"", "date(3i)"=>"1", "date(2i)"=>"2", "date(1i)"=>"2024", "group_attributes"=>{"competition_id"=>"0"}}
+      params = {"place"=>"", "runner_id"=>"1", "time"=>"0", "category_id"=>"5", "wre_points"=>"", "date(3i)"=>"1", "date(2i)"=>"2", "date(1i)"=>"2024", "group_attributes"=>{"competition_id"=>"1"}}
       result_form_parser = ResultFormParser.new(params)
       expect { @result = result_form_parser.convert}
       .to change { Competition.count }.by(0)
@@ -52,7 +52,7 @@ RSpec.describe ResultFormParser, type: :model do
           'id'          => 1,
           'date'        => "2024-2-1".to_date,
           'runner_id'   => 1,
-          'group_id'    => 0,
+          'group_id'    => 1,
           'category_id' => 5,
           'time'        => 0,
         }
@@ -74,7 +74,7 @@ RSpec.describe ResultFormParser, type: :model do
     end
 
     it 'passes flow with Diminuare Categorie' do
-      params = {"place"=>"", "runner_id"=>"1", "time"=>"0", "category_id"=>"7", "date(3i)"=>"1", "date(2i)"=>"2", "date(1i)"=>"2024", "group_attributes"=>{"competition_id"=>"1"}}
+      params = {"place"=>"", "runner_id"=>"1", "time"=>"0", "category_id"=>"7", "date(3i)"=>"1", "date(2i)"=>"2", "date(1i)"=>"2024", "group_attributes"=>{"competition_id"=>"2"}}
       result_form_parser = ResultFormParser.new(params)
 
       expect { @result = result_form_parser.convert}
@@ -90,7 +90,7 @@ RSpec.describe ResultFormParser, type: :model do
         'id'          => 1,
         'date'        => "2024-2-1".to_date,
         'runner_id'   => 1,
-        'group_id'    => 1,
+        'group_id'    => 2,
         'category_id' => 7,
         'time'        => 0,
       })
@@ -112,10 +112,10 @@ RSpec.describe ResultFormParser, type: :model do
     end
 
     it 'passes flow with existing Competition and Group lower category' do
-      Competition.create!(id: 2, date: "2023-01-01")
-      Group.create!(id: 2, competition_id: 2, group_name: "SomeGroup")
+      Competition.create!(id: 3, date: "2023-01-01")
+      Group.create!(id: 3, competition_id: 3, group_name: "SomeGroup")
 
-      params = {"place"=>"1", "runner_id"=>"1", "time"=>"3661", "category_id"=>"8", "group_id"=>"2", "wre_points"=>"111", "date(3i)"=>"2", "date(2i)"=>"2", "date(1i)"=>"2024", "group_attributes"=>{"competition_id"=>"2"}}
+      params = {"place"=>"1", "runner_id"=>"1", "time"=>"3661", "category_id"=>"8", "group_id"=>"3", "wre_points"=>"111", "date(3i)"=>"2", "date(2i)"=>"2", "date(1i)"=>"2024", "group_attributes"=>{"competition_id"=>"3"}}
       result_form_parser = ResultFormParser.new(params)
 
       expect { @result = result_form_parser.convert}
@@ -132,7 +132,7 @@ RSpec.describe ResultFormParser, type: :model do
           'id'          => 1,
           'date'        => "2023-1-1".to_date,
           'runner_id'   => 1,
-          'group_id'    => 2,
+          'group_id'    => 3,
           'category_id' => 8,
           'place'       => 1,
           'time'        => 3661,
@@ -143,10 +143,10 @@ RSpec.describe ResultFormParser, type: :model do
     end
 
     it 'passes flow with existing Competition and Group better category' do
-      Competition.create!(id: 2, date: "2023-01-01")
-      Group.create!(id: 2, competition_id: 2, group_name: "SomeGroup")
+      Competition.create!(id: 3, date: "2023-01-01")
+      Group.create!(id: 3, competition_id: 3, group_name: "SomeGroup")
 
-      params = {"place"=>"1", "runner_id"=>"1", "time"=>"3661", "category_id"=>"5", "group_id"=>"2", "wre_points"=>"111", "date(3i)"=>"2", "date(2i)"=>"2", "date(1i)"=>"2024", "group_attributes"=>{"competition_id"=>"2"}}
+      params = {"place"=>"1", "runner_id"=>"1", "time"=>"3661", "category_id"=>"5", "group_id"=>"3", "wre_points"=>"111", "date(3i)"=>"2", "date(2i)"=>"2", "date(1i)"=>"2024", "group_attributes"=>{"competition_id"=>"3"}}
       result_form_parser = ResultFormParser.new(params)
 
       expect { @result = result_form_parser.convert}
@@ -164,7 +164,7 @@ RSpec.describe ResultFormParser, type: :model do
           'id'          => 1,
           'date'        => "2023-1-1".to_date,
           'runner_id'   => 1,
-          'group_id'    => 2,
+          'group_id'    => 3,
           'category_id' => 5,
           'place'       => 1,
           'time'        => 3661,
@@ -188,10 +188,10 @@ RSpec.describe ResultFormParser, type: :model do
     end
 
     it 'passes flow with existing Competition and New Group lower category' do
-      Competition.create!(id: 2, date: "2023-01-01")
-      Group.create!(id: 2, competition_id: 2, group_name: "SomeGroup")
+      Competition.create!(id: 3, date: "2023-01-01")
+      Group.create!(id: 4, competition_id: 3, group_name: "SomeGroup")
 
-        params = {"place"=>"1", "runner_id"=>"1", "time"=>"900", "category_id"=>"7", "wre_points"=>"", "date(3i)"=>"2", "date(2i)"=>"2", "date(1i)"=>"2024", "group_attributes"=>{"group_name"=>"M21", "competition_id"=>"2"}}
+        params = {"place"=>"1", "runner_id"=>"1", "time"=>"900", "category_id"=>"7", "wre_points"=>"", "date(3i)"=>"2", "date(2i)"=>"2", "date(1i)"=>"2024", "group_attributes"=>{"group_name"=>"M21", "competition_id"=>"3"}}
       result_form_parser = ResultFormParser.new(params)
 
       expect { @result = result_form_parser.convert}
@@ -217,10 +217,10 @@ RSpec.describe ResultFormParser, type: :model do
       )
       expect(@result).to eq(Result.last)
 
-      expect(Group.last.attributes.except('created_at', 'updated_at')).to eq(
+      expect(Group.all[-1].attributes.except('created_at', 'updated_at')).to eq(
         {
           'id' => 3,
-          'competition_id' => 2,
+          'competition_id' => 3,
           'group_name' => 'M21',
           'clasa' => nil,
           'rang' => nil
@@ -229,10 +229,10 @@ RSpec.describe ResultFormParser, type: :model do
     end
 
     it 'passes flow with existing Competition and New Group upper category' do
-      Competition.create!(id: 2, date: "2023-01-01")
-      Group.create!(id: 2, competition_id: 2, group_name: "SomeGroup")
+      Competition.create!(id: 3, date: "2023-01-01")
+      Group.create!(id: 4, competition_id: 3, group_name: "SomeGroup")
 
-        params = {"place"=>"1", "runner_id"=>"1", "time"=>"900", "category_id"=>"5", "wre_points"=>"", "date(3i)"=>"2", "date(2i)"=>"2", "date(1i)"=>"2024", "group_attributes"=>{"group_name"=>"M21", "competition_id"=>"2"}}
+        params = {"place"=>"1", "runner_id"=>"1", "time"=>"900", "category_id"=>"5", "wre_points"=>"", "date(3i)"=>"2", "date(2i)"=>"2", "date(1i)"=>"2024", "group_attributes"=>{"group_name"=>"M21", "competition_id"=>"3"}}
       result_form_parser = ResultFormParser.new(params)
 
       expect { @result = result_form_parser.convert}
@@ -259,8 +259,8 @@ RSpec.describe ResultFormParser, type: :model do
     end
 
     it 'passes flow with New Competition and New Group lower category' do
-      Competition.create!(id: 2, date: "2023-01-01")
-      Group.create!(id: 2, competition_id: 2, group_name: "SomeGroup")
+      Competition.create!(id: 4, date: "2023-01-01")
+      Group.create!(id: 4, competition_id: 4, group_name: "SomeGroup")
 
       params = {"place"=>"5", "runner_id"=>"1", "time"=>"3601", "category_id"=>"7", "wre_points"=>"", "date(3i)"=>"2", "date(2i)"=>"2", "date(1i)"=>"2024", "group_attributes"=>{"group_name"=>"M21", "competition_id"=>"", "competition_attributes"=>{"competition_name"=>"New Competition", "date(2i)"=>"1", "date(3i)"=>"2", "date(1i)"=>"2024", "location"=>"Chisinau", "country"=>"Moldova", "distance_type"=>"Long", "wre_id"=>""}}}
       result_form_parser = ResultFormParser.new(params)
@@ -287,7 +287,7 @@ RSpec.describe ResultFormParser, type: :model do
       )
       expect(@result).to eq(Result.last)
 
-      expect(Competition.last.attributes.except('created_at', 'updated_at')).to eq(
+      expect(Competition.order(:created_at).last.attributes.except('created_at', 'updated_at')).to eq(
         {
           'competition_name' => 'New Competition',
           'date' => '2024-01-02'.to_date,
@@ -300,7 +300,7 @@ RSpec.describe ResultFormParser, type: :model do
         }
       )
 
-      expect(Group.last.attributes.except('created_at', 'updated_at')).to eq(
+      expect(Group.order(:created_at).last.attributes.except('created_at', 'updated_at')).to eq(
         {
           'id' => 3,
           'competition_id' => 3,
@@ -313,8 +313,8 @@ RSpec.describe ResultFormParser, type: :model do
 
 
     it 'passes flow with New Competition and New Group upper category' do
-      Competition.create!(id: 2, date: "2023-01-01")
-      Group.create!(id: 2, competition_id: 2, group_name: "SomeGroup")
+      Competition.create!(id: 4, date: "2023-01-01")
+      Group.create!(id: 4, competition_id: 4, group_name: "SomeGroup")
 
       params = {"place"=>"5", "runner_id"=>"1", "time"=>"3601", "category_id"=>"5", "wre_points"=>"", "date(3i)"=>"2", "date(2i)"=>"2", "date(1i)"=>"2024", "group_attributes"=>{"group_name"=>"M21", "competition_id"=>"", "competition_attributes"=>{"competition_name"=>"New Competition", "date(2i)"=>"1", "date(3i)"=>"2", "date(1i)"=>"2024", "location"=>"Chisinau", "country"=>"Moldova", "distance_type"=>"Long", "wre_id"=>""}}}
       result_form_parser = ResultFormParser.new(params)

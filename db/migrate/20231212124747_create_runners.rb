@@ -4,7 +4,7 @@ class CreateRunners < ActiveRecord::Migration[6.1]
       t.string :runner_name
       t.string :surname
       t.date :dob, default: "2024-01-23"
-      t.references :club, default: 0
+      t.references :club, default: 1
       t.string :gender
       t.integer :wre_id
       t.references :best_category, default: 10

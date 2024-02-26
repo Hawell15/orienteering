@@ -18,7 +18,7 @@ RSpec.describe CompetitionFormParser, type: :model do
 
       expect(Competition.last.attributes.except('created_at', 'updated_at').compact).to eq(
         {
-          'id'               => 2,
+          'id'               => 3,
           'competition_name' => 'Test Comp',
           'date'             => '2024-02-01'.to_date,
           'distance_type'    => 'Sprint',
@@ -46,7 +46,7 @@ RSpec.describe CompetitionFormParser, type: :model do
 
       expect(Competition.last.attributes.except('created_at', 'updated_at').compact).to eq(
         {
-          'id'               => 2,
+          'id'               => 3,
           'competition_name' => 'Test Comp',
           'date'             => '2024-02-01'.to_date,
           'distance_type'    => 'Sprint',
@@ -57,9 +57,9 @@ RSpec.describe CompetitionFormParser, type: :model do
       expect(@competition).to eq(Competition.last)
 
       expect(Group.last.attributes.except('created_at', 'updated_at').compact).to eq({
-        "id"             => 2,
+        "id"             => 3,
         "group_name"     => "M21",
-        "competition_id" => 2
+        "competition_id" => 3
       })
     end
 
@@ -78,7 +78,7 @@ RSpec.describe CompetitionFormParser, type: :model do
 
       expect(Competition.last.attributes.except('created_at', 'updated_at')).to eq(
         {
-          'id'               => 2,
+          'id'               => 3,
           'competition_name' => 'Test Comp',
           'date'             => '2024-02-01'.to_date,
           'distance_type'    => 'Sprint',
@@ -91,7 +91,7 @@ RSpec.describe CompetitionFormParser, type: :model do
       expect(@competition).to eq(Competition.last)
 
       expect(Group.all.drop(2).pluck(:id, :group_name, :competition_id)).to eq(
-        [[2, 'M21', 2], [3, 'W21', 2]]
+        [[3, 'M21', 3], [4, 'W21', 3]]
       )
     end
   end

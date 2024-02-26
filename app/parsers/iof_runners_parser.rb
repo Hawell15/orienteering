@@ -42,7 +42,7 @@ class IofRunnersParser < BaseParser
       surname:          runner["First Name"],
       dob:              runner["dob"],
       gender:           extract_gender(runner["Gender"]),
-      club_id:          0,
+      club_id:          1,
       sprint_wre_rang:  runner["Sprint WRS points"],
       forest_wre_rang:  runner["WRS points"],
       sprint_wre_place: runner["Sprint WRS Position"],

@@ -8,7 +8,7 @@
 
     <div class="col">
         <%= form_group.label :competition_id ,'Competitia'%>
-        <%= form_group.select :competition_id,  options_for_select(Competition.all.map { |comp| [comp.competition_name, comp.id] } + [["Competitie Noua", nil]], selected: result&.group&.competition_id || 0), {},{class: "form-select form-group form-control",  onChange: "competitionChange()"} %>
+        <%= form_group.select :competition_id,  options_for_select(Competition.all.map { |comp| [comp.competition_name, comp.id] } + [["Competitie Noua", nil]], selected: result&.group&.competition_id || 1), {},{class: "form-select form-group form-control",  onChange: "competitionChange()"} %>
     </div>
     <div class="col" id="group-data">
     </div>
