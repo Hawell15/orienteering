@@ -1,38 +1,44 @@
 class ResultsController < ApplicationController
   before_action :set_result, only: %i[show edit update destroy]
 
+  has_scope :runner_id
+  has_scope :competition_id
+  has_scope :category_id
+  has_scope :wre, type: :boolean
+  has_scope :date, using: %i[from to], type: :hash
+
   # GET /results or /results.json
   def index
-    @results = Result.all
+    @results = apply_scopes(Result).all
 
-    @results = @results.where(runner_id: params[:runner_id]) if params[:runner_id].present?
+    # @results = @results.where(runner_id: params[:runner_id]) if params[:runner_id].present?
 
-    if params[:competition_id].present?
-      @results = @results.joins(:group).where('group.competition_id' => params[:competition_id])
-    end
+    # if params[:competition_id].present?
+      # @results = @results.joins(:group).where('group.competition_id' => params[:competition_id])
+    # end
 
-    @results = @results.where(category_id: params[:category_id]) if params[:category_id].present?
-    @results = @results.where('wre_points > 0') if params[:wre]
+    # @results = @results.where(category_id: params[:category_id]) if params[:category_id].present?
+    # @results = @results.where('wre_points > 0') if params[:wre]
 
-    if params[:date_from].present? || params[:date_to].present?
-      date_from = Date.parse(params[:date_from]) if params[:date_from].presence
-      date_to   = Date.parse(params[:date_to]) if params[:date_to].presence
-      @results  = @results.where(date: date_from..date_to)
-    end
+    # if params[:date_from].present? || params[:date_to].present?
+    #   date_from = Date.parse(params[:date_from]) if params[:date_from].presence
+    #   date_to   = Date.parse(params[:date_to]) if params[:date_to].presence
+    #   @results  = @results.where(date: date_from..date_to)
+    # end
 
-    if params[:sort_by].present?
-      direction = params[:direction] == 'desc' ? 'desc' : 'asc'
-      @results = if params[:sort_by] == 'runner_name'
-                   @results.joins(:runner).order('runner_name' => direction, 'surname' => direction)
-                 elsif params[:sort_by] == 'competition_name'
-                   @results.joins(group: :competition).order("competitions.competition_name #{direction}")
-                 elsif params[:sort_by] == 'group_name'
-                   @results.joins(:group).order("groups.group_name #{direction}")
-                 else
-                   @results.order(params[:sort_by] => direction)
-                 end
-    end
-
+    # if params[:sort_by].present?
+    #   direction = params[:direction] == 'desc' ? 'desc' : 'asc'
+    #   @results = if params[:sort_by] == 'runner_name'
+    #                @results.joins(:runner).order('runner_name' => direction, 'surname' => direction)
+    #              elsif params[:sort_by] == 'competition_name'
+    #                @results.joins(group: :competition).order("competitions.competition_name #{direction}")
+    #              elsif params[:sort_by] == 'group_name'
+    #                @results.joins(:group).order("groups.group_name #{direction}")
+    #              else
+    #                @results.order(params[:sort_by] => direction)
+    #              end
+    # end
+    @results = @results.sorting(params[:sort_by], params[:direction]) if params[:sort_by]
     @results = @results.paginate(page: params[:page], per_page: 20)
   end
 

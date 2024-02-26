@@ -7,6 +7,24 @@ class Result < ApplicationRecord
 
   before_save :add_date
 
+  scope :runner_id, -> runner_id { where runner_id: runner_id }
+  scope :competition_id, -> competition_id { joins(:group).where("group.competition_id" => competition_id) }
+  scope :category_id, -> category_id { where category_id: category_id }
+  scope :date,      -> from, to  { where date: from..to }
+  scope :wre, -> { where('wre_points > 0') }
+  scope :sorting, ->(sort_by, direction) {
+    case sort_by
+    when "runner_name"
+      joins(:runner).order('runner_name' => direction, 'surname' => direction)
+    when "competition_name"
+      joins(group: :competition).order("competitions.competition_name #{direction}")
+    when "group_name"
+      joins(:group).order("groups.group_name #{direction}")
+    else
+      order("#{sort_by} #{direction}")
+    end
+  }
+
   def self.add_result(params, status = "unconfirmed")
     params = params.with_indifferent_access
 
