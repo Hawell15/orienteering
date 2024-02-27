@@ -19,5 +19,8 @@
     "erb-loader": "^0.1.2",
     "rails-erb-loader": "^5.5.2",
     "webpack-dev-server": "^3"
+  },
+  "engines": {
+    "node": "16.20.2"
   }
 }
