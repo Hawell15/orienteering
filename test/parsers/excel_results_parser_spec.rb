@@ -43,8 +43,8 @@ RSpec.describe ExcelResultsParser, type: :model do
         "formatted_name"        => "dinamoold"
       })
 
-      expect(Runner.second.attributes.except('created_at', 'updated_at').compact).to eq({
-        "id"               => 2,
+      expect(Runner.last.attributes.except('created_at', 'updated_at').compact).to eq({
+        "id"               => 241,
         "runner_name"      => "TestRRR",
         "surname"          => "rrr",
         "gender"           => "W",
@@ -59,7 +59,7 @@ RSpec.describe ExcelResultsParser, type: :model do
       expect(Result.second.attributes.except('created_at', 'updated_at').compact).to eq({
         "id"          => 2,
         "date"        => "2023-12-10".to_date,
-        "runner_id"   => 2,
+        "runner_id"   => 241,
         "group_id"    => 4,
         "category_id" => 5,
         "time"        => 2710,
@@ -69,7 +69,7 @@ RSpec.describe ExcelResultsParser, type: :model do
       expect(Entry.first.attributes.except('created_at', 'updated_at').compact).to eq({
         "date"        => "2023-12-10".to_date,
         "id"          => 1,
-        "runner_id"   => 2,
+        "runner_id"   => 241,
         "category_id" => 5,
         "result_id"   => 2,
         "status"      => "unconfirmed",

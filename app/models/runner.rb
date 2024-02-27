@@ -39,6 +39,7 @@ class Runner < ApplicationRecord
 
     runner = matching_runner(params).first
     runner ||= get_runner_by_matching(params) unless skip_matching
+    params["id"] ||= Runner.last.id + 1
     runner ||= Runner.create!(params.except("category_id", "date"))
     if params["category_id"] && params["category_id"].to_i < runner.category_id.to_i
       Result.add_result({ runner_id: runner.id, group_id: 1, category_id: params["category_id"], date: params["date"].as_json })

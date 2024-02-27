@@ -4,8 +4,8 @@ require 'rails_helper'
 
 RSpec.describe IofResultsParser, type: :model do
   before(:each) do
-      Runner.create!(runner_name: "Ciobanu", surname: "Roman", wre_id: 8458, gender: "M", category_id: 3)
-      Runner.create!(runner_name: "Nosenco", surname: "Victoria", wre_id: 272, gender: "W", category_id: 2)
+      Runner.create!(runner_name: "Ciobanu", surname: "Roman", wre_id: 8458, gender: "M", category_id: 4)
+      Runner.create!(runner_name: "Nosenco", surname: "Victoria", wre_id: 272, gender: "W", category_id: 3)
   end
 
   describe '#convert' do

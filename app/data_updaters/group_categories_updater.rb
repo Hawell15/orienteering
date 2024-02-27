@@ -112,8 +112,9 @@ class GroupCategoriesUpdater
 
     res.update(category_id:)
 
-    return unless res.category_id.to_i <= res.runner.category_id.to_i
-
-    Entry.add_entry(res.slice(:runner_id, :date, :category_id).merge(result_id: res.id), 'unconfirmed')
+    if res.category_id.to_i < res.runner.category_id.to_i ||
+       (res.category_id.to_i == res.runner.category_id.to_i && res.date > res.runner.category_valid)
+      Entry.add_entry(res.slice(:runner_id, :date, :category_id).merge(result_id: res.id), 'unconfirmed')
+    end
   end
 end
