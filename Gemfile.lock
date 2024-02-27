@@ -197,6 +197,8 @@ GEM
       redis-client (>= 0.17.0)
     redis-client (0.19.1)
       connection_pool
+    redis-store (1.10.0)
+      redis (>= 4, < 6)
     regexp_parser (2.8.1)
     responders (3.1.1)
       actionpack (>= 5.2)
@@ -326,6 +328,7 @@ DEPENDENCIES
   rack-mini-profiler (~> 2.0)
   rails (~> 6.1.1)
   redis
+  redis-store
   roo
   rspec-rails
   rubocop
