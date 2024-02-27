@@ -56,7 +56,7 @@ RSpec.describe IofRunnersParser, type: :model do
           "sprint_wre_rang"  => 5695
         },
         {
-          "id"               => 2,
+          "id"               => 271,
           "runner_name"      => "Ribediuc",
           "surname"          => "Galina",
           "dob"              => "1989-01-01".to_date,
@@ -67,7 +67,7 @@ RSpec.describe IofRunnersParser, type: :model do
           "forest_wre_rang"  => 6051
         },
         {
-          "id"               => 3,
+          "id"               => 272,
           "runner_name"      => "Nosenco",
           "surname"          => "Victoria",
           "dob"              => "2007-01-01".to_date,
@@ -80,7 +80,7 @@ RSpec.describe IofRunnersParser, type: :model do
           "sprint_wre_rang"  => 5309
         },
         {
-          "id"               => 4,
+          "id"               => 273,
           "runner_name"      => "Cecan",
           "surname"          => "Olesea",
           "dob"              => "1989-01-01".to_date,

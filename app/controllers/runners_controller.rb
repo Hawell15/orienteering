@@ -1,5 +1,5 @@
 class RunnersController < ApplicationController
-  before_action :set_runner, only: %i[show edit update destroy]
+  before_action :set_runner, only: %i[show edit update destroy merge]
   # has_scope :sorting, using: [:sorting, :direction]
   has_scope :club_id
   has_scope :category_id
@@ -69,6 +69,43 @@ class RunnersController < ApplicationController
         format.json { render json: @runner.errors, status: :unprocessable_entity }
       end
     end
+  end
+
+  def merge
+    main_runner, second_runner = if params["main"]
+                                [@runner, Runner.find(params["merge_runner_id"])]
+                             else
+                                [Runner.find(params["merge_runner_id"]), @runner]
+                             end
+
+    dob = if main_runner.dob.year == second_runner.dob.year && main_runner.dob == main_runner.dob.beginning_of_year
+      second_runner.dob
+    else
+      nil
+    end
+
+    club_id = second_runner.club_id if  main_runner.club_id == 1 && second_runner.club_id != 1
+    category_valid = [main_runner.category_valid, second_runner.category_valid].max if main_runner.category_id == second_runner.category_id
+
+    hash = {
+      dob:              dob,
+      club_id:          club_id,
+      wre_id:           main_runner.wre_id.presence || second_runner.wre_id.presence,
+      sprint_wre_rang:  main_runner.sprint_wre_rang.presence || second_runner.sprint_wre_rang.presence,
+      forest_wre_rang:  main_runner.forest_wre_rang.presence || second_runner.forest_wre_rang.presence,
+      sprint_wre_place: main_runner.sprint_wre_place.presence || second_runner.sprint_wre_place.presence,
+      forest_wre_place: main_runner.forest_wre_place.presence || second_runner.forest_wre_place.presence,
+      best_category_id: [main_runner.best_category_id, second_runner.best_category_id].min,
+      category_id:      [main_runner.category_id, second_runner.category_id].min,
+      category_valid:   category_valid
+    }.compact
+
+    main_runner.update!(hash)
+    Result.where(runner_id: second_runner.id).update_all(runner_id: main_runner.id)
+    Entry.where(runner_id: second_runner.id).update_all(runner_id: main_runner.id)
+    second_runner.destroy
+
+    redirect_to runner_url(main_runner)
   end
 
   # DELETE /runners/1 or /runners/1.json

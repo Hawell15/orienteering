@@ -24,7 +24,7 @@ RSpec.describe RunnerFormParser, type: :model do
 
       expect(@runner.attributes.except('created_at', 'updated_at').compact).to eq(
         {
-          "id"               => 1,
+          "id"               => 3,
           "runner_name"      => "Ciobanu",
           "surname"          => "Roman",
           "dob"              => '1991-01-23'.to_date,
@@ -55,7 +55,7 @@ RSpec.describe RunnerFormParser, type: :model do
 
       expect(@runner.attributes.except('created_at', 'updated_at').compact).to eq(
         {
-          "id"               => 1,
+          "id"               => 3,
           "runner_name"      => "Ciobanu",
           "surname"          => "Roman",
           "dob"              => '1991-01-23'.to_date,

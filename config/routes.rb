@@ -7,7 +7,12 @@ Rails.application.routes.draw do
     end
   end
   resources :results
-  resources :runners
+  # post 'runners/merge', to: 'runners#merge', as: 'merge_runners'
+  resources :runners do
+    member do
+      post :merge
+    end
+  end
   resources :clubs
   get 'categories/expired', to: 'categories#expired'
   resources :categories
