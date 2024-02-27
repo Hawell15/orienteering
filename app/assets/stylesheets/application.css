@@ -1,4 +1,3 @@
- *= require bootstrap
  .closed, .flag, .clicked{
   background : grey;
   width: 50px;
