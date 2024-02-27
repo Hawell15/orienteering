@@ -11,7 +11,7 @@ module Orienteering
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 6.1
-    config.cache_store = :redis_store, "redis://localhost:6379/0/cache" # Remove the :expires_in option
+    config.cache_store = :memory_store, { size: 64.megabytes } # Remove the :expires_in option
     config.active_job.queue_adapter = :sidekiq
 
     # Configuration for the application, engines, and railties goes here.
