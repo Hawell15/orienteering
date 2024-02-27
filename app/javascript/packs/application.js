@@ -29,7 +29,7 @@ window.show_hide_new_competition = function(html) {
 }
 
 
-$(document).ready(function() {
+document.addEventListener('turbolinks:load', function() {
     $('th.sortable').on('click', function() {
 
       var sort_by = $(this).data('sort-by');
@@ -49,7 +49,7 @@ $(document).ready(function() {
     });
   });
 
-$(document).ready(function() {
+document.addEventListener('turbolinks:load', function() {
     $('#search').on('input', function() {
         var query = $(this).val();
         var data = location.pathname.replace('/', '');
@@ -79,7 +79,7 @@ $(document).ready(function() {
     });
 });
 
-$(document).ready(function() {
+document.addEventListener('turbolinks:load', function() {
     $('#show_search').on('input', function() {
         var query =$('#show_search').val();
         var data = $('#show_search').attr('table_type');
