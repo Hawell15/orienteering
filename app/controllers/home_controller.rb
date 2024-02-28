@@ -1,5 +1,7 @@
 class HomeController < ApplicationController
+
   def index
+    TelegramMessageJob.perform_now
     @clubs_count        = Club.count
     @runners_count      = Runner.count
     @competitions_count = Competition.count
