@@ -37,6 +37,9 @@ class Runner < ApplicationRecord
 
   def self.add_runner(params, skip_matching = false)
     params = params.with_indifferent_access
+    byebug if params["runner_name"].nil? ||  params["surname"].nil?
+    params["runner_name"] = convert_from_russian(params["runner_name"])
+    params["surname"]     = convert_from_russian(params["surname"])
 
     runner = matching_runner(params).first
     runner ||= get_runner_by_matching(params) unless skip_matching
@@ -78,7 +81,7 @@ class Runner < ApplicationRecord
   def self.get_runner_by_matching(options)
     threshold = 0.8
     runners = Runner.where(gender: options[:gender]).all.map do |runner|
-      next if (runner.dob.year - options[:dob].to_date.year).abs > 1
+      next if options[:dob].to_date.year > 1990 && (runner.dob.year - options[:dob].to_date.year).abs > 1
 
       name_threshold = Text::Levenshtein.distance(runner.runner_name.downcase,
                                                   options[:runner_name].downcase) / runner.runner_name.length.to_f
@@ -89,5 +92,94 @@ class Runner < ApplicationRecord
       [(name_threshold + surname_threshold) / 2, runner]
     end
     runners.compact.max_by { |el| el.first }&.last
+  end
+
+  def self.convert_from_russian(name)
+    return name unless contains_cyrillic?(name)
+
+    name.gsub!("ья", "ia")
+    name.gsub!("ия", "ia")
+    name.gsub!("ея", "еa")
+    name.gsub!("кс", "x")
+    name.gsub!("Кс", "X")
+    name.gsub!("ки", "chi")
+    name.gsub!("ке", "chе")
+
+    russian_to_romanian =
+      {
+        'А' => 'A',
+        'Б' => 'B',
+        'В' => 'V',
+        'Г' => 'G',
+        'Д' => 'D',
+        'Е' => 'E',
+        'Ё' => 'Io',
+        'Ж' => 'J',
+        'З' => 'Z',
+        'И' => 'I',
+        'Й' => 'I',
+        'К' => 'C',
+        'Л' => 'L',
+        'М' => 'M',
+        'Н' => 'N',
+        'О' => 'O',
+        'П' => 'P',
+        'Р' => 'R',
+        'С' => 'S',
+        'Т' => 'T',
+        'У' => 'U',
+        'Ф' => 'F',
+        'Х' => 'H',
+        'Ц' => 'Ț',
+        'Ч' => 'C',
+        'Ш' => 'Ș',
+        'Щ' => 'Ș',
+        'Ъ' => 'I',
+        'Ы' => 'Î',
+        'Ь' => 'I',
+        'Э' => 'Ă',
+        'Ю' => 'Iu',
+        'Я' => 'Ia',
+        'а' => 'a',
+        'б' => 'b',
+        'в' => 'v',
+        'г' => 'g',
+        'д' => 'd',
+        'е' => 'e',
+        'ё' => 'io',
+        'ж' => 'j',
+        'з' => 'z',
+        'и' => 'i',
+        'й' => 'i',
+        'к' => 'c',
+        'л' => 'l',
+        'м' => 'm',
+        'н' => 'n',
+        'о' => 'o',
+        'п' => 'p',
+        'р' => 'r',
+        'с' => 's',
+        'т' => 't',
+        'у' => 'u',
+        'ф' => 'f',
+        'х' => 'h',
+        'ц' => 'ț',
+        'ч' => 'c',
+        'ш' => 'ș',
+        'щ' => 'ș',
+        'ъ' => 'i',
+        'ы' => 'î',
+        'ь' => 'i',
+        'э' => 'ă',
+        'ю' => 'iu',
+        'я' => 'ia'
+      }
+    name.chars.map { |char| russian_to_romanian[char] || char }.join
+  end
+
+  def self.contains_cyrillic?(str)
+    cyrillic_pattern = /\p{Cyrillic}/
+
+    !!(str =~ cyrillic_pattern)
   end
 end
