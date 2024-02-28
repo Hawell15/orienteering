@@ -95,7 +95,7 @@ class IofRunnersParser < BaseParser
     dob_hash = {}
 
     response.at_css("div#athleteList tbody").css("tr").each do |tr|
-      dob_hash["#{tr.at_css("td").text}"] = tr.css("td")[2].text.presence || Time.now.year
+      dob_hash["#{tr.at_css("td").text}"] = tr.css("td")[2].text.presence || "0000"
     end
     dob_hash
   end
