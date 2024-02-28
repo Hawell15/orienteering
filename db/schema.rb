@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2024_02_07_212327) do
+ActiveRecord::Schema.define(version: 2024_02_27_204749) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -45,6 +45,7 @@ ActiveRecord::Schema.define(version: 2024_02_07_212327) do
     t.string "checksum"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.boolean "ecn", default: false
   end
 
   create_table "entries", force: :cascade do |t|
@@ -67,6 +68,7 @@ ActiveRecord::Schema.define(version: 2024_02_07_212327) do
     t.string "clasa"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.float "ecn_coeficient", default: 0.0
     t.index ["competition_id"], name: "index_groups_on_competition_id"
   end
 
@@ -80,6 +82,7 @@ ActiveRecord::Schema.define(version: 2024_02_07_212327) do
     t.date "date"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.float "ecn_points", default: 0.0
     t.index ["category_id"], name: "index_results_on_category_id"
     t.index ["group_id"], name: "index_results_on_group_id"
     t.index ["runner_id"], name: "index_results_on_runner_id"

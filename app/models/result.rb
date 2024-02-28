@@ -2,6 +2,7 @@ class Result < ApplicationRecord
   belongs_to :runner
   belongs_to :category
   belongs_to :group
+  has_one :entry, dependent: :destroy
 
   accepts_nested_attributes_for :group
 

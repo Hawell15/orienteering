@@ -1,5 +1,5 @@
 class CompetitionsController < ApplicationController
-  before_action :set_competition, only: %i[show edit update destroy group_clasa update_group_clasa]
+  before_action :set_competition, only: %i[show edit update destroy group_clasa update_group_clasa group_ecn_coeficients set_ecn update_group_ecn_coeficients]
 
   # GET /competitions or /competitions.json
   def index
@@ -83,11 +83,58 @@ class CompetitionsController < ApplicationController
 
   def group_clasa; end
 
+  def group_ecn_coeficients; end
+
   def update_group_clasa
     @competition.update(group_clasa_params)
 
     redirect_to competition_url(@competition)
   end
+
+  def set_ecn
+    @competition.update(ecn: !@competition.ecn)
+
+    unless @competition.ecn
+      @competition.groups.each do |group|
+        group.ecn_coeficient = 0.0
+        group.results.each do |result|
+          result.ecn_points = 0.0
+        end
+      end
+    end
+
+    redirect_to competition_url(@competition)
+  end
+
+  def update_group_ecn_coeficients
+    @competition.update(group_ecn_coeficients_params)
+
+    @competition.groups.each do |group|
+      next if group.ecn_coeficient.zero?
+
+      winner_time = group.results.order(:place).first.time
+      coeficient  = group.ecn_coeficient
+
+      group.results.each do |result|
+        result.update(ecn_points: (coeficient * winner_time/result.time * 100).round(2))
+      end
+    end
+
+    redirect_to competition_url(@competition)
+  end
+
+  def ecn_ranking
+    gender = params[:gender].presence || "M"
+
+    @runners = Runner.where(gender: gender).joins(:results)
+    .where("results.ecn_points > 0") # Add a where clause to filter results where ecn_points is greater than 0
+    .group('runners.id')
+    .order('SUM(results.ecn_points) DESC')
+    .select('runners.*, SUM(results.ecn_points) AS total_points, COUNT(results.ecn_points) AS ecn_results_count')
+
+      @runners = @runners.select { |rn| rn.total_points > 0 }
+  end
+
 
   private
 
@@ -118,5 +165,9 @@ class CompetitionsController < ApplicationController
 
   def group_clasa_params
     params.require(:competition).permit(groups_attributes: %i[id clasa])
+  end
+
+  def group_ecn_coeficients_params
+    params.require(:competition).permit(groups_attributes: %i[id ecn_coeficient])
   end
 end

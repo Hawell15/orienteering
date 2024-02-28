@@ -72,8 +72,8 @@ class BaseParser
 
   def extract_gender(string)
     case string.downcase
-    when 'm', 'men'                   then 'M'
-    when 'w', 'women', 'f', 'feminin' then 'W'
+    when 'm', 'men', 'м'                   then 'M'
+    when 'w', 'women', 'f', 'feminin', 'ж' then 'W'
     end
   end
 
