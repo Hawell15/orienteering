@@ -19,10 +19,13 @@ Rails.application.routes.draw do
 
   resources :groups
   devise_for :users
-
+  get 'competitions/ecn_ranking'
   resources :competitions do
     member do
       get 'group_clasa', to: 'competitions#group_clasa'
+      post 'set_ecn', as: 'set_ecn'
+      get 'group_ecn_coeficients', to: 'competitions#group_ecn_coeficients'
+      post 'group_ecn_coeficients', to: 'competitions#update_group_ecn_coeficients', as: 'update_group_ecn_coeficients'
       post 'group_clasa', to: 'competitions#update_group_clasa', as: 'update_group_clasa'
     end
   end

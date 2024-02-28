@@ -1,0 +1,34 @@
+<%= form_for @competition, url: update_group_ecn_coeficients_competition_path(@competition), method: :post, remote: true, id: 'group-clasa-update' do |f| %>
+<table class="table table-bordered table-hover table-striped">
+    <thead class="table-primary">
+     <tr>
+      <th scope="col"> <%= link_to 'Grupa', sort: "date" %></th>
+      <th><%= link_to 'Clasa', sort: "competition_name"%></th>
+    </tr>
+  </thead>
+  <div class="py-4">
+      </div>
+  <tbody>
+    <% @competition.groups.each do |group| %>
+    <%= f.fields_for :groups, group do |group_fields| %>
+      <tr>
+        <td><%= group_fields.object.group_name %></td>
+        <td><div class="col">
+
+        <%= group_fields.text_field :ecn_coeficient,{class: "form-control"} %>
+    </div>
+
+      </tr>
+    <% end %>
+  <% end %>
+  </tbody>
+
+</table>
+<div class="actions">
+    <%= f.submit "Actualizează Coeficientii", class: "btn btn-success btn-sm"%>
+    <%= link_to 'Inapoi', request.referer, class: "btn btn-secondary btn-sm" %>
+</div>
+    <% end %>
+
+
+

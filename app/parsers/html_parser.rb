@@ -59,7 +59,7 @@ class HtmlParser < BaseParser
     {
       runner_name: runner['surname'],
       surname:     runner['name'],
-      dob:         runner['birth_date'],
+      dob:         runner['birth_date'] || "0000-01-01",
       gender:      gender,
       category_id: current_category,
       club:        club,
