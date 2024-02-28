@@ -29,8 +29,7 @@ class ParserController < ApplicationController
     return  redirect_to '/422.html' unless admin_user?
 
     respond_to do |format|
-      parser = IofRunnersParser.new
-      parser.convert
+      IofRunnersJob.perform_later
 
       format.html { redirect_to "#{runners_url}?wre=true", notice: 'Datele wre despre sportivi au fost actualizate' }
     end
@@ -41,8 +40,6 @@ class ParserController < ApplicationController
 
     respond_to do |format|
       IofResultsJob.perform_later
-      # parser = IofResultsParser.new
-      # parser.convert
 
       format.html { redirect_to "#{competitions_url}?wre=true", notice: 'Datele wre despre sportivi au fost actualizate' }
     end

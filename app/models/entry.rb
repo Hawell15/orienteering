@@ -2,6 +2,7 @@ class Entry < ApplicationRecord
   belongs_to :runner
   belongs_to :category
   belongs_to :result
+  before_save :notify_telegram
 
   scope :status,    -> status    { where status: status }
   scope :runner_id, -> runner_id { where runner_id: runner_id }
@@ -16,5 +17,14 @@ class Entry < ApplicationRecord
     if status == "confirmed"
       Runner.update_runner_category_from_entry(params)
     end
+  end
+
+  private
+
+  def notify_telegram
+    return if self.status != "confirmed"
+    message = "#{self.runner.runner_name} #{self.runner.surname} \nModificare categorie din: #{self.runner.category.category_name} in: #{self.category.category_name} \nvalabila pina la: #{self.category_id == 10 ? "" : (self.date + 2.years).as_json} \nCompetitia: #{self.result.group.competition.competition_name} Grupa: #{self.result.group.group_name}"
+
+    NotifyTelegramJob.perform_now(message)
   end
 end
