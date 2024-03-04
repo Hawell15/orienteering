@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2024_02_27_204749) do
+ActiveRecord::Schema.define(version: 2024_03_02_104946) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -105,6 +105,7 @@ ActiveRecord::Schema.define(version: 2024_02_27_204749) do
     t.string "checksum"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.boolean "license", default: false
     t.index ["best_category_id"], name: "index_runners_on_best_category_id"
     t.index ["category_id"], name: "index_runners_on_category_id"
     t.index ["club_id"], name: "index_runners_on_club_id"
