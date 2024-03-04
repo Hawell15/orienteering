@@ -71,6 +71,24 @@ class RunnersController < ApplicationController
     end
   end
 
+  def license
+    if request.method == "POST"
+      return  redirect_to '/422.html' unless admin_user?
+
+      params[:runners].each do |runner|
+        runner = Runner.find(runner["id"]).update(license: runner["license"].present? ? true : false )
+      end
+    end
+
+    @runners = apply_scopes(Runner).all.order(:id)
+
+    params[:dob][:to] = '31/12/2999' if params[:dob].present? && params.dig('dob', 'to').blank?
+    params[:dob][:from] = '01/01/0000' if params[:dob].present? && params.dig('dob', 'from').blank?
+
+    @runners = @runners.sorting(params[:sort_by], params[:direction]) if params[:sort_by]
+    @runners = @runners.paginate(page: params[:page], per_page: 40)
+  end
+
   def merge
     main_runner, second_runner = if params["main"]
                                 [@runner, Runner.find(params["merge_runner_id"])]
@@ -139,6 +157,6 @@ class RunnersController < ApplicationController
   # Only allow a list of trusted parameters through.
   def runner_params
     params.require(:runner).permit(:id, :runner_name, :surname, :dob, :club_id, :gender, :wre_id, :best_category_id,
-                                   :category_id, :category_valid, :sprint_wre_rang, :sprint_wre_place, :forest_wre_place, :forest_wre_rang, :checksum)
+                                   :category_id, :category_valid, :sprint_wre_rang, :sprint_wre_place, :forest_wre_place, :forest_wre_rang, :checksum, :runners)
   end
 end
