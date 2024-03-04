@@ -37,9 +37,9 @@ class Runner < ApplicationRecord
 
   def self.add_runner(params, skip_matching = false)
     params = params.with_indifferent_access
-    byebug if params["runner_name"].nil? ||  params["surname"].nil?
-    params["runner_name"] = convert_from_russian(params["runner_name"])
-    params["surname"]     = convert_from_russian(params["surname"])
+
+    params['runner_name'] = convert_from_russian(params['runner_name'])
+    params['surname']     = convert_from_russian(params['surname'])
 
     runner = matching_runner(params).first
     runner ||= get_runner_by_matching(params) unless skip_matching
@@ -79,31 +79,44 @@ class Runner < ApplicationRecord
   end
 
   def self.get_runner_by_matching(options)
+    runners = Runner.where(gender: options[:gender])
+
+    if options[:dob].to_date > Date.new(0, 1, 1)
+      start_date = options[:dob].to_date.beginning_of_year - 1.year
+      end_date = options[:dob].to_date.beginning_of_year + 1.year
+      runners = runners.where(dob: start_date..end_date).or(runners.where(dob: Date.new(0, 1, 1)))
+    end
+
     threshold = 0.8
-    runners = Runner.where(gender: options[:gender]).all.map do |runner|
-      next if options[:dob].to_date.year > 1990 && (runner.dob.year - options[:dob].to_date.year).abs > 1
+
+    matching_runners = runners.map do |runner|
+      if Text::Soundex.soundex(runner.runner_name) == Text::Soundex.soundex(options[:runner_name]) &&
+         Text::Soundex.soundex(runner.surname) == Text::Soundex.soundex(options[:surname])
+        return runner
+      end
 
       name_threshold = Text::Levenshtein.distance(runner.runner_name.downcase,
                                                   options[:runner_name].downcase) / runner.runner_name.length.to_f
       surname_threshold = Text::Levenshtein.distance(runner.surname.downcase,
                                                      options[:surname].downcase) / runner.surname.length.to_f
-      next nil unless (name_threshold + surname_threshold) / 2 < (1 - threshold)
+      next unless (name_threshold + surname_threshold) / 2 < (1 - threshold)
 
       [(name_threshold + surname_threshold) / 2, runner]
     end
-    runners.compact.max_by { |el| el.first }&.last
+
+    matching_runners.compact.max_by { |el| el.first }&.last
   end
 
   def self.convert_from_russian(name)
     return name unless contains_cyrillic?(name)
 
-    name.gsub!("ья", "ia")
-    name.gsub!("ия", "ia")
-    name.gsub!("ея", "еa")
-    name.gsub!("кс", "x")
-    name.gsub!("Кс", "X")
-    name.gsub!("ки", "chi")
-    name.gsub!("ке", "chе")
+    name.gsub!('ья', 'ia')
+    name.gsub!('ия', 'ia')
+    name.gsub!('ея', 'еa')
+    name.gsub!('кс', 'x')
+    name.gsub!('Кс', 'X')
+    name.gsub!('ки', 'chi')
+    name.gsub!('ке', 'chе')
 
     russian_to_romanian =
       {
