@@ -68,13 +68,11 @@ class GroupCategoriesUpdater
   end
 
   def get_group_rang
-    (Entry.joins(:category)
-                          .where('date < ?', @group.competition.date)
-                          .where(status: 'confirmed')
-                          .order(date: :desc)
-                          .where(runner_id: @group.results.order(:place).limit(12).pluck(:runner_id))
-                          .pluck('SUM(categories.points)')
-                          .first || 0.0)
+    @group.results.order(:place).first(12).map do |result|
+      entry = Entry.where(runner_id: result.runner_id).where(status: "confirmed").where('date < ?', @group.competition.date).order(date: :desc).first
+
+      entry ? entry.category.points : 0.0
+    end.sum
   end
 
   def get_time_hash
