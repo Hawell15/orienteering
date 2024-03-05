@@ -90,8 +90,6 @@ class RunnersController < ApplicationController
   end
 
   def merge
-
-    end
     main_runner, second_runner = if params["main"]
                                 [@runner, Runner.find(params["merge_runner_id"])]
                              else
