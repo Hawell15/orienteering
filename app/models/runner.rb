@@ -113,6 +113,8 @@ class Runner < ApplicationRecord
     name.gsub!('ья', 'ia')
     name.gsub!('ия', 'ia')
     name.gsub!('ея', 'еa')
+    name.gsub!('Ки', 'Chi')
+    name.gsub!('Ке', 'Chе')
     name.gsub!('кс', 'x')
     name.gsub!('Кс', 'X')
     name.gsub!('ки', 'chi')
@@ -144,7 +146,7 @@ class Runner < ApplicationRecord
         'Ф' => 'F',
         'Х' => 'H',
         'Ц' => 'Ț',
-        'Ч' => 'C',
+        'Ч' => 'Ci',
         'Ш' => 'Ș',
         'Щ' => 'Ș',
         'Ъ' => 'I',
@@ -177,7 +179,7 @@ class Runner < ApplicationRecord
         'ф' => 'f',
         'х' => 'h',
         'ц' => 'ț',
-        'ч' => 'c',
+        'ч' => 'ci',
         'ш' => 'ș',
         'щ' => 'ș',
         'ъ' => 'i',
