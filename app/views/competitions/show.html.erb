@@ -43,6 +43,8 @@
     <hr class="my-4">
     <%= link_to 'Actualizeaza Clasele Grupelor', update_group_clasa_competition_path(@competition), class: "btn btn-success btn-sm" %>
     <hr class="my-4">
+    <%= link_to 'Sportivi noi', new_runners_competition_path(@competition), class: "btn btn-danger btn-sm" %>
+    <hr class="my-4">
     <% end %>
 <ul class="nav nav-pills">
   <% @competition.groups.order(:group_name).each_with_index do |group, index| %>
@@ -98,6 +100,8 @@
 
 <% if group.rang %>
         <%  percent_and_time_data = GroupCategoriesUpdater.new(group).get_percent_and_times %>
+        <div>Rang: <%= group.rang %></div>
+        <br>
         <div class="half-width-table">
             <table class="table table-striped table-bordered table-hover">
                 <thead class="table-warning">

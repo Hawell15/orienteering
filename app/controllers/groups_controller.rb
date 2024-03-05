@@ -77,7 +77,7 @@ class GroupsController < ApplicationController
   def count_rang
     GroupCategoriesUpdater.new(@group).get_rang_and_categories
 
-    redirect_to group_path(@group.id)
+    redirect_to request.referer
   end
 
   private
