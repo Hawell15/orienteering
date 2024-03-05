@@ -17,6 +17,8 @@ class Entry < ApplicationRecord
 
     params = params.with_indifferent_access
 
+    return if  Entry.find_by(runner_id: params["runner_id"], result_id: params["result_id"])
+
     Entry.create!(params.merge(status: status))
     if status == "confirmed"
       Runner.update_runner_category_from_entry(params)

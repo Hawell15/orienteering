@@ -51,20 +51,26 @@ class EntriesController < ApplicationController
     end
   end
 
-  # GET /entries/1 or /entries/1.json
   def confirm
     @entry.update(status: 'confirmed')
-    redirect_to entries_path, notice: 'Indeplinirea confirmata'
+    params = {
+      'runner_id'   => @entry.runner_id,
+      'category_id' => @entry.category_id,
+      'date'        => @entry.date
+    }
+    Runner.update_runner_category_from_entry(params)
+
+    redirect_to request.referer, notice: 'Indeplinirea confirmata'
   end
 
   def reject
     @entry.destroy
-    redirect_to entries_path, notice: 'Indeplinirea stearsa'
+    redirect_to request.referer, notice: 'Indeplinirea stearsa'
   end
 
   def pending
     @entry.update(status: 'pending')
-    redirect_to entries_path, notice: 'Indeplinirea in asteptare'
+    redirect_to request.referer, notice: 'Indeplinirea in asteptare'
   end
 
   private

@@ -68,7 +68,7 @@ class Runner < ApplicationRecord
     runner.update!(
       category_id: params['category_id'],
       best_category_id: [runner.best_category_id, params['category_id']].min,
-      category_valid:
+      category_valid: category_valid
     )
   end
 

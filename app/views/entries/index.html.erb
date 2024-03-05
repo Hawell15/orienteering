@@ -6,6 +6,9 @@
 <%= label_tag "runner_id", "Sportiv", class: "label-filter" %>
 <%= select_tag :runner_id, options_for_select(Runner.order("runner_name", "surname").map { |runner| ["#{runner.runner_name} #{runner.surname}", runner.id] }, params[:runner_id]), include_blank: "Toti Sportivi", class: "custom-select" %>
 <br>
+<%= label_tag "competition_id", "Competitia", class: "label-filter" %>
+<%= select_tag :competition_id, options_for_select(Competition.all.map { |comp| ["#{comp.competition_name} #{comp.date.year} #{comp.distance_type}", comp.id] }, params[:competition_id]), include_blank: "Toate Competitiile", class: "custom-select" %>
+<br>
 <%= label_tag "date[from]", "Data: De la", class: "label-filter", for: "date[from]" %>
 <%= text_field_tag "date[from]", params.dig("date","from"), id: "date[from]", placeholder: "zz/ll/aaaa", class: "datepicker custom-select" %>
 <%= label_tag "date[to]", "Pina la", class: "label-filter", for: "date[to]" %>

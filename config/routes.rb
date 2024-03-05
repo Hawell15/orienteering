@@ -49,3 +49,4 @@ Rails.application.routes.draw do
   get 'parser/fos_data', as: 'fos_data'
   post 'groups/count_rang', as: 'count_rang'
 end
+
