@@ -29,6 +29,7 @@ Rails.application.routes.draw do
   resources :competitions do
     member do
       get 'group_clasa', to: 'competitions#group_clasa'
+      get 'new_runners', to: 'competitions#new_runners'
       post 'set_ecn', as: 'set_ecn'
       get 'group_ecn_coeficients', to: 'competitions#group_ecn_coeficients'
       post 'group_ecn_coeficients', to: 'competitions#update_group_ecn_coeficients', as: 'update_group_ecn_coeficients'

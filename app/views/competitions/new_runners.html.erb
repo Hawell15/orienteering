@@ -1,0 +1,68 @@
+    <%= link_to 'Competitia', competition_path(@competition), class: "btn btn-success btn-sm" %>
+
+        <%= link_to 'Categorii', "#{entries_path}?from_competition_id=#{@competition.id}", class: "btn btn-success btn-sm" %>
+
+
+<table class="table table-striped table-bordered table-hover" id="runners-table">
+    <thead class="table-primary">
+        <tr>
+            <th scope="col" class="sortable" data-sort-by="id">
+                <%= link_to 'FOS ID' %>
+            </th>
+            <th class="sortable" data-sort-by="runner">
+                <%= link_to 'Nume' %>
+            </th>
+            <th class="sortable" data-sort-by="gender">
+                <%= link_to 'Genul' %>
+            </th>
+            <th class="sortable" data-sort-by="dob">
+                <%= link_to 'Data Nastere'%>
+            </th>
+            <th class="sortable" data-sort-by="club">
+                <%= link_to 'Club' %>
+            </th>
+            <th class="sortable" data-sort-by="merge_runner_id">
+                <%= link_to 'Alt Sportiv' %>
+            </th>
+            <th>
+                Uneste
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        <% @runners.each do |runner| %>
+        <%= form_tag"#{merge_runner_path(runner)}?redirect=#{request.url}" do %>
+        <tr>
+            <td>
+                <%= runner.id %>
+            </td>
+            <td>
+                <%= "#{runner.runner_name} #{runner.surname}" %>
+            </td>
+            <td>
+                <%= runner.gender %>
+            </td>
+            <td>
+                <%= runner.dob.strftime("%d/%m/%Y") %>
+            </td>
+            <td>
+                <%= link_to runner.club&.club_name, runner.club %>
+            </td>
+            <td>
+                <%= select_tag :merge_runner_id, options_for_select((@all_runners - [runner]).sort_by { |runner| [runner.runner_name, runner.surname] }.map { |runner| ["#{runner.runner_name} #{runner.surname}", runner.id] }, params[:runner_id]), class: "custom-select" %>
+
+            </td>
+            <td>
+
+                <%= image_submit_tag "/confirm.png", alt: "Approve", style: "width: 35px; height: 30px;" %>
+
+
+            </td>
+
+        </tr>
+                <% end %>
+
+        <% end %>
+    </tbody>
+
+</table>
