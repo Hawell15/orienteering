@@ -3,6 +3,8 @@ class EntriesController < ApplicationController
 
   has_scope :status, type: :array
   has_scope :runner_id
+  has_scope :competition_id
+  has_scope :from_competition_id
   has_scope :date, using: %i[from to], type: :hash
 
   # GET /entries or /entries.json

@@ -90,6 +90,8 @@ class RunnersController < ApplicationController
   end
 
   def merge
+
+    end
     main_runner, second_runner = if params["main"]
                                 [@runner, Runner.find(params["merge_runner_id"])]
                              else
@@ -123,7 +125,11 @@ class RunnersController < ApplicationController
     Entry.where(runner_id: second_runner.id).update_all(runner_id: main_runner.id)
     second_runner.destroy
 
-    redirect_to runner_url(main_runner)
+    if params["redirect"].present?
+      redirect_to params["redirect"]
+    else
+      redirect_to runner_url(main_runner)
+    end
   end
 
   # DELETE /runners/1 or /runners/1.json

@@ -1,5 +1,5 @@
 class CompetitionsController < ApplicationController
-  before_action :set_competition, only: %i[show edit update destroy group_clasa update_group_clasa group_ecn_coeficients set_ecn update_group_ecn_coeficients]
+  before_action :set_competition, only: %i[show edit update destroy group_clasa update_group_clasa group_ecn_coeficients set_ecn update_group_ecn_coeficients new_runners]
 
   # GET /competitions or /competitions.json
   def index
@@ -133,6 +133,12 @@ class CompetitionsController < ApplicationController
     .select('runners.*, SUM(results.ecn_points) AS total_points, COUNT(results.ecn_points) AS ecn_results_count')
 
       @runners = @runners.select { |rn| rn.total_points > 0 }
+  end
+
+  def new_runners
+    @all_runners = Runner.all
+
+    @runners = Runner.where(created_at: @competition.created_at..@competition.created_at + 10.minutes).includes(:club)
   end
 
 
