@@ -2,8 +2,8 @@
     <%= notice %>
 </p>
 <h1 style="text-align:center; color:green">Rezultate</h1>
-<%= render partial: 'results_table', locals: { results: @results, runner: nil, show_pagination: true, controller: "category"  } %>
-
+<%= render partial: 'results_filter', locals: { runner: nil } %>
+<%= render partial: 'results_table', locals: { results: @results, show_pagination: true } %>
 <br>
 <% if admin_user? || club_admin? %>
 <%= link_to 'Rezultat Nou', new_result_path, class: "btn btn-info" %>

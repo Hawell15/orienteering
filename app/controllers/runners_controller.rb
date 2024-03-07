@@ -22,18 +22,7 @@ class RunnersController < ApplicationController
 
   # GET /runners/1 or /runners/1.json
   def show
-    @results = @runner.results
-    filtering_params = params.slice(:runner_id, :competition_id, :category_id, :wre, :sort_by, :date)
-    filtering_params.each do |key, value|
-      next if value.blank?
-
-      @results = case key
-      when "wre"     then @results.wre
-      when "sort_by" then @results.sorting(value, params[:direction])
-      when "date"     then @results.date(value[:from].presence, value[:to].presence)
-      else @results.public_send(key, value)
-      end
-    end
+     @results = filter_results({ runner_id: @runner.id }.merge(params.to_unsafe_h))
   end
 
   # GET /runners/new

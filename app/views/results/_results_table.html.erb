@@ -1,97 +1,88 @@
-<% path = case controller
-when "runner" then runner_path(runner)
-else results_path
-end %>
-
-
-<%= form_tag path, method: :get, id: 'results_search_form' do %>
-<% unless controller == "runner" %>
-<%= label_tag "runner_id", "Sportiv", class: "label-filter" %>
-<%= select_tag :runner_id, options_for_select(Runner.order("runner_name", "surname").map { |runner| ["#{runner.runner_name} #{runner.surname}", runner.id] }, params[:runner_id]), include_blank: "Toti Sportivi", class: "custom-select" %>
-<br>
-<% end %>
-<%= label_tag "competition_id", "Competitia", class: "label-filter" %>
-<% competition_list = runner ? Competition.joins(groups: :results).where('results.id IN (?)', runner.results.map(&:id)) : Competition.all %>
-<%= select_tag :competition_id, options_for_select(competition_list.map { |comp| ["#{comp.competition_name} #{comp.date.year} #{comp.distance_type}", comp.id] }, params[:competition_id]), include_blank: "Toate Competitiile", class: "custom-select" %>
-<br>
-<%= label_tag "category_id", "Categoria indeplinita", class: "label-filter" %>
-<%= select_tag :category_id, options_for_select(Category.pluck(:category_name, :id), params[:category_id]), include_blank: "Toate Categoriile", class: "custom-select" %>
-<br>
-<%= label_tag "wre", "Doar Rezultate WRE",class: "label-filter" %>
-<%= check_box_tag :wre, true, params[:wre], id: "wre" %>
-<br>
-<%= label_tag "date[from]", "Data: De la", class: "label-filter", for: "date[from]" %>
-<%= text_field_tag "date[from]", params.dig("date","from"), id: "date[from]", placeholder: "zz/ll/aaaa", class: "datepicker custom-select" %>
-<%= label_tag "date[to]", "Pina la", class: "label-filter", for: "date[to]" %>
-<%= text_field_tag "date[to]", params.dig("date","to"), id: "date[to]", placeholder: "zz/ll/aaaa", class: "datepicker custom-select" %>
-<br>
-<%= submit_tag "Filtreaza", class: "btn btn-info" %>
-<% end %>
-<hr>
-<table class="table table-striped table-bordered table-hover">
+<table class="table table-striped table-bordered table-hover" id="results-table">
     <thead class="table-primary">
         <tr>
             <th scope="col" class="sortable" data-sort-by="place">
                 <%= link_to 'Locul' %>
             </th>
-            <% unless controller == "runner" %>
+            <% unless controller.class == RunnersController %>
             <th class="sortable" data-sort-by="runner_name">
                 <%= link_to 'Sportiv'%>
             </th>
             <% end %>
+            <th class="sortable" data-sort-by="current_category_id">
+                <%= link_to 'Categoria actuală'%>
+            </th>
             <th class="sortable" data-sort-by="time">
                 <%= link_to 'Timpul' %>
             </th>
             <th class="sortable" data-sort-by="category_id">
                 <%= link_to 'Categoria indeplinita' %>
             </th>
+            <% unless [GroupsController, CompetitionsController].include?(controller.class)%>
             <th class="sortable" data-sort-by="date">
                 <%= link_to 'Data' %>
             </th>
             <th class="sortable" data-sort-by="competition_name">
                 <%= link_to 'Competitia' %>
             </th>
+            <% end %>
+            <% unless controller.class == RunnersController %>
             <th class="sortable" data-sort-by="group_name">
                 <%= link_to 'Grupa' %>
             </th>
+            <% end %>
             <th class="sortable" data-sort-by="wre_points">
                 <%= link_to 'Wre Puncte' %>
             </th>
-            <% unless controller %>
+            <th class="sortable" data-sort-by="ecn_points">
+                <%= link_to 'ECN Puncte' %>
+            </th>
+            <% if controller.class == ResultsController %>
             <th colspan="3">Acțiuni</th>
-             <% end %>
+            <% end %>
         </tr>
     </thead>
     <tbody>
-        <% @results.each do |result| %>
+        <% results.each do |result| %>
         <tr>
             <td>
                 <%= result.place %>
             </td>
-            <% unless controller == "runner" %>
+            <% unless controller.class == RunnersController %>
             <td>
                 <%= link_to "#{result.runner.runner_name} #{result.runner.surname}", result.runner  %>
             </td>
             <% end %>
+            <td>
+                <% @default_category ||= Category.find(10) %>
+                <%= (result.runner.entries.select { |entry| entry["status"] == "confirmed"  && entry["date"] < result.date }.sort_by(&:date).reverse.first&.category || @default_category).category_name %>
+            </td>
             <td>
                 <%= Time.at(result.time).utc.strftime('%H:%M:%S') %>
             </td>
             <td>
                 <%= result.category.category_name %>
             </td>
+            <% unless [GroupsController, CompetitionsController].include?(controller.class)%>
             <td>
                 <%= result.date %>
             </td>
             <td>
                 <%= link_to "#{result.group.competition.competition_name} #{result.group.competition.date.year}", result.group.competition %>
             </td>
+            <% end %>
+            <% unless controller.class == RunnersController %>
             <td>
                 <%= link_to result.group.group_name, result.group %>
             </td>
+            <% end %>
             <td>
                 <%= result.wre_points %>
             </td>
-             <% unless controller %>
+            <td>
+                <%= result.ecn_points %>
+            </td>
+            <% if controller.class == ResultsController%>
             <td>
                 <div class="btn-group" role="group" aria-label="Basic example">
                     <%= link_to 'Arată', result, class: "btn btn-warning btn-sm"%>
@@ -101,11 +92,11 @@ end %>
                     <% end %>
                 </div>
             </td>
-             <% end %>
+            <% end %>
         </tr>
         <% end %>
     </tbody>
-   <% if show_pagination %>
+    <% if show_pagination %>
     <div class="pagination">
         <%= will_paginate results, renderer: WillPaginate::ActionView::BootstrapLinkRenderer %>
     </div>

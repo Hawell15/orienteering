@@ -7,7 +7,6 @@ Rails.application.routes.draw do
     end
   end
   resources :results
-  # post 'runners/merge', to: 'runners#merge', as: 'merge_runners'
   get 'runners/license'
 
   resources :runners do
