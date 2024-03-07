@@ -30,7 +30,9 @@ class GroupsController < ApplicationController
   end
 
   # GET /groups/1 or /groups/1.json
-  def show; end
+  def show
+    @results = filter_results({ group_id: @group.id, sort_by: "place", direction: "asc" }.merge(params.to_unsafe_h)).includes(:group, :category)
+  end
 
   # GET /groups/new
   def new

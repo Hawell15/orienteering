@@ -23,15 +23,14 @@
     </p>
     <hr>
     <%= form_tag merge_runner_path do %>
-        <%= label_tag "merge_runner_id", "Uneste cu sportivul", class: "label-filter" %>
-        <%= select_tag :merge_runner_id, options_for_select(Runner.where.not(id: @runner.id).order("runner_name", "surname").map { |runner| ["#{runner.runner_name} #{runner.surname}", runner.id] }, params[:runner_id]), class: "custom-select" %>
-        <br>
-        <%= label_tag "main", "Pastreaza Acesta",class: "label-filter" %>
-<%= check_box_tag :main, true, id: "main" %>
-<br>
-<%= submit_tag "Submit" %>
-<% end %>
-
+    <%= label_tag "merge_runner_id", "Uneste cu sportivul", class: "label-filter" %>
+    <%= select_tag :merge_runner_id, options_for_select(Runner.where.not(id: @runner.id).order("runner_name", "surname").map { |runner| ["#{runner.runner_name} #{runner.surname}", runner.id] }, params[:runner_id]), class: "custom-select" %>
+    <br>
+    <%= label_tag "main", "Pastreaza Acesta",class: "label-filter" %>
+    <%= check_box_tag :main, true, id: "main" %>
+    <br>
+    <%= submit_tag "Submit" %>
+    <% end %>
     <hr class="my-4">
     <div class="container">
         <div class="row">
@@ -77,13 +76,13 @@
                             <%= "#{@runner.forest_wre_place}/#{@runner.forest_wre_rang}" %>
                         </td>
                     </tr>
-                  </table>
+                </table>
             </div>
         </div>
     </div>
-    <%=
-    render partial: 'results/results_table', locals: { results: @results, runner: @runner, show_pagination: false, controller: "runner"  } %>
-
+    <hr>
+    <%= render partial: 'results/results_filter', locals: {runner: @runner} %>
+    <%= render partial: 'results/results_table', locals: { results: @results, show_pagination: false } %>
     <p class="lead">
         <% if admin_user? || club_admin?(@runner.club) %>
         <%= link_to 'Editează', edit_polymorphic_path(@runner), class: "btn btn-success btn-sm" %>
