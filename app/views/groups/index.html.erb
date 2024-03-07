@@ -6,13 +6,13 @@
 <%= text_field_tag :search, params[:search], id: 'search', placeholder: "Cauta dupa Denumirea Grupei", class: "form-control mb-2"%>
 <%= submit_tag "Cauta", class: "btn btn-info" %>
 <hr>
-<%= label_tag "comp_id", "Competitia", class: "label-filter" %>
-<%= select_tag :comp_id, options_for_select(Competition.all.map { |comp| ["#{comp.competition_name} #{comp.date.year} #{comp.distance_type}", comp.id] }, params[:comp_id]), include_blank: "Toate Competitiile", class: "custom-select" %>
+<%= label_tag "competition_id", "Competitia", class: "label-filter" %>
+<%= select_tag :competition_id, options_for_select(Competition.all.map { |comp| ["#{comp.competition_name} #{comp.date.year} #{comp.distance_type}", comp.id] }, params[:competition_id]), include_blank: "Toate Competitiile", class: "custom-select" %>
 <br>
-<%= label_tag "date_from", "Data: De la", class: "label-filter" %>
-<%= text_field_tag :date_from, params[:date_from] , id: 'date_from', placeholder: "zz/ll/aaaa", class: "datepicker custom-select" %>
-<%= label_tag "date_to", "Pina la" %>
-<%= text_field_tag :date_to, params[:date_to], id: 'date_to', placeholder: "zz/ll/aaaa", class: "datepicker custom-select" %>
+<%= label_tag "date[from]", "Data: De la", class: "label-filter", for: "date[from]" %>
+<%= text_field_tag "date[from]", params.dig("date","from"), id: "date[from]", placeholder: "zz/ll/aaaa", class: "datepicker custom-select" %>
+<%= label_tag "date[to]", "Pina la", class: "label-filter", for: "date[to]" %>
+<%= text_field_tag "date[to]", params.dig("date","to"), id: "date[to]", placeholder: "zz/ll/aaaa", class: "datepicker custom-select" %>
 <br>
 <%= submit_tag "Filtreaza", class: "btn btn-info" %>
 <% end %>
