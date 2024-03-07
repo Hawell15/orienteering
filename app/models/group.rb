@@ -6,6 +6,24 @@ class Group < ApplicationRecord
 
   accepts_nested_attributes_for :competition
 
+  scope :competition_id, ->(competition_id) { where competition_id: competition_id}
+  scope :date,           ->(from, to) {
+    joins(:competition).where("competitions.date" => from..to)
+  }
+  scope :sorting,        lambda { |sort_by, direction|
+    case sort_by
+    when 'competition_name', 'date'
+      joins(:competition).order("competitions.#{sort_by} #{direction}")
+    else
+      order("#{sort_by} #{direction}")
+    end
+  }
+   scope :search, lambda { |search|
+                  where('LOWER(group_name) LIKE :search',
+                            search: "%#{search.downcase}%")
+                 }
+
+
   def self.add_groups(groups, competition)
     groups.each { |group_name| add_group({ group_name: group_name, competition: competition }) }
   end

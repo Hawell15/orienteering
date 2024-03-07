@@ -8,7 +8,7 @@ class Result < ApplicationRecord
 
   before_save :add_date
 
-  scope :runner_id,      ->(runner_id) { where runner_id: }
+  scope :runner_id,      ->(runner_id) { where runner_id: runner_id}
   scope :group_id,      ->(group_id) { where group_id: group_id}
   scope :competition_id, ->(competition_id) { joins(:group).where('group.competition_id' => competition_id) }
   scope :category_id,    ->(category_id) { where category_id: }

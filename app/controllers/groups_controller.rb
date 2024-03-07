@@ -4,29 +4,11 @@ class GroupsController < ApplicationController
   # GET /groups or /groups.json
   def index
     @groups = Group.all
+    params[:date][:to] = '31/12/2999' if params[:date].present? && params.dig('date', 'to').blank?
+    params[:date][:from] = '01/01/0000' if params[:date].present? && params.dig('date', 'from').blank?
+    @groups = filter_groups(params.to_unsafe_h)
 
-    @groups = @groups.where(competition_id: params[:comp_id]) if params[:comp_id].present?
-
-    if params[:date_from].present? || params[:date_to].present?
-      date_from = Date.parse(params[:date_from]) if params[:date_from].presence
-      date_to = Date.parse(params[:date_to]) if params[:date_to].presence
-      @groups = @groups.joins(:competition).where('competition.date' => date_from..date_to)
-    end
-    @groups = @groups.paginate(page: params[:page], per_page: 10)
-
-    if params[:sort_by].present?
-      direction = params[:direction] == 'desc' ? 'desc' : 'asc'
-      @groups = if %w[competition_name date].include?(params[:sort_by])
-                  @groups.joins(:competition).order("competitions.#{params[:sort_by]} #{direction}")
-                else
-                  @groups.order(params[:sort_by] => direction)
-                end
-    end
-
-    return unless params[:search].present?
-
-    @groups = @groups.where('LOWER(group_name) LIKE :search',
-                            search: "%#{params[:search].downcase}%")
+    @groups = @groups.paginate(page: params[:page], per_page: 20)
   end
 
   # GET /groups/1 or /groups/1.json
