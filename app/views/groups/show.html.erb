@@ -18,27 +18,9 @@
         <strong>Tipul Distantei</strong>
         <%= @group.competition.distance_type %>
     </p>
-    <p>
-        <strong>Clasa</strong>
-        <%=@group.clasa %>
-    </p>
-    <p>
-        <strong>Rang</strong>
-        <%= @group.rang %>
-        <% if @group.rang %>
-        <%  percent_and_time_data = GroupCategoriesUpdater.new(@group).get_percent_and_times %>
-        <% end %>
-    </p>
-    <div>
-        <% if admin_user? %>
-        <%= form_tag(count_rang_path, method: :post) do %>
-        <%= hidden_field_tag :id, @group.id %>
-        <%= submit_tag 'Calculeaza categoriile', class: "btn btn-info btn-sm" %>
-        <% end %>
-        <% end %>
-    </div>
-    <hr>
-    <%= render partial: 'results/results_table', locals: { results: @results, show_pagination: false } %>
+
+
+    <%= render partial: 'group_table', locals: { group: @group} %>
     <p class="lead">
         <% if admin_user? %>
         <%= link_to 'Editează', edit_polymorphic_path(@group), class: "btn btn-success btn-sm" %>

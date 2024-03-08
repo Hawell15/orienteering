@@ -47,62 +47,15 @@
     <ul class="nav nav-pills">
         <% @competition.groups.order(:group_name).each_with_index do |group, index| %>
         <li class="nav-item">
-            <a class="nav-link <%= " active" if index.zero?%>" data-bs-toggle="pill" href="#menu
-                <%=group.group_name %>">
-                <%=group.group_name%></a>
+            <a class="nav-link <%= "active" if index.zero?%>" data-bs-toggle="pill" href="#menu<%=group.group_name %>"><%=group.group_name%></a>
         </li>
         <% end%>
     </ul>
     <!-- Tab panes -->
     <div class="tab-content">
         <% @competition.groups.order(:group_name).each_with_index do |group, index| %>
-        <div class="tab-pane container <%= index.zero? ? " active" : "fade" %>" id="menu
-            <%=group.group_name %>">
-            <% results = filter_results({ group_id: group.id, "sort_by" => "place", "direction" => "asc" }.merge(params.to_unsafe_h)).includes(:group, :category) %>
-            <%= render partial: 'results/results_table', locals: { results: results, show_pagination: false } %>
-            <% if admin_user? %>
-            <%= form_tag(count_rang_path, method: :post) do %>
-            <%= hidden_field_tag :id, group.id %>
-            <%= submit_tag 'Calculeaza categoriile', class: "btn btn-info btn-sm" %>
-            <% end %>
-            <% end %>
-            <hr>
-            <% if group.rang %>
-            <%  percent_and_time_data = GroupCategoriesUpdater.new(group).get_percent_and_times %>
-            <div>Rang:
-                <%= group.rang %>
-            </div>
-            <br>
-            <div class="half-width-table">
-                <table class="table table-striped table-bordered table-hover">
-                    <thead class="table-warning">
-                        <tr>
-                            <th scope="col"> Categoria
-                            </th>
-                            <th> Procente
-                            </th>
-                            <th> Timpul
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <% percent_and_time_data.each do |cat| %>
-                        <tr>
-                            <td>
-                                <%= cat[:category] %>
-                            </td>
-                            <td>
-                                <%= "#{cat[:percent]} %" %>
-                            </td>
-                            <td>
-                                <%= cat[:time] %>
-                            </td>
-                        </tr>
-                        <% end %>
-                    </tbody>
-                </table>
-            </div>
-            <% end %>
+        <div class="tab-pane container <%= index.zero? ? " active" : "fade" %>" id="menu<%=group.group_name %>">
+             <%= render partial: 'groups/group_table', locals: { group: group} %>
         </div>
         <% end%>
     </div>
@@ -114,7 +67,6 @@
         <%= link_to 'Înapoi', request.referer, class: "btn btn-secondary btn-sm" %>
     </p>
 </div>
-
 <script>
 $(document).ready(function() {
     $('.nav-link').on('click', function(e) {
