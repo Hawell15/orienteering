@@ -104,7 +104,7 @@
                     <%= runner.dob.strftime("%d/%m/%Y") %>
                 </td>
                 <td>
-                    <%= Category.find_by_id(runner.best_category_id)&.category_name %>
+                     <%= runner.best_category.category_name %>
                 </td>
                 <td>
                     <%= runner.category.category_name %>
