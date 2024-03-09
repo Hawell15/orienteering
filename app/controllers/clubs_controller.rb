@@ -11,7 +11,7 @@ class ClubsController < ApplicationController
 
   # GET /clubs/1 or /clubs/1.json
   def show
-    @runners = @club.runners
+    @runners = Runner.includes(:category, :best_category)
     filtering_params = params.slice(:category_id, :best_category_id, :gender, :wre, :search, :sort_by, :dob)
     filtering_params.each do |key, value|
       next if value.blank?

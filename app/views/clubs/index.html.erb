@@ -3,7 +3,7 @@
 </p>
 <h1 style="text-align:center; color:green">Cluburi</h1>
 <%= form_tag clubs_path, method: :get, id: 'clubs_search_form' do %>
-<%= text_field_tag :search, params[:search], id: 'search', placeholder: "Cauta dupa unul din cimpuri", class: "form-control mb-2"%>
+<%= text_field_tag :search, params[:search], id: 'show_search', placeholder: "Cauta dupa unul din cimpuri", class: "form-control mb-2", "table_type": "clubs"%>
 <%= submit_tag "Cauta", class: "btn btn-info" %>
 <% end %>
 <br>

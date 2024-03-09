@@ -39,7 +39,7 @@
                     <tr>
                         <td><strong>Titlul: </strong></td>
                         <td>
-                            <%= Category.find_by_id(@runner.best_category_id)&.category_name %>
+                            <%= @runner.best_category.category_name %>
                         </td>
                     </tr>
                     <tr>
