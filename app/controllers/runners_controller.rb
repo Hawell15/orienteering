@@ -11,12 +11,7 @@ class RunnersController < ApplicationController
 
   # GET /runners or /runners.json
   def index
-    @runners = apply_scopes(Runner).all
-
-    params[:dob][:to] = '31/12/2999' if params[:dob].present? && params.dig('dob', 'to').blank?
-    params[:dob][:from] = '01/01/0000' if params[:dob].present? && params.dig('dob', 'from').blank?
-
-    @runners = @runners.sorting(params[:sort_by], params[:direction]) if params[:sort_by]
+    @runners = filter_runners(params.to_unsafe_h)
     @runners = @runners.paginate(page: params[:page], per_page: 20)
   end
 

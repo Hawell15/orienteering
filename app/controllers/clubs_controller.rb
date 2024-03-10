@@ -11,18 +11,7 @@ class ClubsController < ApplicationController
 
   # GET /clubs/1 or /clubs/1.json
   def show
-    @runners = Runner.includes(:category, :best_category)
-    filtering_params = params.slice(:category_id, :best_category_id, :gender, :wre, :search, :sort_by, :dob)
-    filtering_params.each do |key, value|
-      next if value.blank?
-
-      @runners = case key
-      when "wre"     then @runners.wre
-      when "sort_by" then @runners.sorting(value, params[:direction])
-      when "dob"     then @runners.dob(value[:from].presence, value[:to].presence)
-      else @runners.public_send(key, value)
-      end
-    end
+    @runners = filter_runners({club_id: @club.id }.merge(params.to_unsafe_h))
   end
 
   # GET /clubs/new
