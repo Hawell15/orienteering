@@ -1,0 +1,30 @@
+<%= form_tag nil, method: :get, id: 'runners_search_form' do %>
+ <%= text_field_tag :search, params[:search], id: 'show_search', placeholder: "Cauta dupa Nume sau Prenume", class: "form-control mb-2", table_type: "runners"%>
+ <%= submit_tag "Cauta", class: "btn btn-info" %>
+<hr>
+<% unless controller.class == ClubsController %>
+<%= label_tag "club_id", "Clubul", class: "label-filter" %>
+<%= select_tag :club_id, options_for_select(Club.pluck(:club_name, :id), params[:club_id]), include_blank: "Toate Cluburile", class: "custom-select" %>
+<br>
+ <% end %>
+<% unless controller.class == CategoriesController %>
+<%= label_tag "category_id", "Categoria actuală", class: "label-filter" %>
+<%= select_tag :category_id, options_for_select(Category.pluck(:category_name, :id), params[:category_id]), include_blank: "Toate Categoriile",class: "custom-select" %>
+<br>
+<% end %>
+<%= label_tag "best_category_id", "Titlul Sportiv", class: "label-filter" %>
+<%= select_tag :best_category_id, options_for_select(Category.pluck(:category_name, :id), params[:best_category_id]), include_blank: "Toate Categoriile",class: "custom-select" %>
+<br>
+<%= label_tag "gender", "Genul", class: "label-filter" %>
+<%= select_tag :gender, options_for_select(["M", "W"], params[:gender]), include_blank: "Toate Genurile", class: "custom-select" %>
+<br>
+<%= label_tag "wre", "WRE ID",class: "label-filter" %>
+<%= check_box_tag :wre, true, params[:wre], id: "wre" %>
+<br>
+<%= label_tag "dob[from]", "Data nasterii: De la", class: "label-filter", for: "dob[from]" %>
+<%= text_field_tag "dob[from]", params.dig("dob", "from") , id: 'dob[from]', placeholder: "zz/ll/aaaa", class: "datepicker custom-select" %>
+<%= label_tag "dob[to]", "Pina la", class: "label-filter", for: "dob[to]" %>
+<%= text_field_tag "dob[to]", params.dig("dob","to"), id: "dob[to]", placeholder: "zz/ll/aaaa", class: "datepicker custom-select" %>
+<br>
+<%= submit_tag "Filtreaza", class: "btn btn-info" %>
+<% end %>

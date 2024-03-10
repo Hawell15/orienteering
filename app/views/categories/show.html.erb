@@ -18,7 +18,8 @@
         <strong>Numarul de sportivi:</strong>
         <%= link_to @category.runners.count, runners_path(category_id: @category.id) %>
     </p>
-    <%= render partial: 'runners/runners_table', locals: { category: @category, runners: @runners, show_pagination: false, controller: "category"  } %>
+     <%= render partial: 'runners/runners_filter' %>
+    <%= render partial: 'runners/runners_table', locals: { runners: @runners, show_pagination: false } %>
 
     <p class="lead">
         <% if admin_user? %>
