@@ -4,7 +4,8 @@ class ExpireCategoryJob < ApplicationJob
   def perform(*args)
 
     Runner.where('category_valid < ?', Date.today).each do |runner|
-      Result.add_result({ runner_id: runner.id, category_id: runner.category_id + 1, date: runner.category_valid, group_id: 2}, "confirmed")
+      category_id =  runner.category_id == 6 && (Date.today.year - runner.dob.year > 19) ? 10 : runner.category_id + 1
+      Result.add_result({ runner_id: runner.id, category_id: category_id, date: runner.category_valid, group_id: 2}, "confirmed")
     end
   end
 end
