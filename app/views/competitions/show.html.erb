@@ -29,6 +29,9 @@
     </p>
     <% end %>
     <% if admin_user? %>
+    <%= link_to 'Exporta PDF', pdf_competition_path(@competition), class: "btn btn-success btn-sm" %>
+    <hr>
+
     <%= form_tag(set_ecn_competition_path, method: :post) do %>
     <%= hidden_field_tag :id, @competition.id %>
     <% text = @competition.ecn ? "Exclude din ECN" : "Adauga la ECN" %>

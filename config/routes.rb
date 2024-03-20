@@ -22,11 +22,14 @@ Rails.application.routes.draw do
   get 'categories/expired', to: 'categories#expired'
   resources :categories
 
+  get 'groups/pdf'
+
   resources :groups
   devise_for :users
   get 'competitions/ecn_ranking'
   resources :competitions do
     member do
+      get 'pdf', to: 'competitions#pdf'
       get 'group_clasa', to: 'competitions#group_clasa'
       get 'new_runners', to: 'competitions#new_runners'
       post 'set_ecn', as: 'set_ecn'

@@ -1,5 +1,7 @@
 class CompetitionsController < ApplicationController
-  before_action :set_competition, only: %i[show edit update destroy group_clasa update_group_clasa group_ecn_coeficients set_ecn update_group_ecn_coeficients new_runners]
+  before_action :set_competition,
+                only: %i[show edit update destroy group_clasa update_group_clasa group_ecn_coeficients set_ecn
+                         update_group_ecn_coeficients new_runners pdf]
 
   # GET /competitions or /competitions.json
   def index
@@ -39,6 +41,29 @@ class CompetitionsController < ApplicationController
   # GET /competitions/new
   def new
     @competition = Competition.new
+  end
+
+  def pdf
+    respond_to do |format|
+      format.html do
+        html_string = ''
+        html_string = "<div style='text-align: center;'><h1>#{@competition.competition_name}</h1></div>"
+        html_string << "<div style='text-align: center;'><h2>#{@competition.date.strftime('%d.%m.%Y')}</h2></div>"
+        html_string << "<div style='text-align: center;'><h2>Rezultate</h2></div>"
+
+        @competition.groups.each do |group|
+          # Render the partial for each group and append it to the html_string with a page break
+          html_string << render_to_string(partial: 'results/results_table2', locals: { group: })
+          html_string << '<div style="page-break-before: always;"></div>'
+        end
+
+        # Generate PDF from the concatenated html_string
+        pdf = WickedPdf.new.pdf_from_string(html_string)
+
+        # Send the generated PDF as the response
+        send_data pdf, filename: 'competition_results.pdf', type: 'application/pdf'
+      end
+    end
   end
 
   # GET /competitions/1/edit
@@ -116,7 +141,7 @@ class CompetitionsController < ApplicationController
       coeficient  = group.ecn_coeficient
 
       group.results.each do |result|
-        result.update(ecn_points: (coeficient * winner_time/result.time * 100).round(2))
+        result.update(ecn_points: (coeficient * winner_time / result.time * 100).round(2))
       end
     end
 
@@ -124,15 +149,15 @@ class CompetitionsController < ApplicationController
   end
 
   def ecn_ranking
-    gender = params[:gender].presence || "M"
+    gender = params[:gender].presence || 'M'
 
-    @runners = Runner.where(gender: gender).joins(:results)
-    .where("results.ecn_points > 0") # Add a where clause to filter results where ecn_points is greater than 0
-    .group('runners.id')
-    .order('SUM(results.ecn_points) DESC')
-    .select('runners.*, SUM(results.ecn_points) AS total_points, COUNT(results.ecn_points) AS ecn_results_count')
+    @runners = Runner.where(gender:).joins(:results)
+                     .where('results.ecn_points > 0') # Add a where clause to filter results where ecn_points is greater than 0
+                     .group('runners.id')
+                     .order('SUM(results.ecn_points) DESC')
+                     .select('runners.*, SUM(results.ecn_points) AS total_points, COUNT(results.ecn_points) AS ecn_results_count')
 
-      @runners = @runners.select { |rn| rn.total_points > 0 }
+    @runners = @runners.select { |rn| rn.total_points > 0 }
   end
 
   def new_runners
@@ -140,7 +165,6 @@ class CompetitionsController < ApplicationController
 
     @runners = Runner.where(created_at: @competition.created_at..@competition.created_at + 10.minutes).includes(:club)
   end
-
 
   private
 
