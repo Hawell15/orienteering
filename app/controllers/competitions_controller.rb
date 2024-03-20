@@ -3,7 +3,7 @@ class CompetitionsController < ApplicationController
 
   # GET /competitions or /competitions.json
   def index
-    @competitions = Competition.all
+    @competitions = Competition.order(date: :desc)
 
     @competitions = @competitions.where.not(wre_id: nil) if params[:wre]
     @competitions = @competitions.where(distance_type: params[:distance_type]) if params[:distance_type].present?
