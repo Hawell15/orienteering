@@ -120,6 +120,12 @@ class Runner < ApplicationRecord
     name.gsub!('Кс', 'X')
     name.gsub!('ки', 'chi')
     name.gsub!('ке', 'chе')
+    name.gsub!('Че', 'Ce')
+    name.gsub!('че', 'ce')
+    name.gsub!('Ги', 'Ghi')
+    name.gsub!('Ге', 'Ghe')
+    name.gsub!('ги', 'ghi')
+    name.gsub!('ге', 'ghe')
 
     russian_to_romanian =
       {

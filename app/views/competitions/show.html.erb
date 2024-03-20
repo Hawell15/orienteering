@@ -47,7 +47,7 @@
     <ul class="nav nav-pills">
         <% @competition.groups.order(:group_name).each_with_index do |group, index| %>
         <li class="nav-item">
-            <a class="nav-link <%= "active" if index.zero?%>" data-bs-toggle="pill" href="#menu<%=group.group_name %>"><%=group.group_name%></a>
+            <a class="nav-link group-toogle<%= "active" if index.zero?%>" data-bs-toggle="pill" href="#menu<%=group.group_name %>"><%=group.group_name%></a>
         </li>
         <% end%>
     </ul>
@@ -69,7 +69,7 @@
 </div>
 <script>
 $(document).ready(function() {
-    $('.nav-link').on('click', function(e) {
+    $('.group-toogle').on('click', function(e) {
         e.preventDefault(); // Prevent the default behavior of the link
 
         var group = $(this).text();

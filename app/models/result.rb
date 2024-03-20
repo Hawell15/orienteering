@@ -52,7 +52,7 @@ class Result < ApplicationRecord
     end
 
     if result.group_id == 2 || (result.category_id.to_i < result.runner.category_id.to_i) ||
-       (result.category_id.to_i == result.runner.category_id.to_i && result.date > result.runner.category_valid)
+       (result.category_id.to_i == result.runner.category_id.to_i && result.date + 2.years > result.runner.category_valid)
       Entry.add_entry(result.slice(:runner_id, :date, :category_id).merge(result_id: result.id), status)
     end
 

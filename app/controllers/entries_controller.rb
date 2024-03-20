@@ -29,9 +29,10 @@ class EntriesController < ApplicationController
     if params[:sort_by].present? && sort_options.key?(params[:sort_by])
       direction = params[:direction] == 'desc' ? 'desc' : 'asc'
       order_clause = sort_options[params[:sort_by]]
-      @entries = @entries.joins(:runner, result: { group: :competition }).order(order_clause.split(',').map do |el|
-                                                                                  "#{el.strip} #{direction}"
-                                                                                end.join(','))
+      @entries = @entries.joins(:runner, result: { group: :competition })
+        .order(order_clause.split(',').map do |el|
+          "#{el.strip} #{direction}"
+        end.join(','))
     end
 
     @entries = @entries.includes(:runner, :category, result: { group: :competition })
@@ -64,7 +65,12 @@ class EntriesController < ApplicationController
   end
 
   def reject
-    @entry.destroy
+    if @entry.result.group_id == 1
+      @entry.result.destroy
+    else
+      @entry.destroy
+    end
+
     redirect_to request.referer, notice: 'Indeplinirea stearsa'
   end
 
