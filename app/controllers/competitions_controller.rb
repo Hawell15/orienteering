@@ -51,7 +51,7 @@ class CompetitionsController < ApplicationController
         html_string << "<div style='text-align: center;'><h2>#{@competition.date.strftime('%d.%m.%Y')}</h2></div>"
         html_string << "<div style='text-align: center;'><h2>Rezultate</h2></div>"
 
-        @competition.groups.each do |group|
+        @competition.groups.order(:group_name).each do |group|
           # Render the partial for each group and append it to the html_string with a page break
           html_string << render_to_string(partial: 'results/results_table2', locals: { group: })
           html_string << '<div style="page-break-before: always;"></div>'
