@@ -42,5 +42,5 @@
             </div>
             <div>Rang: <%= group.rang %> </div>
                         <% end %>
-            <div>Clasa: <%= group.clasa %> </div>
+            <div>Clasa: <%= group.clasa.to_s[/\d{1,2}/] ? Category.find(group.clasa.to_i).category_name : group.clasa%> </div>
 
