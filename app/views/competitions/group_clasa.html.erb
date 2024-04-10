@@ -15,7 +15,8 @@
         <td><%= group_fields.object.group_name %></td>
         <td><div class="col">
 
-        <%= group_fields.select :clasa,  options_for_select(["Seniori", "Seniori + Juniori", "Juniori", "MSRM", "CMSRM"], selected: group.clasa), {},{class: "form-select form-group form-control"} %>
+
+        <%= group_fields.select :clasa,  options_for_select(Category.where(id: [2 ,4, 5, 7, 10]).map { |category| [category.category_name, category.id] }, selected: group.clasa), {},{class: "form-select form-group form-control"} %>
     </div>
 
       </tr>
