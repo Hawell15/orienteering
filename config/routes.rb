@@ -49,6 +49,7 @@ Rails.application.routes.draw do
   get 'parser/iof_runners', as: 'iof_runners'
   get 'parser/iof_results', as: 'iof_results'
   get 'parser/fos_data', as: 'fos_data'
+  get 'parser/sync_fos', as: 'sync_fos'
   post 'groups/count_rang', as: 'count_rang'
 end
 

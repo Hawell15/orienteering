@@ -96,7 +96,7 @@ class BaseParser
   def detect_gender(string)
     case string
     when "Nichita", "Ilia", "Mircea", "Nikita" then "M"
-    when "Irene", /a$/i then "F"
+    when "Irene", /a$/i then "W"
     else "M"
     end
   end
