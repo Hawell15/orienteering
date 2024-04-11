@@ -11,6 +11,9 @@
             <th class="sortable" data-sort-by="runner_name">
                 Sportiv
             </th>
+            <th class="sortable" data-sort-by="fos_id">
+                FOS ID
+            </th>
             <th class="sortable" data-sort-by="current_category_id">
                 Categoria actuală
             </th>
@@ -33,6 +36,9 @@
             </td>
             <td>
                <%=  "#{result.runner.runner_name} #{result.runner.surname}" %>
+            </td>
+                   <td>
+               <%=  result.runner.id %>
             </td>
             <td>
                 <% @default_category ||= Category.find(10) %>
