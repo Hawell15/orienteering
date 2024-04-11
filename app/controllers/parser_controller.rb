@@ -55,4 +55,15 @@ class ParserController < ApplicationController
       format.html { redirect_to runners_url, notice: 'Datele  despre sportivi au fost extrase' }
     end
   end
+
+  def sync_fos
+    respond_to do |format|
+      SyncFosJob.perform_later
+
+      format.html { redirect_to runners_url, notice: 'Sincronizarea a inceput' }
+    end
+  end
+
+
+
 end

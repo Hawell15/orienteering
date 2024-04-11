@@ -44,7 +44,7 @@ class Runner < ApplicationRecord
 
     runner = matching_runner(params).first
     runner ||= get_runner_by_matching(params) unless skip_matching
-    params['id'] ||= Runner.last.id + 1
+    params['id'] ||= (Runner.last&.id || 0) + 1
     runner ||= Runner.create!(params.except('category_id', 'date'))
     if params['category_id'] && params['category_id'].to_i < runner.category_id.to_i
       Result.add_result({ runner_id: runner.id, group_id: 1, category_id: params['category_id'],
@@ -91,13 +91,15 @@ class Runner < ApplicationRecord
     threshold = 0.8
 
     matching_runners = runners.map do |runner|
+      next if runner.id == 99999999
       if Text::Soundex.soundex(runner.runner_name) == Text::Soundex.soundex(options[:runner_name]) &&
          Text::Soundex.soundex(runner.surname) == Text::Soundex.soundex(options[:surname])
         return runner
       end
 
       name_threshold = Text::Levenshtein.distance(runner.runner_name.downcase,
-                                                  options[:runner_name].downcase) / runner.runner_name.length.to_f
+                                                  options[:runner_name].downcase) / runner.runner_name.length.to_f rescue byebug
+
       surname_threshold = Text::Levenshtein.distance(runner.surname.downcase,
                                                      options[:surname].downcase) / runner.surname.length.to_f
       next unless (name_threshold + surname_threshold) / 2 < (1 - threshold)
