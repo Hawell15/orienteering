@@ -99,7 +99,7 @@ class GroupCategoriesUpdater
 
     category_id = if clasa == '2' && place == 1
                     2
-                  elsif clasa[/MSRM/] && (1..3).include?(place)
+                  elsif ['2', '3'].include?(clasa) && (1..3).include?(place)
                     3
                   else
                     time_hash.detect { |_k, v| v >= time }&.first || 10
