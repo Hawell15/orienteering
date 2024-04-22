@@ -56,11 +56,14 @@ class ExcelCompetitionParser < BaseParser
 
       next unless cell_value.call(:runner_name)
 
+      category     = convert_category(cell_value.call(:category_result))&.id
+
       {
         place:  cell_value.call(:place).to_i,
         time:   cell_value.call(:result),
-        runner: extract_runner(sheet, index, indexes, gender, date)
-      }
+        runner: extract_runner(sheet, index, indexes, gender, date),
+        category_id:  category
+      }.compact
     end
   end
 
@@ -113,7 +116,8 @@ class ExcelCompetitionParser < BaseParser
       when /Data/i      then :dob
       when /FOS ID/i    then :id
       when /Club/i      then :club
-      when /Categoria/i then :category
+      when /Categoria Sportiva Curenta/i then :category
+      when /Categoria Indeplinita/i then :category_result
       when /Locul/i     then :place
       when /Rezultat/i  then :result
       else next

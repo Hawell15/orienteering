@@ -14,7 +14,7 @@ class ParserController < ApplicationController
         JsonParser.new(path)
       elsif path[/html$/]
         HtmlParser.new(path)
-      elsif  params[:path].headers[/competitie.+xlsx$/]
+      elsif  params[:path].headers[/competitie.+xlsx/]
         ExcelCompetitionParser.new(path)
       elsif params[:path].headers[/rezultate.+xlsx/]
         ExcelResultsParser.new(path)
