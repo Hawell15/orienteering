@@ -29,7 +29,7 @@
 <% end %>
 <div class="row">
     <div class="col">
-        <%= form.select :runner_id, options_for_select(Runner.all.map { |runner| ["#{runner.runner_name} #{runner.surname}", runner.id] }, selected: result&.runner_id), {}, { class: "form-select form-group form-control" } %>
+        <%= form.select :runner_id, options_for_select(Runner.order(:runner_name, :surname).map { |runner| ["#{runner.runner_name} #{runner.surname}", runner.id] }, selected: result&.runner_id), {}, { class: "form-select form-group form-control" } %>
     </div>
     <div class="col">
         <%= form.select :category_id,  options_for_select(Category.all.map { |category| [category.category_name, category.id] },selected: result&.category_id), {},{class: "form-select form-group form-control"} %>
