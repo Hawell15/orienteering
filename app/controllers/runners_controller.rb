@@ -124,6 +124,14 @@ class RunnersController < ApplicationController
     end
   end
 
+  def update_profile
+    respond_to do |format|
+      UpdateRunnersJob.perform_now
+
+      format.html { redirect_to runners_url, notice: "Category was successfully updated." }
+    end
+  end
+
   private
 
   # Use callbacks to share common setup or constraints between actions.

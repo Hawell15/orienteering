@@ -8,6 +8,7 @@ Rails.application.routes.draw do
   end
   resources :results
   get 'runners/license'
+  get 'runners/update_profile', to: 'runners#update_profile'
 
   resources :runners do
     collection do
