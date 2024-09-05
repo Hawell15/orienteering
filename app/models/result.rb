@@ -1,4 +1,5 @@
 class Result < ApplicationRecord
+  attr_accessor :status
   belongs_to :runner
   belongs_to :category
   belongs_to :group
@@ -7,6 +8,7 @@ class Result < ApplicationRecord
   accepts_nested_attributes_for :group
 
   before_save :add_date
+  after_save :add_entry
 
   scope :runner_id,      ->(runner_id) { where runner_id: runner_id}
   scope :group_id,      ->(group_id) { where group_id: group_id}
@@ -31,6 +33,10 @@ class Result < ApplicationRecord
   }
 
   def self.add_result(params, status = 'unconfirmed')
+    instance = self.new(params)
+    instance.status = status
+    instance.save
+
     params = params.with_indifferent_access
 
     check_params =
@@ -51,11 +57,6 @@ class Result < ApplicationRecord
       result.wre_points  = params['wre_points']  if params['category_id']
     end
 
-    if result.group_id == 2 || (result.category_id.to_i < result.runner.category_id.to_i) ||
-       (result.category_id.to_i == result.runner.category_id.to_i && result.date + 2.years > result.runner.category_valid)
-      Entry.add_entry(result.slice(:runner_id, :date, :category_id).merge(result_id: result.id), status)
-    end
-
     result
   end
 
@@ -65,5 +66,9 @@ class Result < ApplicationRecord
     return if date
 
     self.date = group.competition.date
+  end
+
+  def add_entry
+    Entry.check_add_entry(self, @status)
   end
 end

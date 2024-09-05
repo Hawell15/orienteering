@@ -14,6 +14,9 @@
             <th class="sortable" data-sort-by="points">
                 <%= link_to 'Puncte' %>
             </th>
+            <th class="sortable" data-sort-by="points">
+                <%= link_to 'Validitate(ani)' %>
+            </th>
             <th class="sortable" data-sort-by="count_runners">
                 <%= link_to 'Numar de sportivi'%>
             </th>
@@ -31,6 +34,9 @@
             </td>
             <td>
                 <%= category.points %>
+            </td>
+             <td>
+                <%= category.validaty_period %>
             </td>
             <td>
                 <%= link_to category.runners.count, runners_path(category_id: category.id) %>
