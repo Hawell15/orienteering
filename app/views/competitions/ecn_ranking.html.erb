@@ -40,7 +40,7 @@
                 <%= runner.id %>
             </td>
             <td>
-                <%= "#{runner.runner_name} #{runner.surname}" %>
+                <%= link_to "#{runner.runner_name} #{runner.surname}", runner %>
             </td>
             <td>
                 <%= runner.gender %>
@@ -55,7 +55,7 @@
                 <%= runner.total_points %>
             </td>
                 <td>
-                <%= runner.ecn_results_count %>
+                <%= runner.ecn_results_count.round(2) %>
             </td>
 
         <% end %>

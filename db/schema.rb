@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2024_03_02_104946) do
+ActiveRecord::Schema.define(version: 2024_08_24_084806) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -21,6 +21,7 @@ ActiveRecord::Schema.define(version: 2024_03_02_104946) do
     t.float "points"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.integer "validaty_period", default: 2
   end
 
   create_table "clubs", force: :cascade do |t|

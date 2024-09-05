@@ -54,12 +54,6 @@ class EntriesController < ApplicationController
 
   def confirm
     @entry.update(status: 'confirmed')
-    params = {
-      'runner_id'   => @entry.runner_id,
-      'category_id' => @entry.category_id,
-      'date'        => @entry.date
-    }
-    Runner.update_runner_category_from_entry(params)
 
     redirect_to request.referer, notice: 'Indeplinirea confirmata'
   end

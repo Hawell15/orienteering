@@ -1,7 +1,5 @@
 class CompetitionsController < ApplicationController
-  before_action :set_competition,
-                only: %i[show edit update destroy group_clasa update_group_clasa group_ecn_coeficients set_ecn
-                         update_group_ecn_coeficients new_runners pdf]
+  before_action :set_competition, only: %i[show edit update destroy group_clasa update_group_clasa group_ecn_coeficients set_ecn update_group_ecn_coeficients new_runners pdf ecn_csv]
 
   # GET /competitions or /competitions.json
   def index
@@ -165,6 +163,41 @@ class CompetitionsController < ApplicationController
 
     @runners = Runner.where(created_at: @competition.created_at..@competition.created_at + 10.minutes).includes(:club)
   end
+
+  def ecn_csv
+    csv_data = generate_competition_csv
+    send_data csv_data, filename: "competition_results.csv", type: "text/csv"
+    # byebug
+    # redirect_to competition_path(@competition), notice: 'File-ul este descarcat'
+
+  end
+
+  def generate_competition_csv
+    CSV.generate(col_sep: ",") do |csv|
+    # Add the header rows
+      csv << ["Denumirea Competiției", "", "", "", "", "", "", "", "Parola", "Lasm1177Unasm"]
+      csv << [@competition.competition_name, "", "", "", "", "", "", "", "", ""]
+      csv << ["Locație", "", "", "", "", "", "", "", "", ""]
+      csv << [@competition.location, "", "", "", "", "", "", "", "", ""]
+      csv << ["Data", "", "Tipul", "Trasator", "", "", "Organizator", "", "", ""]
+      csv << [@competition.date, "", @competition.distance_type, "", "", "", "", "", "", ""]
+
+      @competition.groups.each do |group|
+        csv << ["", "", "", "", "", "", "", "", "", ""]
+
+        csv << ["Categorie", group.group_name, "Lungime", "", "Nr. PC", "", "Coeficient", group.ecn_coeficient, "Campionat Național", "", ""]
+        csv << ["ID", "Loc", "Nume, Prenume", "Cat. sportivă", "Rezultat", "Cat. îndeplinită", "Club", "Country", "", "", ""]
+        group.results.each do |result|
+         @default_category ||= Category.find(10)
+          current_category = (result.runner.entries.select { |entry| entry["status"] == "confirmed"  && entry["date"] < result.date }.sort_by(&:date).reverse.first&.category || @default_category).category_name
+
+        csv << [result.runner.id, result.place, "#{result.runner.runner_name} #{result.runner.surname}", current_category, Time.at(result.time).utc.strftime('%H:%M:%S'), result.category.category_name, result.runner.club.club_name, "", "", "", ""]
+      end
+    end
+
+    end
+  end
+
 
   private
 

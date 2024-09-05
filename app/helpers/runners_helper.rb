@@ -18,4 +18,31 @@ module RunnersHelper
     runners
   end
 
+  def update_runner_category(runner)
+    entry = Entry.where(runner_id: runner.id).where(status: "confirmed").where('date < ?', (Time.now + 1.day).to_date ).order(date: :desc).first
+
+    return if !entry && runner.category_id == 10
+
+    hash = {}
+
+    if runner.best_category_id > entry.category_id
+      hash[:best_category_id] = entry.category_id
+    end
+
+
+    if runner.category_id != 10 && (!entry || entry.category_id == 10)
+      hash[:category_id]    = 10
+      hash[:category_valid] = "2100-01-01".to_date
+    elsif runner.category_id != entry.category_id
+      hash[:category_id] = entry.category_id
+      hash[:category_valid] = entry.date + entry.category.validaty_period.years
+
+    elsif runner.category_valid.to_date != entry.date + category.validaty_period.years
+      hash[:category_valid] = entry.date + category.validaty_period.years
+    end
+
+    return if hash.empty?
+
+    runner.update!(hash)
+  end
 end

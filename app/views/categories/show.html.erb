@@ -15,6 +15,9 @@
         <%= @category.points %>
     </p>
     <p>
+        <strong>Validitate</strong>
+        <%= @category.validaty_period %> ani
+    <p>
         <strong>Numarul de sportivi:</strong>
         <%= link_to @category.runners.count, runners_path(category_id: @category.id) %>
     </p>

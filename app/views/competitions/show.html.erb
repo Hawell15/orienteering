@@ -5,6 +5,51 @@
     <h1>
         <%= @competition.competition_name %>
     </h1>
+    <% if admin_user? %>
+    <div class="d-inline-block me-2">
+        <div class="dropdown">
+            <button class="btn-danger btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Exportă
+            </button>
+            <ul class="dropdown-menu">
+                <li>
+                    <%= link_to 'Exporta PDF', pdf_competition_path(@competition), class: "dropdown-item" %>
+                </li>
+                <li>
+                    <%= link_to 'Exporta CSV', download_ecn_csv_competition_path(@competition), class: "dropdown-item" %>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="d-inline-block">
+        <div class="dropdown">
+            <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Acțiuni
+            </button>
+            <ul class="dropdown-menu">
+                <li>
+                    <%= form_tag(set_ecn_competition_path, method: :post) do %>
+                    <%= hidden_field_tag :id, @competition.id %>
+                    <% text = @competition.ecn ? "Exclude din ECN" : "Adauga la ECN" %>
+                    <%= submit_tag text, class: "dropdown-item" %>
+                    <% end %>
+                </li>
+                <% if @competition.ecn %>
+                <li>
+                    <%= link_to 'Seteaza Coeficientii Grupelor', group_ecn_coeficients_competition_path(@competition), class: "dropdown-item" %>
+                </li>
+                <% end %>
+                <li>
+                    <%= link_to 'Actualizeaza Clasele Grupelor', update_group_clasa_competition_path(@competition), class: "dropdown-item" %>
+                </li>
+                <li>
+                    <%= link_to 'Sportivi noi', new_runners_competition_path(@competition), class: "dropdown-item" %>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <hr>
+    <% end %>
     <p>
         <strong>Data:</strong>
         <%= @competition.date.strftime("%d/%m/%Y") %>
@@ -27,38 +72,23 @@
         <strong>WRE ID</strong>
         <%= wre_id %>
     </p>
-    <% end %>
-    <% if admin_user? %>
-    <%= link_to 'Exporta PDF', pdf_competition_path(@competition), class: "btn btn-success btn-sm" %>
-    <hr>
-
-    <%= form_tag(set_ecn_competition_path, method: :post) do %>
-    <%= hidden_field_tag :id, @competition.id %>
-    <% text = @competition.ecn ? "Exclude din ECN" : "Adauga la ECN" %>
-    <%= submit_tag text, class: "btn btn-info btn-sm" %>
-    <% end %>
     <br>
-    <% if @competition.ecn %>
-    <%= link_to 'Seteaza Coeficientii Grupelor', group_ecn_coeficients_competition_path(@competition), class: "btn btn-warning btn-sm" %>
-    <% end %>
-    <hr class="my-4">
-    <%= link_to 'Actualizeaza Clasele Grupelor', update_group_clasa_competition_path(@competition), class: "btn btn-success btn-sm" %>
-    <hr class="my-4">
-    <%= link_to 'Sportivi noi', new_runners_competition_path(@competition), class: "btn btn-danger btn-sm" %>
-    <hr class="my-4">
     <% end %>
     <ul class="nav nav-pills">
         <% @competition.groups.order(:group_name).each_with_index do |group, index| %>
         <li class="nav-item">
-            <a class="nav-link group-toogle<%= "active" if index.zero?%>" data-bs-toggle="pill" href="#menu<%=group.group_name %>"><%=group.group_name%></a>
+            <a class="nav-link group-toogle<%= " active" if index.zero?%>" data-bs-toggle="pill" href="#menu
+                <%=group.group_name %>">
+                <%=group.group_name%></a>
         </li>
         <% end%>
     </ul>
     <!-- Tab panes -->
     <div class="tab-content">
         <% @competition.groups.order(:group_name).each_with_index do |group, index| %>
-        <div class="tab-pane container <%= index.zero? ? " active" : "fade" %>" id="menu<%=group.group_name %>">
-             <%= render partial: 'groups/group_table', locals: { group: group} %>
+        <div class="tab-pane container <%= index.zero? ? " active" : "fade" %>" id="menu
+            <%=group.group_name %>">
+            <%= render partial: 'groups/group_table', locals: { group: group} %>
         </div>
         <% end%>
     </div>
