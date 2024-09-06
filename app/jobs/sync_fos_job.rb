@@ -5,11 +5,6 @@ class SyncFosJob < ApplicationJob
 
   def perform(*args)
     Runner.create!(id: 99999999)
-    Runner.all.each do  |runner|
-      next if runner.id == 99999999
-      new_runner_id = runner.id + 10000
-      update_runner_id(runner, new_runner_id)
-    end
 
     response = Net::HTTP.get(URI("http://orienteering.md/categorii-sportive/?sort=id"))
     html =  Nokogiri::HTML(response)
@@ -30,6 +25,8 @@ class SyncFosJob < ApplicationJob
     end
 
     runners.each do |runner_params|
+      next if Runner.find(runner_params[:id])
+
       runner = Runner.add_runner(runner_params)
       update_runner_id(runner, runner_params[:id])
     end
