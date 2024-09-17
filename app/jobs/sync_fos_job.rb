@@ -25,7 +25,7 @@ class SyncFosJob < ApplicationJob
     end
 
     runners.each do |runner_params|
-      next if Runner.find(runner_params[:id])
+      next if Runner.find_by(id: runner_params[:id])
 
       runner = Runner.add_runner(runner_params)
       update_runner_id(runner, runner_params[:id])
