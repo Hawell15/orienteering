@@ -64,7 +64,7 @@ class Entry < ApplicationRecord
   def self.should_create_entry?(result)
     return true if result.group_id == 2
     return true if result.category_id < result.runner.category_id
-    return true if result.category_id == result.runner.categpry_id && result.date + result.category.validaty_period > result.runner.category_valid
+    return true if result.category_id == result.runner.category_id && result.date + result.category.validaty_period > result.runner.category_valid
     false
   end
 end

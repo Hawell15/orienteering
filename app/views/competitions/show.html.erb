@@ -77,17 +77,14 @@
     <ul class="nav nav-pills">
         <% @competition.groups.order(:group_name).each_with_index do |group, index| %>
         <li class="nav-item">
-            <a class="nav-link group-toogle<%= " active" if index.zero?%>" data-bs-toggle="pill" href="#menu
-                <%=group.group_name %>">
-                <%=group.group_name%></a>
+            <a class="nav-link group-toogle<%= " active" if index.zero?%>" data-bs-toggle="pill" href="#menu<%=group.group_name %>"><%=group.group_name%></a>
         </li>
         <% end%>
     </ul>
     <!-- Tab panes -->
     <div class="tab-content">
         <% @competition.groups.order(:group_name).each_with_index do |group, index| %>
-        <div class="tab-pane container <%= index.zero? ? " active" : "fade" %>" id="menu
-            <%=group.group_name %>">
+        <div class="tab-pane container <%= index.zero? ? " active" : "fade" %>" id="menu<%=group.group_name %>">
             <%= render partial: 'groups/group_table', locals: { group: group} %>
         </div>
         <% end%>
