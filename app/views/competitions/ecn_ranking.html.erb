@@ -52,7 +52,7 @@
                 <%= link_to runner.club&.club_name, runner.club %>
             </td>
                 <td>
-                <%= runner.total_points %>
+                <%= runner.total_points.round(2) %>
             </td>
                 <td>
                 <%= runner.ecn_results_count.round(2) %>
