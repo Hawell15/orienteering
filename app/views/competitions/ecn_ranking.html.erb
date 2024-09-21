@@ -75,7 +75,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <% runner.results.where('ecn_points > 0').each do |result| %>
+                            <% runner.results.where('ecn_points > 0').order(date: :desc).each do |result| %>
                             <tr>
                                 <td>
                                     <%= result.date.strftime("%d/%m/%Y") %>
