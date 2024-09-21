@@ -1,6 +1,5 @@
 <%= link_to "Masculin", "#{competitions_ecn_ranking_path}?gender=M", class: "btn btn-info" %>
 <%= link_to "Feminin", "#{competitions_ecn_ranking_path}?gender=W", class: "btn btn-info" %>
-
 <table class="table table-striped table-bordered table-hover" id="runners-table">
     <thead class="table-primary">
         <tr>
@@ -28,12 +27,13 @@
             <th class="sortable" data-sort-by="ecn_points">
                 <%= link_to 'ECN Competitii' %>
             </th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
         <% @runners.each_with_index do |runner, index| %>
-        <tr>
-             <td>
+        <tr data-bs-toggle="collapse" data-bs-target="#collapse<%= index %>" aria-expanded="false" aria-controls="collapse<%= index %>">
+            <td>
                 <%= index + 1 %>
             </td>
             <td>
@@ -51,13 +51,54 @@
             <td>
                 <%= link_to runner.club&.club_name, runner.club %>
             </td>
-                <td>
+            <td>
                 <%= runner.total_points.round(2) %>
             </td>
-                <td>
+            <td>
                 <%= runner.ecn_results_count.round(2) %>
             </td>
-
+            <td class="text-center">
+                <i class="bi bi-chevron-down toggle-icon" style="font-size: 20px">&#11021;</i>
+            </td>
+        </tr>
+        <tr id="collapse<%= index %>" class="accordion-collapse collapse" aria-labelledby="heading<%= index %>">
+            <td colspan="9">
+                <div class="accordion-body">
+                    <table class="table table-striped table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Data</th>
+                                <th>Competitia</th>
+                                <th>Grupa</th>
+                                <th>Locul</th>
+                                <th>Puncte</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% runner.results.where('ecn_points > 0').each do |result| %>
+                            <tr>
+                                <td>
+                                    <%= result.date.strftime("%d/%m/%Y") %>
+                                </td>
+                                <td>
+                                    <%= link_to result.group.competition.competition_name, result.group.competition %>
+                                </td>
+                                <td>
+                                    <%= result.group.group_name %>
+                                </td>
+                                <td>
+                                    <%= result.place %>
+                                </td>
+                                <td>
+                                    <%= result.ecn_points %>
+                                </td>
+                            </tr>
+                            <% end %>
+                        </tbody>
+                    </table>
+                </div>
+            </td>
+        </tr>
         <% end %>
     </tbody>
 </table>
