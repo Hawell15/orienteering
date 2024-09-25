@@ -12,7 +12,7 @@ class RunnersController < ApplicationController
   # GET /runners or /runners.json
   def index
 # <<<<<<< HEAD
-    @runners = filter_runners(params.to_unsafe_h)
+    @runners = filter_runners(params.to_unsafe_h).order(:id)
 # =======
 #     @runners = apply_scopes(Runner.order(:id)).all
 
