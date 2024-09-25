@@ -21,7 +21,7 @@ class RunnersController < ApplicationController
 
 #     @runners = @runners.sorting(params[:sort_by], params[:direction]) if params[:sort_by]
 # >>>>>>> bda7c24 (small adjustments)
-    @runners = @runners.paginate(page: params[:page], per_page: 20)
+    @runners = @runners.paginate(page: params[:page], per_page: 100)
   end
 
   # GET /runners/1 or /runners/1.json
