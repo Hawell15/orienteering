@@ -1,7 +1,7 @@
 module RunnersHelper
   def filter_runners(params)
      params = params.with_indifferent_access
-     runners = Runner.includes(:category, :best_category, :club).order(:id)
+     runners = Runner.includes(:category, :best_category, :club)
 
      filtering_params = params.slice(:category_id, :club_id, :best_category_id, :gender, :wre, :search, :sort_by, :dob)
 
