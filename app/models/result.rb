@@ -33,10 +33,6 @@ class Result < ApplicationRecord
   }
 
   def self.add_result(params, status = 'unconfirmed')
-    instance = self.new(params)
-    instance.status = status
-    instance.save
-
     params = params.with_indifferent_access
 
     check_params =
@@ -47,15 +43,12 @@ class Result < ApplicationRecord
 
     check_params.merge!(date: params['date']) if params['date']
 
-    result = Result.find_or_create_by(check_params) do |result|
-      result.place       = params['place'] if params['place']
-      result.runner_id   = params['runner_id']
-      result.time        = params['time']        if params['time']
-      result.category_id = params['category_id'] if params['category_id']
-      result.group_id    = params['group_id']
-      result.date        = params['date']        if params['category_id']
-      result.wre_points  = params['wre_points']  if params['category_id']
-    end
+    result = Result.find_by(check_params)
+    return result if result
+
+    result = Result.new(params)
+    result.instance_variable_set(:@status, status)
+    result.save
 
     result
   end
