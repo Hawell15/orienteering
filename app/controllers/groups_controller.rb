@@ -8,7 +8,8 @@ class GroupsController < ApplicationController
     params[:date][:from] = '01/01/0000' if params[:date].present? && params.dig('date', 'from').blank?
     @groups = filter_groups(params.to_unsafe_h)
 
-    @groups = @groups.paginate(page: params[:page], per_page: 20)
+    @groups = @groups.paginate(page: params[:page], per_page: 20) unless params[:page] == "all"
+    @groups
   end
 
   # GET /groups/1 or /groups/1.json
