@@ -10,8 +10,7 @@ class ResultsController < ApplicationController
   # GET /results or /results.json
   def index
     @results = filter_results(params.to_unsafe_h)
-    @results = @results.paginate(page: params[:page], per_page: 20) unless params[:page] == "all"
-    @results
+    @results = @results.paginate(page: params[:page], per_page: 20)
   end
 
   # GET /results/1 or /results/1.json
