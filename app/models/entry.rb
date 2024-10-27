@@ -31,14 +31,13 @@ class Entry < ApplicationRecord
         status: status
       )
     elsif should_create_entry?(result)
-      Entry.create!(
+      Entry.create!({
         result: result,
         date: result.date,
         category: result.category,
         runner: result.runner,
         status: status
-
-        )
+      }.compact)
     else
       return
     end
@@ -64,7 +63,7 @@ class Entry < ApplicationRecord
   def self.should_create_entry?(result)
     return true if result.group_id == 2
     return true if result.category_id < result.runner.category_id
-    return true if result.category_id == result.runner.category_id && result.date + result.category.validaty_period > result.runner.category_valid
+    return true if result.category_id == result.runner.category_id && result.date + result.category.validaty_period.years > result.runner.category_valid
     false
   end
 end
