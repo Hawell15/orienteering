@@ -21,8 +21,7 @@ class RunnersController < ApplicationController
 
 #     @runners = @runners.sorting(params[:sort_by], params[:direction]) if params[:sort_by]
 # >>>>>>> bda7c24 (small adjustments)
-    @runners = @runners.paginate(page: params[:page], per_page: 100) unless params[:page] == "all"
-    @runners
+    @runners = @runners.paginate(page: params[:page], per_page: 100)
   end
 
   # GET /runners/1 or /runners/1.json
@@ -80,8 +79,7 @@ class RunnersController < ApplicationController
     params[:dob][:from] = '01/01/0000' if params[:dob].present? && params.dig('dob', 'from').blank?
 
     @runners = @runners.sorting(params[:sort_by], params[:direction]) if params[:sort_by]
-    @runners = @runners.paginate(page: params[:page], per_page: 40) unless params[:page] == "all"
-    @runners
+    @runners = @runners.paginate(page: params[:page], per_page: 40)
   end
 
   def merge

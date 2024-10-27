@@ -30,8 +30,7 @@ class CompetitionsController < ApplicationController
                                           search: "%#{params[:search].downcase}%")
     end
 
-    # @competitions = @competitions.paginate(page: params[:page], per_page: 10) unless params[:page] == "all"
-    @competitions
+    @competitions = @competitions.paginate(page: params[:page], per_page: 10)
   end
 
   # GET /competitions/1 or /competitions/1.json
