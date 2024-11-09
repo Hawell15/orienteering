@@ -104,7 +104,7 @@ class GroupCategoriesUpdater
                   else
                     time_hash.detect { |_k, v| v >= time }&.first || 10
                   end
-    category_id = 10 if category_id > 6 && (Time.now.year - res.runner.dob.year > 18)
+    category_id = 10 if category_id > 6 && !res.runner.junior_runner?
 
 
     res.update(category_id: category_id)

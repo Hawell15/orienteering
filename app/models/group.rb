@@ -49,4 +49,8 @@ class Group < ApplicationRecord
   def remove_spaces
     self.group_name = self.group_name.remove(" ")
   end
+
+  def self.three_results_group_id
+    1346
+  end
 end
