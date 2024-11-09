@@ -74,7 +74,12 @@ class Runner < ApplicationRecord
   end
 
   def update_runner_category
-    entry = Entry.where(runner_id: self.id).where(status: "confirmed").where('date < ?', (Time.now + 1.day).to_date ).order(date: :desc).first
+    entry = entries
+      .joins(:category)
+      .where('entries.date + (categories.validaty_period * INTERVAL \'1 year\') > ?', Date.today)
+      .where(entries: { status: 'confirmed' })
+      .order(:category_id, date: :desc).first
+
 
     return if !entry || entry.runner.category_id == 10
 
