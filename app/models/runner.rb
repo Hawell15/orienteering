@@ -76,7 +76,7 @@ class Runner < ApplicationRecord
   def update_runner_category
     entry = Entry.where(runner_id: self.id).where(status: "confirmed").where('date < ?', (Time.now + 1.day).to_date ).order(date: :desc).first
 
-    return if !entry && runner.category_id == 10
+    return if !entry || entry.runner.category_id == 10
 
     hash = {}
 
