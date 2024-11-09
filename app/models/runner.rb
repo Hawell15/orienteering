@@ -61,18 +61,6 @@ class Runner < ApplicationRecord
     (Digest::SHA2.new << "#{runner_name}-#{surname}-#{dob.to_date.year}-#{gender}").to_s
   end
 
-  def self.update_runner_category_from_entry(params)
-    runner = Runner.find(params['runner_id'])
-
-    category_valid = params['category_id'] == 10 ? '2100-01-01' : (params['date'].to_date + 2.years).as_json
-
-    runner.update!(
-      category_id: params['category_id'],
-      best_category_id: [runner.best_category_id, params['category_id']].min,
-      category_valid: category_valid
-    )
-  end
-
   def update_runner_category
     entry = entries
       .joins(:category)
@@ -80,8 +68,11 @@ class Runner < ApplicationRecord
       .where(entries: { status: 'confirmed' })
       .order(:category_id, date: :desc).first
 
+    if !entry
+      entry = check_three_results
+    end
 
-    return if !entry || entry.runner.category_id == 10
+    return if !entry || entry.category_id == 10
 
     hash = {}
 
@@ -104,6 +95,10 @@ class Runner < ApplicationRecord
     return if hash.empty?
 
     self.update!(hash)
+  end
+
+  def junior_runner?
+    Time.now.year - dob.year < 18
   end
 
   private
@@ -238,5 +233,17 @@ class Runner < ApplicationRecord
     cyrillic_pattern = /\p{Cyrillic}/
 
     !!(str =~ cyrillic_pattern)
+  end
+
+  def check_three_results
+    return unless self.junior_runner?
+
+    results = self.results.where('date > ?', [Time.now - 1.year || "2024-03-25".to_date].max)
+
+    return if results.count < 3
+
+    result = Result.add_result({ runner_id: id, group_id: Group.three_results_group_id, category_id: 9, date: results.order(date: :desc).first.date + 1.day}, "confirmed")
+
+    result.entry
   end
 end
