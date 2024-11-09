@@ -8,6 +8,8 @@ class Entry < ApplicationRecord
   scope :runner_id, -> runner_id { where runner_id: runner_id }
   scope :date,      -> from, to  { where date: from..to }
   scope :competition_id, ->(competition_id) { joins(result: :group).where('group.competition_id' => competition_id) }
+  scope :wre, -> { joins(:runner, result: { group: :competition }).where.not(competitions: { wre_id: nil }) }
+
   scope :from_competition_id, ->(competition_id) {
     where created_at: Competition.find(competition_id).created_at..Competition.find(competition_id).created_at + 5.minutes
   }

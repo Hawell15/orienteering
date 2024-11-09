@@ -9,6 +9,9 @@
 <%= label_tag "competition_id", "Competitia", class: "label-filter" %>
 <%= select_tag :competition_id, options_for_select(Competition.order(date: :desc).map { |comp| ["#{comp.competition_name} #{comp.date.year} #{comp.distance_type}", comp.id] }, params[:competition_id]), include_blank: "Toate Competitiile", class: "custom-select" %>
 <br>
+<%= label_tag "wre", "WRE ID",class: "label-filter" %>
+<%= check_box_tag :wre, true, params[:wre], id: "wre" %>
+<br>
 <%= label_tag "date[from]", "Data: De la", class: "label-filter", for: "date[from]" %>
 <%= text_field_tag "date[from]", params.dig("date","from"), id: "date[from]", placeholder: "zz/ll/aaaa", class: "datepicker custom-select" %>
 <%= label_tag "date[to]", "Pina la", class: "label-filter", for: "date[to]" %>
