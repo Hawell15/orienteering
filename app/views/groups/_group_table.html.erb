@@ -1,5 +1,5 @@
 <% results = filter_results({ group_id: group.id, "sort_by" => "place", "direction" => "asc" }.merge(params.to_unsafe_h)).includes(:group, :category) %>
-            <%= render partial: 'results/results_table', locals: { results: results, show_pagination: false } %>
+            <%= render partial: 'results/results_table', locals: { results: results, group_id: group.id, show_pagination: false } %>
             <% if admin_user? %>
             <%= form_tag(count_rang_path, method: :post) do %>
             <%= hidden_field_tag :id, group.id %>

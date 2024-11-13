@@ -6,6 +6,8 @@ Rails.application.routes.draw do
       patch :pending
     end
   end
+
+  post 'results/from_competition'
   resources :results
   get 'runners/license'
   get 'runners/update_profile', to: 'runners#update_profile'

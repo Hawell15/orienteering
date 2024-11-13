@@ -69,6 +69,11 @@ class ResultsController < ApplicationController
     end
   end
 
+  def from_competition
+    Result.add_result(result_params.to_h)
+    redirect_to request.referer
+  end
+
   private
 
   # Use callbacks to share common setup or constraints between actions.
