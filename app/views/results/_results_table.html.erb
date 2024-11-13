@@ -38,7 +38,7 @@
             <th class="sortable" data-sort-by="ecn_points">
                 <%= link_to 'ECN Puncte' %>
             </th>
-            <% if controller.class == ResultsController %>
+            <% if [CompetitionsController, ResultsController].include?(controller.class) %>
             <th colspan="3">Acțiuni</th>
             <% end %>
         </tr>
@@ -83,7 +83,7 @@
             <td>
                 <%= result.ecn_points %>
             </td>
-            <% if controller.class == ResultsController%>
+            <% if [CompetitionsController, ResultsController].include?(controller.class) %>
             <td>
                 <div class="btn-group" role="group" aria-label="Basic example">
                     <%= link_to 'Arată', result, class: "btn btn-warning btn-sm"%>
@@ -97,7 +97,7 @@
         </tr>
         <% end %>
         <% if admin_user? && group_id %>
-        <tr>
+        <tr style="display: none" id="new_result_row">
             <%= form_with(model: Result.new, url: results_from_competition_path, local: true) do |form| %>
             <td>
                 <%= form.number_field :place, step: 1, min: 1, placeholder: "Locul", class: "form-control"  %>
@@ -115,11 +115,15 @@
                 <%= form.hidden_field :group_id, value: group_id %>
             </td>
             <td>
-                <%= form.submit "Add Result" %>
+               <button type="submit" style="border: none; background: none;">
+            <%= image_tag("/confirm.png", alt: "Adaugă Rezultat", size: "35x30" ) %>
+          </button>
             </td>
             <% end %>
+            <td><%= image_tag "/reject.jpeg", alt: "Hide", size: "30x30", onclick: "hide_new_result()" %></td>
         </tr>
         <% end %>
+
     </tbody>
     <% if show_pagination %>
     <div class="pagination">
@@ -127,3 +131,18 @@
     </div>
     <% end %>
 </table>
+<% if admin_user? && group_id %>
+<button type="button" class="btn btn-secondary" id="new_result" onclick="add_new_result()">New result</button>
+<hr>
+<% end %>
+<script>
+    function add_new_result() {
+        $("#new_result_row").show();
+        $("#new_result").hide();
+    }
+
+    function hide_new_result() {
+        $("#new_result_row").hide();
+        $("#new_result").show();
+    }
+</script>

@@ -6,7 +6,6 @@ Rails.application.routes.draw do
       patch :pending
     end
   end
-
   post 'results/from_competition'
   resources :results
   get 'runners/license'
@@ -21,7 +20,12 @@ Rails.application.routes.draw do
       post :merge
     end
   end
-  resources :clubs
+  resources :clubs do
+       member do
+      post :merge
+    end
+  end
+
   get 'categories/expired', to: 'categories#expired'
   resources :categories
 
