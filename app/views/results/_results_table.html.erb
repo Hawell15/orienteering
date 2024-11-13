@@ -1,3 +1,4 @@
+<% group_id ||= nil %>
 <table class="table table-striped table-bordered table-hover" id="results-table">
     <thead class="table-primary">
         <tr>
@@ -91,6 +92,30 @@
                     <%= link_to 'Șterge', result, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-danger btn-sm" %>
                     <% end %>
                 </div>
+            </td>
+            <% end %>
+        </tr>
+        <% end %>
+        <% if admin_user? && group_id %>
+        <tr>
+            <%= form_with(model: Result.new, url: results_from_competition_path, local: true) do |form| %>
+            <td>
+                <%= form.number_field :place, step: 1, min: 1, placeholder: "Locul", class: "form-control"  %>
+            <td>
+                <%= form.select :runner_id, options_for_select(Runner.order(:runner_name, :surname).map { |runner| ["#{runner.runner_name} #{runner.surname}", runner.id] }), {}, { class: "form-select form-group form-control" } %>
+            </td>
+            <td></td>
+            <td>
+                <%= form.text_field :time, placeholder: "hh:mm:ss", class: "form-control" %>
+            </td>
+            <td>
+                <%= form.select :category_id,  options_for_select(Category.all.map { |category| [category.category_name, category.id] }), {},{class: "form-select form-group form-control"} %>
+            </td>
+            <td>
+                <%= form.hidden_field :group_id, value: group_id %>
+            </td>
+            <td>
+                <%= form.submit "Add Result" %>
             </td>
             <% end %>
         </tr>
