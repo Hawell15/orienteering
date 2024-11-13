@@ -72,11 +72,9 @@ class Runner < ApplicationRecord
       entry = check_three_results
     end
 
-    return if !entry || entry.category_id == 10
-
     hash = {}
 
-    if self.best_category_id > entry.category_id
+    if entry && self.best_category_id > entry.category_id
       hash[:best_category_id] = entry.category_id
     end
 
@@ -84,11 +82,11 @@ class Runner < ApplicationRecord
     if self.category_id != 10 && (!entry || entry.category_id == 10)
       hash[:category_id]    = 10
       hash[:category_valid] = "2100-01-01".to_date
-    elsif self.category_id != entry.category_id
+    elsif entry && self.category_id != entry.category_id
       hash[:category_id] = entry.category_id
       hash[:category_valid] = entry.date + entry.category.validaty_period.years
 
-    elsif self.category_valid.to_date != entry.date + category.validaty_period.years
+    elsif entry && self.category_valid.to_date != entry.date + category.validaty_period.years
       hash[:category_valid] = entry.date + category.validaty_period.years
     end
 
@@ -238,7 +236,7 @@ class Runner < ApplicationRecord
   def check_three_results
     return unless self.junior_runner?
 
-    results = self.results.where('date > ?', [Time.now - 1.year || "2024-03-25".to_date].max)
+    results = self.results.where('date > ?', [Time.now - 1.year , "2024-03-25".to_date].max)
 
     return if results.count < 3
 
