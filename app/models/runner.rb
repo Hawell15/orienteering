@@ -126,7 +126,7 @@ class Runner < ApplicationRecord
       end
 
       name_threshold = Text::Levenshtein.distance(runner.runner_name.downcase,
-                                                  options[:runner_name].downcase) / runner.runner_name.length.to_f rescue byebug
+                                                  options[:runner_name].downcase) / runner.runner_name.length.to_f
 
       surname_threshold = Text::Levenshtein.distance(runner.surname.downcase,
                                                      options[:surname].downcase) / runner.surname.length.to_f
