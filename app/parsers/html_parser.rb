@@ -47,8 +47,6 @@ class HtmlParser < BaseParser
         time:   result['result_msec'] / 1000,
         runner: extract_runner(runner, gender, json)
       }
-    rescue
-      byebug
     end
   end
 

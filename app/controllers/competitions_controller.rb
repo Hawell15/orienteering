@@ -111,6 +111,11 @@ class CompetitionsController < ApplicationController
   def update_group_clasa
     @competition.update(group_clasa_params)
 
+    @competition.groups.each do |group|
+      next if group.results.blank?
+      GroupCategoriesUpdater.new(group).get_rang_and_categories
+    end
+
     redirect_to competition_url(@competition)
   end
 
@@ -167,9 +172,6 @@ class CompetitionsController < ApplicationController
   def ecn_csv
     csv_data = generate_competition_csv
     send_data csv_data, filename: "competition_results.csv", type: "text/csv"
-    # byebug
-    # redirect_to competition_path(@competition), notice: 'File-ul este descarcat'
-
   end
 
   def generate_competition_csv

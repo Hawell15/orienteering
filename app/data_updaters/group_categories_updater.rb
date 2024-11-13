@@ -88,7 +88,7 @@ class GroupCategoriesUpdater
 
     get_rang_percents(@group.rang).map do |k, v|
 
-      [k,v] if k >= clasa rescue byebug
+      [k,v] if k >= clasa
     end.compact.to_h
   end
 
