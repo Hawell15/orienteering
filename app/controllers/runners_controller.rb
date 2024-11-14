@@ -149,7 +149,7 @@ class RunnersController < ApplicationController
   end
 
   def add_result
-    redis = Redis.new(url: ENV['REDIS_URL'])
+    redis = Redis.new(url: ENV['REDIS_URL'], ssl_params: { verify_mode: OpenSSL::SSL::VERIFY_NONE })
 
     return unless (res_details = redis.hget('new_res', params.dig('runner', 'uuid')))
 

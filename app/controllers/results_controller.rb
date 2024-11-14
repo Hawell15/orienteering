@@ -23,7 +23,7 @@ class ResultsController < ApplicationController
 
   def modal_new
     params_hash = params.to_unsafe_h.except('authenticity_token', 'controller', 'action', 'runner').to_hash
-    redis = Redis.new(url: ENV['REDIS_URL'])
+    redis = Redis.new(url: ENV['REDIS_URL'], ssl_params: { verify_mode: OpenSSL::SSL::VERIFY_NONE })
 
     redis.hset('new_res', params['runner']['uuid'], params_hash.to_json)
 
@@ -98,7 +98,7 @@ class ResultsController < ApplicationController
 
   # Only allow a list of trusted parameters through.
   def result_params
-    params.require(:result).permit(:place, :runner_id, :time, :category_id, :group_id, :wre_points, :date,
+    params.require(:result).permit(:place, :runner_id, :time, :category_id, :group_id, :wre_points, :ecn_points, :date,
                                    group_attributes: [:id, :group_name, :competition_id, { competition_attributes: %i[id competition_name date location country distance_type wre_id] }])
   end
 end
