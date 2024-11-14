@@ -11,6 +11,6 @@
 
 # SSL configuration for Redis (useful when Redis requires SSL)
 :redis:
-  url: "rediss://:REDACTED@ec2-23-21-53-92.compute-1.amazonaws.com:24270"
+  url: <%= ENV['REDIS_URL'] %>  # Set the Redis URL from the environment variable
   ssl_params:
-    verify_mode: 0
+    verify_mode: <%= OpenSSL::SSL::VERIFY_NONE %>  # Only use VERIFY_NONE temporarily if needed
