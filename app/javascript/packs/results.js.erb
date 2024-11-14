@@ -63,12 +63,13 @@ window.competitionChange = function() {
 };
 
 $(document).ready(function() {
-  $('form[action="/results"]').submit(function(event) {
+  $('form[action^="/results"]').submit(function(event) {
       event.preventDefault();
       var hours = parseInt($('#hours').val()) || 0;
       var minutes = parseInt($('#minutes').val()) || 0;
       var seconds = parseInt($('#seconds').val()) || 0;
       $('#result_time').val(hours * 3600 + minutes * 60 + seconds);
+      console.log($('#result_time').val());
       $(this).unbind('submit').submit();
     });
 });

@@ -45,7 +45,7 @@
     </thead>
     <tbody>
         <% results.each do |result| %>
-        <tr>
+        <tr id="result_<%= result.id %>">
             <td>
                 <%= result.place %>
             </td>
@@ -88,12 +88,44 @@
                 <div class="btn-group" role="group" aria-label="Basic example">
                     <%= link_to 'Arată', result, class: "btn btn-warning btn-sm"%>
                     <% if admin_user? %>
-                    <%= link_to 'Editează', edit_polymorphic_path(result), class: "btn btn-success btn-sm"%>
+                    <%= button_tag 'Editează', onclick: "show_hide_form_result('#edit_result_#{result.id}', '#result_#{result.id}')", class: "btn btn-success btn-sm" %>
+
                     <%= link_to 'Șterge', result, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-danger btn-sm" %>
                     <% end %>
                 </div>
             </td>
             <% end %>
+        </tr>
+        <tr id="edit_result_<%= result.id %>" style="display: none;">
+            <%= form_with(model: result, url: result_path(result), method: :patch, local: true) do |form| %>
+            <td>
+                <%= form.number_field :place, value: result.place, step: 1, min: 1, placeholder: "Locul", class: "form-control"  %>
+            </td>
+            <td>
+                <%= form.select :runner_id, options_for_select(Runner.order(:runner_name, :surname).map { |runner| ["#{runner.runner_name} #{runner.surname}", runner.id] }, selected: result&.runner_id), {}, { class: "form-select form-group form-control" } %>
+            </td>
+            <td></td>
+            <td>
+                <%= form.text_field :time, value:  Time.at(result.time).utc.strftime("%H:%M:%S") ,placeholder: "hh:mm:ss", class: "form-control" %>
+            </td>
+            <td>
+                <%= form.select :category_id,  options_for_select(Category.all.map { |category| [category.category_name, category.id] }, selected: result&.category_id), {},{class: "form-select form-group form-control"} %>
+            </td>
+            <td>
+                <%= form.hidden_field :group_id, value: group_id %>
+            </td>
+            <td>
+                <%= form.number_field :wre_points, value: result.wre_points %>
+            </td>
+                        <td>
+                <%= form.text_field :ecn_points, value: result.ecn_points %>
+            </td>
+            <td>
+               <button type="submit" style="border: none; background: none;">
+            <%= image_tag("/confirm.png", alt: "Actualizeaza Rezultat", size: "35x30" ) %>
+          </button>
+            <% end %>
+            <%= image_tag "/reject.jpeg", alt: "Hide", size: "30x30", onclick: "show_hide_form_result('#result_#{result.id}', '#edit_result_#{result.id}')" %></td>
         </tr>
         <% end %>
         <% if admin_user? && group_id %>
@@ -101,6 +133,7 @@
             <%= form_with(model: Result.new, url: results_from_competition_path, local: true) do |form| %>
             <td>
                 <%= form.number_field :place, step: 1, min: 1, placeholder: "Locul", class: "form-control"  %>
+            </td>
             <td>
                 <%= form.select :runner_id, options_for_select(Runner.order(:runner_name, :surname).map { |runner| ["#{runner.runner_name} #{runner.surname}", runner.id] }), {}, { class: "form-select form-group form-control" } %>
             </td>
@@ -120,7 +153,7 @@
           </button>
             </td>
             <% end %>
-            <td><%= image_tag "/reject.jpeg", alt: "Hide", size: "30x30", onclick: "hide_new_result()" %></td>
+            <td><%= image_tag "/reject.jpeg", alt: "Hide", size: "30x30", onclick: "show_hide_form_result('#new_result', '#new_result_row')" %></td>
         </tr>
         <% end %>
 
@@ -132,17 +165,21 @@
     <% end %>
 </table>
 <% if admin_user? && group_id %>
-<button type="button" class="btn btn-secondary" id="new_result" onclick="add_new_result()">New result</button>
+<button type="button" class="btn btn-secondary" id="new_result" onclick="show_hide_form_result('#new_result_row', this)">New result</button>
 <hr>
 <% end %>
 <script>
-    function add_new_result() {
-        $("#new_result_row").show();
-        $("#new_result").hide();
+    function show_hide_form_result(showSelector, hideSelector) {
+         var show_el = $(showSelector);
+        var hide_el = $(hideSelector);
+
+        show_el.show();
+        hide_el.hide();
     }
 
-    function hide_new_result() {
+    function hide_form_result() {
         $("#new_result_row").hide();
         $("#new_result").show();
     }
+
 </script>

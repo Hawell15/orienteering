@@ -91,7 +91,7 @@ $('#modal-form').submit(function(event) {
       var minutes = parseInt($('#minutes').val()) || 0;
       var seconds = parseInt($('#seconds').val()) || 0;
       $('#time').val(hours * 3600 + minutes * 60 + seconds);
-
+      console.log($('#time').val());
     $.ajax({
         url: $(this).attr('action'),
         type: $(this).attr('method'),
