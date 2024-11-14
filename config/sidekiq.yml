@@ -1,0 +1,16 @@
+# config/sidekiq.yml
+:concurrency: 5  # Adjust the concurrency level based on your Heroku plan and Redis limits
+
+:queues:
+  - default
+  - mailers
+  - critical
+  - low
+
+:logging: true
+
+# SSL configuration for Redis (useful when Redis requires SSL)
+:redis:
+  url: <%= ENV['REDIS_URL'] %>  # Set the Redis URL from the environment variable
+  ssl_params:
+    verify_mode: <%= OpenSSL::SSL::VERIFY_NONE %>  # Only use VERIFY_NONE temporarily if needed
