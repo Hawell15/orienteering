@@ -70,7 +70,8 @@ class ResultsController < ApplicationController
   end
 
   def from_competition
-    Result.add_result(result_params.to_h)
+    result_time = convert_time(result_params[:time])
+    Result.add_result(result_params.except(:time).merge(time: result_time).to_h)
     redirect_to request.referer
   end
 
@@ -92,7 +93,7 @@ class ResultsController < ApplicationController
     end
 
     res_params.delete('group_attributes') unless res_params.dig('group_attributes', 'group_name')
-
+    res_params["time"] = convert_time(res_params["time"])
     res_params
   end
 
@@ -100,5 +101,13 @@ class ResultsController < ApplicationController
   def result_params
     params.require(:result).permit(:place, :runner_id, :time, :category_id, :group_id, :wre_points, :ecn_points, :date,
                                    group_attributes: [:id, :group_name, :competition_id, { competition_attributes: %i[id competition_name date location country distance_type wre_id] }])
+  end
+
+    def convert_time(string)
+    return string unless string[/:|\.|,/]
+
+    seconds, minutes, hours = string.split(/:|\.|,/).map(&:to_i).reverse
+
+    (hours || 0) * 3600 + minutes * 60 + seconds
   end
 end
