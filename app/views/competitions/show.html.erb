@@ -112,10 +112,17 @@ $(document).ready(function() {
     });
 });
 
-document.addEventListener('turbolinks:load', function() {
-    var urlParams = new URLSearchParams(window.location.search);
-    var group = urlParams.get('group');
-    $("div.tab-pane.active").removeClass("active");
-    $('a[href="#menu' + group + '"]').tab('show');
-});
+window.onload = function() {
+    console.log("dsa");
+    var group = window.location.hash;
+    document.querySelectorAll("div.tab-pane.active").forEach(function(el) {
+        el.classList.remove("active");
+    });
+    if (group) {
+        var link = document.querySelector('a[href="' + group + '"]');
+        if (link) {
+            $(link).tab('show'); // Requires jQuery
+        }
+    }
+};
 </script>
