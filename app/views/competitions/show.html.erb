@@ -111,11 +111,4 @@ $(document).ready(function() {
         window.history.replaceState({}, '', currentUrl);
     });
 });
-
-document.addEventListener('turbolinks:load', function() {
-    var urlParams = new URLSearchParams(window.location.search);
-    var group = urlParams.get('group');
-    $("div.tab-pane.active").removeClass("active");
-    $('a[href="#menu' + group + '"]').tab('show');
-});
 </script>

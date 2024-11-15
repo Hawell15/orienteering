@@ -45,6 +45,19 @@ $(document).ready(function() {
     });
 });
 
+$(window).on('load', function () {
+    var group = window.location.hash;
+    if (group) {
+        var targetTab = document.querySelector('a[href="' + group + '"]');
+       if (targetTab && !targetTab.classList.contains('active')) {
+        $("div.tab-pane.active").removeClass("active");
+            var tabInstance = new bootstrap.Tab(targetTab);
+            tabInstance.show();
+        }
+    }
+});
+
+
 window.competitionChange = function() {
     var id = $('[id*="_group_attributes_competition_id"]').val();
 

@@ -129,7 +129,7 @@
         </tr>
         <% end %>
         <% if admin_user? && group_id %>
-        <tr style="display: none" id="new_result_row">
+        <tr style="display: none" id="new_result_row_<%= group_id %>">
             <%= form_with(model: Result.new, url: results_from_competition_path, local: true) do |form| %>
             <td>
                 <%= form.number_field :place, step: 1, min: 1, placeholder: "Locul", value: ((Group.find(group_id).results.pluck(:place).map(&:to_i).max || 0) +1), class: "form-control"  %>
@@ -153,7 +153,7 @@
           </button>
             </td>
             <% end %>
-            <td><%= image_tag "/reject.jpeg", alt: "Hide", size: "30x30", onclick: "show_hide_form_result('#new_result', '#new_result_row')" %></td>
+            <td><%= image_tag "/reject.jpeg", alt: "Hide", size: "30x30", onclick: "show_hide_form_result('#new_result_#{group_id}', '#new_result_row_#{group_id}')" %></td>
         </tr>
         <% end %>
 
@@ -165,7 +165,7 @@
     <% end %>
 </table>
 <% if admin_user? && group_id %>
-<button type="button" class="btn btn-secondary" id="new_result" onclick="show_hide_form_result('#new_result_row', this)">New result</button>
+<button type="button" class="btn btn-secondary" id="new_result_<%= group_id %>" onclick="show_hide_form_result('#new_result_row_<%= group_id %>', this)">New result</button>
 <hr>
 <% end %>
 <script>

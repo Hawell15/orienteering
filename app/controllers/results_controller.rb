@@ -71,8 +71,9 @@ class ResultsController < ApplicationController
 
   def from_competition
     result_time = convert_time(result_params[:time])
-    Result.add_result(result_params.except(:time).merge(time: result_time).to_h)
-    redirect_to request.referer
+    result = Result.add_result(result_params.except(:time).merge(time: result_time).to_h)
+    redirect_to "#{request.referer}#menu#{result.group.group_name}"
+
   end
 
   private
