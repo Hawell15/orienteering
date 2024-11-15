@@ -111,18 +111,4 @@ $(document).ready(function() {
         window.history.replaceState({}, '', currentUrl);
     });
 });
-
-window.onload = function() {
-    console.log("dsa");
-    var group = window.location.hash;
-    document.querySelectorAll("div.tab-pane.active").forEach(function(el) {
-        el.classList.remove("active");
-    });
-    if (group) {
-        var link = document.querySelector('a[href="' + group + '"]');
-        if (link) {
-            $(link).tab('show'); // Requires jQuery
-        }
-    }
-};
 </script>
