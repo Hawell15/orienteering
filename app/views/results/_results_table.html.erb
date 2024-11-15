@@ -132,7 +132,7 @@
         <tr style="display: none" id="new_result_row">
             <%= form_with(model: Result.new, url: results_from_competition_path, local: true) do |form| %>
             <td>
-                <%= form.number_field :place, step: 1, min: 1, placeholder: "Locul", class: "form-control"  %>
+                <%= form.number_field :place, step: 1, min: 1, placeholder: "Locul", value: ((Group.find(group_id).results.pluck(:place).map(&:to_i).max || 0) +1), class: "form-control"  %>
             </td>
             <td>
                 <%= form.select :runner_id, options_for_select(Runner.order(:runner_name, :surname).map { |runner| ["#{runner.runner_name} #{runner.surname}", runner.id] }), {}, { class: "form-select form-group form-control" } %>
@@ -142,7 +142,7 @@
                 <%= form.text_field :time, placeholder: "hh:mm:ss", class: "form-control" %>
             </td>
             <td>
-                <%= form.select :category_id,  options_for_select(Category.all.map { |category| [category.category_name, category.id] }), {},{class: "form-select form-group form-control"} %>
+                <%= form.select :category_id,  options_for_select(Category.all.map { |category| [category.category_name, category.id] }, selected: 10), {},{class: "form-select form-group form-control"} %>
             </td>
             <td>
                 <%= form.hidden_field :group_id, value: group_id %>
