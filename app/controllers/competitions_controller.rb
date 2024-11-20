@@ -174,7 +174,7 @@ class CompetitionsController < ApplicationController
                          .order('SUM(results.ecn_points) DESC')
                          .select('runners.id, runners.runner_name, runners.surname, runners.dob, runners.club_id, runners.gender,
                           clubs.club_name,
-                          SUM(results.ecn_points) AS total_points, COUNT(results.ecn_points) AS ecn_results_count,
+                          ROUND(SUM(results.ecn_points)::numeric, 2) AS total_points, COUNT(results.ecn_points) AS ecn_results_count,
                           RANK() OVER (ORDER BY SUM(results.ecn_points) DESC) AS place').limit(10)
             runner_gender = gender == "M" ? "Masculin" : "Femenin"
             hash[runner_gender] = runners
