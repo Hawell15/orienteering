@@ -152,15 +152,37 @@ class CompetitionsController < ApplicationController
   end
 
   def ecn_ranking
-    gender = params[:gender].presence || 'M'
+    respond_to do |format|
+      format.html do
+        gender = params[:gender].presence || 'M'
 
-    @runners = Runner.where(gender:).joins(:results)
-                     .where('results.ecn_points > 0') # Add a where clause to filter results where ecn_points is greater than 0
-                     .group('runners.id')
-                     .order('SUM(results.ecn_points) DESC')
-                     .select('runners.*, SUM(results.ecn_points) AS total_points, COUNT(results.ecn_points) AS ecn_results_count')
+        @runners = Runner.where(gender:).joins(:results)
+                         .where('results.ecn_points > 0')
+                         .group('runners.id')
+                         .order('SUM(results.ecn_points) DESC')
+                         .select('runners.id, runners.runner_name, runners.surname, runners.dob, runners.club_id, runners.gender, SUM(results.ecn_points) AS total_points, COUNT(results.ecn_points) AS ecn_results_count,
+                          RANK() OVER (ORDER BY SUM(results.ecn_points) DESC) AS place')
+        @runners = @runners.select { |rn| rn.total_points > 0 }
+      end
 
-    @runners = @runners.select { |rn| rn.total_points > 0 }
+      format.json do
+        hash = {}
+        data = ["M", "W"].each do |gender|
+          runners = Runner.where(gender:).joins(:results, :club)
+                         .where('results.ecn_points > 0')
+                         .group('runners.id, clubs.club_name')
+                         .order('SUM(results.ecn_points) DESC')
+                         .select('runners.id, runners.runner_name, runners.surname, runners.dob, runners.club_id, runners.gender,
+                          clubs.club_name,
+                          SUM(results.ecn_points) AS total_points, COUNT(results.ecn_points) AS ecn_results_count,
+                          RANK() OVER (ORDER BY SUM(results.ecn_points) DESC) AS place').limit(10)
+            runner_gender = gender == "M" ? "Masculin" : "Femenin"
+            hash[runner_gender] = runners
+          end
+
+        render json: hash
+      end
+    end
   end
 
   def new_runners
