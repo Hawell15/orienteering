@@ -39,7 +39,7 @@ class EntriesController < ApplicationController
     @entries = @entries.includes(:runner, :category, result: { group: :competition })
   end
 
-  def def(edit); end
+  def def edit; end
 
   def update
     respond_to do |format|

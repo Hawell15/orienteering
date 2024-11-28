@@ -49,8 +49,12 @@ class ResultsController < ApplicationController
   # PATCH/PUT /results/1 or /results/1.json
   def update
     respond_to do |format|
-      if @result.update(params_for_results)
-        format.html { redirect_to result_url(@result), notice: 'Result was successfully updated.' }
+      if ResultAndEntryProcessor.new(params_for_results.to_h, @result).update_result
+        request.referer[/\/competitions\/\d+/]
+        format.html do
+          redirect_uri = request.referer[/\/competitions\/\d+/] ? request.referer : result_url(@result)
+          redirect_to redirect_uri, notice: 'Result was successfully updated.'
+        end
         format.json { render :show, status: :ok, location: @result }
       else
         format.html { render :edit, status: :unprocessable_entity }
@@ -71,7 +75,7 @@ class ResultsController < ApplicationController
 
   def from_competition
     result_time = convert_time(result_params[:time])
-    result = Result.add_result(result_params.except(:time).merge(time: result_time).to_h)
+    result = ResultAndEntryProcessor.new(result_params.except(:time).merge(time: result_time).to_h).add_result
     redirect_to "#{request.referer}#menu#{result.group.group_name}"
 
   end

@@ -8,8 +8,6 @@ class Result < ApplicationRecord
   accepts_nested_attributes_for :group
 
   before_save :add_date
-  after_save :add_entry
-
   scope :runner_id,      ->(runner_id) { where runner_id: runner_id}
   scope :group_id,      ->(group_id) { where group_id: group_id}
   scope :competition_id, ->(competition_id) { joins(:group).where('group.competition_id' => competition_id) }
@@ -32,36 +30,11 @@ class Result < ApplicationRecord
     end
   }
 
-  def self.add_result(params, status = 'unconfirmed')
-    params = params.with_indifferent_access
-
-    check_params =
-      {
-        runner_id: params['runner_id'],
-        group_id: params['group_id']
-      }
-
-    check_params.merge!(date: params['date']) if params['date']
-
-    result = Result.find_by(check_params)
-    return result if result
-
-    result = Result.new(params)
-    result.instance_variable_set(:@status, status)
-    result.save
-
-    result
-  end
-
   private
 
   def add_date
     return if date
 
     self.date = group.competition.date
-  end
-
-  def add_entry
-    Entry.check_add_entry(self, @status)
   end
 end

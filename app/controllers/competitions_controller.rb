@@ -144,7 +144,8 @@ class CompetitionsController < ApplicationController
       coeficient  = group.ecn_coeficient
 
       group.results.each do |result|
-        result.update(ecn_points: (coeficient * winner_time / result.time * 100).round(2))
+        ecn_points = (coeficient * winner_time / result.time * 100).round(2)
+        ResultAndEntryProcessor.new( { ecn_points: ecn_points }, result ).update_result
       end
     end
 
