@@ -46,9 +46,9 @@ class Runner < ApplicationRecord
     runner ||= get_runner_by_matching(params) unless skip_matching
     params['id'] ||= (Runner.last&.id || 0) + 1
     runner ||= Runner.create!(params.except('category_id', 'date'))
+
     if params['category_id'] && params['category_id'].to_i < runner.category_id.to_i
-      Result.add_result({ runner_id: runner.id, group_id: 1, category_id: params['category_id'],
-                          date: params['date'].as_json })
+      ResultAndEntryProcessor.new({ runner_id: runner.id, group_id: 1, category_id: params['category_id'], date: params['date'].as_json }).add_result
     end
     runner
   end
@@ -67,10 +67,6 @@ class Runner < ApplicationRecord
       .where('entries.date + (categories.validaty_period * INTERVAL \'1 year\') > ?', Date.today)
       .where(entries: { status: 'confirmed' })
       .order(:category_id, date: :desc).first
-
-    if !entry
-      entry = check_three_results
-    end
 
     hash = {}
 
@@ -231,17 +227,5 @@ class Runner < ApplicationRecord
     cyrillic_pattern = /\p{Cyrillic}/
 
     !!(str =~ cyrillic_pattern)
-  end
-
-  def check_three_results
-    return unless self.junior_runner?
-
-    results = self.results.where('date > ?', [Time.now - 1.year , "2024-03-25".to_date].max)
-
-    return if results.count < 3
-
-    result = Result.add_result({ runner_id: id, group_id: Group.three_results_group_id, category_id: 9, date: results.order(date: :desc).first.date + 1.day}, "confirmed")
-
-    result.entry
   end
 end

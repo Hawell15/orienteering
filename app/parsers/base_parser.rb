@@ -45,7 +45,7 @@ class BaseParser
 
       runner_id = result_hash[:runner_id] || add_runners(result_hash[:runner]).id
       if result_hash.except(:runner).present?
-        result    = Result.add_result(result_hash.merge({ runner_id: runner_id, group_id: group.id }).except(:runner, :status), status)
+        result    = ResultAndEntryProcessor.new(result_hash.merge({ runner_id: runner_id, group_id: group.id }).except(:runner, :status), status).add_result
       end
 
       @return_result = result if @return_data == "result"
