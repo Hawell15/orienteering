@@ -167,6 +167,7 @@ class CompetitionsController < ApplicationController
       end
 
       format.json do
+        limit = params[:size] || 20
         hash = {}
         data = ["M", "W"].each do |gender|
           runners = Runner.where(gender:).joins(:results, :club)
@@ -176,7 +177,7 @@ class CompetitionsController < ApplicationController
                          .select('runners.id, runners.runner_name, runners.surname, runners.dob, runners.club_id, runners.gender,
                           clubs.club_name,
                           ROUND(SUM(results.ecn_points)::numeric, 2) AS total_points, COUNT(results.ecn_points) AS ecn_results_count,
-                          RANK() OVER (ORDER BY SUM(results.ecn_points) DESC) AS place').limit(10)
+                          RANK() OVER (ORDER BY SUM(results.ecn_points) DESC) AS place').limit(limit)
             runner_gender = gender == "M" ? "Masculin" : "Femenin"
             hash[runner_gender] = runners
           end
@@ -247,8 +248,7 @@ class CompetitionsController < ApplicationController
 
   # Only allow a list of trusted parameters through.
   def competition_params
-    params.require(:competition).permit(:competition_name, :date, :location, :country, :distance_type, :wre_id,
-                                        :checksum, :group_list)
+    params.require(:competition).permit(:competition_name, :date, :location, :country, :distance_type, :wre_id, :checksum, :group_list, :size)
   end
 
   def group_clasa_params
