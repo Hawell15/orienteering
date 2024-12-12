@@ -1,6 +1,7 @@
 class Group < ApplicationRecord
   belongs_to :competition
   has_many :results, dependent: :destroy
+  has_many :relay_results, dependent: :destroy
 
   before_save :remove_spaces
 

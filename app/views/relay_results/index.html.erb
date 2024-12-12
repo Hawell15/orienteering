@@ -1,0 +1,62 @@
+<h1 style="text-align:center; color:green">Rezultate</h1>
+<table class="table table-bordered table-hover">
+    <thead class="table-primary">
+        <tr>
+            <th scope="col">
+                <%= link_to 'Locul' %>
+            </th>
+            <th colspan="2">
+                <%= link_to 'Echipa'%>
+            </th>
+            <th colspan="2">
+                <%= link_to 'Timpul'%>
+            </th>
+            <th>
+                <%= link_to 'Categoria indeplinita' %>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        <% @relay_results.each do |relay_result| %>
+        <tr><td colspan="6"></td></tr>
+        <tr class="table-danger">
+            <td>
+                <%= relay_result.place %>
+            </td>
+            <td colspan="2">
+                <%= relay_result.team %>
+            </td>
+            <td colspan="2">
+                <%= Time.at(relay_result.time).utc.strftime('%H:%M:%S') %>
+            </td>
+            <td>
+                <%= relay_result.category.category_name %>
+            </td>
+        </tr>
+        <% total_time = 0 %>
+        <%  relay_result.results_id.each_with_index do |result_id, index| %>
+        <% result = Result.find(result_id) %>
+        <tr >
+            <td>Etapa
+                <%= index + 1 %>
+            </td>
+            <td>
+                <%= link_to "#{result.runner.runner_name} #{result.runner.surname}", result.runner  %>
+            </td>
+            <td>
+                <% @default_category ||= Category.find(10) %>
+                <%= (result.runner.entries.select { |entry| entry["status"] == "confirmed"  && entry["date"] < result.date }.sort_by(&:date).reverse.first&.category || @default_category).category_name %>
+            </td>
+            <td>
+                <%= Time.at(result.time).utc.strftime('%H:%M:%S') %>
+            </td>
+            <td>
+                <% total_time += result.time %>
+                <%= Time.at(total_time).utc.strftime('%H:%M:%S') %>
+            </td>
+            <td></td>
+        </tr>
+        <% end %>
+        <% end %>
+    </tbody>
+</table>

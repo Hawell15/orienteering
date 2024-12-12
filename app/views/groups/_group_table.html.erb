@@ -1,5 +1,9 @@
 <% results = filter_results({ group_id: group.id, "sort_by" => "place", "direction" => "asc" }.merge(params.to_unsafe_h)).includes(:group, :category) %>
+<% if group.competition.distance_type == "Stafeta" %>
+     <%= render partial: 'results/relay_results_table', locals: { relay_results: group.relay_results, group_id: group.id, show_pagination: false } %>
+     <% else %>
             <%= render partial: 'results/results_table', locals: { results: results, group_id: group.id, show_pagination: false } %>
+            <% end %>
             <% if admin_user? %>
             <%= form_tag(count_rang_path, method: :post) do %>
             <%= hidden_field_tag :id, group.id %>
@@ -8,8 +12,11 @@
             <% end %>
             <hr>
             <% if group.rang %>
+            <% if group.competition.distance_type == "Stafeta" %>
+            <%  percent_and_time_data = RelayGroupCategoriesUpdater.new(group).get_percent_and_times %>
+            <% else %>
             <%  percent_and_time_data = GroupCategoriesUpdater.new(group).get_percent_and_times %>
-
+            <% end %>
             <br>
             <div class="half-width-table">
                 <table class="table table-striped table-bordered table-hover">

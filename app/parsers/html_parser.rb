@@ -40,7 +40,7 @@ class HtmlParser < BaseParser
   def extract_results(json, gender, group)
     json['persons'].select { |pers| pers['group_id'] == group['id'] }.map do |runner|
       result = json['results'].detect { |res| res['person_id'] == runner['id'] }
-      next if result.nil? || result['place'].to_i < 1 || runner.blank?
+      next if result.nil? || !check_result?(result['result']) || result['place'].to_i < 1 || runner.blank?
 
       {
         place:  result['place'],
@@ -78,5 +78,9 @@ class HtmlParser < BaseParser
     when 1 then 7
     when 0 then 10
     end
+  end
+
+  def check_result?(result)
+    true
   end
 end

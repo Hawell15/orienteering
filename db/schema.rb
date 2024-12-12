@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2024_09_21_181417) do
+ActiveRecord::Schema.define(version: 2024_11_30_133326) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -74,6 +74,21 @@ ActiveRecord::Schema.define(version: 2024_09_21_181417) do
     t.index ["competition_id"], name: "index_groups_on_competition_id"
   end
 
+  create_table "relay_results", force: :cascade do |t|
+    t.integer "place"
+    t.string "team"
+    t.integer "time"
+    t.bigint "category_id", null: false
+    t.bigint "group_id", null: false
+    t.date "date"
+    t.bigint "results_id", default: [], array: true
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["category_id"], name: "index_relay_results_on_category_id"
+    t.index ["group_id"], name: "index_relay_results_on_group_id"
+    t.index ["results_id"], name: "index_relay_results_on_results_id"
+  end
+
   create_table "results", force: :cascade do |t|
     t.integer "place"
     t.bigint "runner_id", null: false
@@ -130,6 +145,8 @@ ActiveRecord::Schema.define(version: 2024_09_21_181417) do
   add_foreign_key "entries", "categories"
   add_foreign_key "entries", "results"
   add_foreign_key "entries", "runners"
+  add_foreign_key "relay_results", "categories"
+  add_foreign_key "relay_results", "groups"
   add_foreign_key "results", "categories"
   add_foreign_key "results", "groups"
   add_foreign_key "results", "runners"
