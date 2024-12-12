@@ -25,6 +25,19 @@ class ParserController < ApplicationController
     end
   end
 
+  def file_relay_results
+     return  redirect_to '/422.html' unless admin_user?
+
+    return unless params[:path]
+
+    respond_to do |format|
+      path = params[:path].tempfile.path
+      parser = RelayHtmlParser.new(path)
+      @competition = parser.convert
+      format.html { redirect_to competition_url(@competition), notice: 'Competitia a fost creata cu succes' }
+    end
+  end
+
   def iof_runners
     return  redirect_to '/422.html' unless admin_user?
 

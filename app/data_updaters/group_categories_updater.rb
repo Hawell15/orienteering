@@ -11,15 +11,13 @@ class GroupCategoriesUpdater
 
     time_hash = get_time_hash
 
-    @group.results.each do |res|
+   main_results.each do |res|
       update_result_category(res, time_hash)
     end
   end
 
   def get_percent_and_times
-    winner_time = @group.results.order(:place).first.time
-
-    get_percent_hash(winner_time).map do |k, v|
+    get_percent_hash.map do |k, v|
       { category: Category.find(k).category_name, percent: v,
         time: Time.at(v * winner_time / 100).utc.strftime('%H:%M:%S') }
     end
@@ -68,7 +66,7 @@ class GroupCategoriesUpdater
   end
 
   def get_group_rang
-    @group.results.order(:place).first(12).map do |result|
+    rang_results.map do |result|
       entry = Entry.where(runner_id: result.runner_id).where(status: "confirmed").where('date < ?', @group.competition.date).order(date: :desc).first
 
       entry ? entry.category.points : 0.0
@@ -76,15 +74,14 @@ class GroupCategoriesUpdater
   end
 
   def get_time_hash
-    winner_time = @group.results.order(:place).first.time
-    percent_hash = get_percent_hash(winner_time)
+    percent_hash = get_percent_hash
 
     percent_hash.transform_values { |v| v * winner_time / 100 }
   end
 
-  def get_percent_hash(_winner_time)
+  def get_percent_hash
     clasa = @group.clasa.to_i
-    return {} if @group.results.size < 3
+    return {} if main_results.size < min_results_size
 
     get_rang_percents(@group.rang).map do |k, v|
 
@@ -104,9 +101,29 @@ class GroupCategoriesUpdater
                   else
                     time_hash.detect { |_k, v| v >= time }&.first || 10
                   end
-    category_id = 10 if category_id > 6 && !res.runner.junior_runner?
-
+    category_id = 10 if category_id > 6 && !set_junior_category?(res)
 
     res.update(category_id: category_id)
+    category_id
+  end
+
+  def main_results
+    @main_results ||= @group.results.order(:place)
+  end
+
+  def winner_time
+    @winner_time ||= main_results.first.time
+  end
+
+  def rang_results
+    main_results.first(12)
+  end
+
+  def set_junior_category?(res)
+    res.runner.junior_runner?
+  end
+
+  def min_results_size
+    3
   end
 end

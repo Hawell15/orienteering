@@ -1,0 +1,86 @@
+
+<h1 style="text-align:center; color:green">Rezultat</h1>
+<table class="table table-striped table-bordered table-hover">
+    <thead class="table-primary">
+        <tr>
+            <th scope="col">
+                <%= link_to 'Locul' %>
+            </th>
+            <th>
+                <%= link_to 'Echipa'%>
+            </th>
+            <th>
+                <%= link_to 'Timpul'%>
+            </th>
+            <th>
+                <%= link_to 'Categoria indeplinita' %>
+            </th>
+            <th>
+                <%= link_to 'Competitia' %>
+            </th>
+            <th>
+                <%= link_to 'Grupa' %>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+                <%= @relay_result.place %>
+            </td>
+            <td>
+                <%= @relay_result.team %>
+            </td>
+            <td>
+                <%= Time.at(@relay_result.time).utc.strftime('%H:%M:%S') %>
+            </td>
+            <td>
+                <%= @relay_result.category.category_name %>
+            </td>
+            <td>
+                <%= link_to "#{@relay_result.group.competition.competition_name} #{@relay_result.group.competition.date.year}", @relay_result.group.competition %>
+            </td>
+            <td>
+                <%= link_to @relay_result.group.group_name, @relay_result.group %>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="6" class="p-0">
+                <div class="card card-body">
+                    <table class="table table-striped table-bordered table-hover">
+                        <tbody>
+                           <% total_time = 0 %>
+                            <%  @relay_result.results_id.each do |result_id| %>
+                            <% result = Result.find(result_id) %>
+                            <tr>
+                                <td>
+                                    <%= link_to "#{result.runner.runner_name} #{result.runner.surname}", result.runner  %>
+                                </td>
+                                <td>
+                                    <% @default_category ||= Category.find(10) %>
+                                    <%= (result.runner.entries.select { |entry| entry["status"] == "confirmed"  && entry["date"] < result.date }.sort_by(&:date).reverse.first&.category || @default_category).category_name %>
+                                </td>
+                                <td>
+                                    <%= Time.at(result.time).utc.strftime('%H:%M:%S') %>
+                                </td>
+                                <td>
+                                  <% total_time += result.time %>
+                                   <%= Time.at(total_time).utc.strftime('%H:%M:%S') %>
+
+                                </td>
+                            </tr>
+                            <% end %>
+                        </tbody>
+                    </table>
+                </div>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<p class="lead">
+    <% if admin_user? %>
+    <%= link_to 'Editează', edit_polymorphic_path(@relay_result), class: "btn btn-success btn-sm" %>
+    <%= link_to 'Șterge', @relay_result, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-danger btn-sm" %>
+    <% end %>
+    <%= link_to 'Înapoi', request.referer, class: "btn btn-secondary btn-sm" %>
+</p>

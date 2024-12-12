@@ -113,7 +113,11 @@ class CompetitionsController < ApplicationController
 
     @competition.groups.each do |group|
       next if group.results.blank?
-      GroupCategoriesUpdater.new(group).get_rang_and_categories
+      parser = if @competition.distance_type == "Stafeta"
+        RelayGroupCategoriesUpdater.new(competition_params)
+      else
+        GroupCategoriesUpdater.new(group).get_rang_and_categories
+      end
     end
 
     redirect_to competition_url(@competition)
@@ -177,7 +181,7 @@ class CompetitionsController < ApplicationController
                          .select('runners.id, runners.runner_name, runners.surname, runners.dob, runners.club_id, runners.gender,
                           clubs.club_name,
                           ROUND(SUM(results.ecn_points)::numeric, 2) AS total_points, COUNT(results.ecn_points) AS ecn_results_count,
-                          RANK() OVER (ORDER BY SUM(results.ecn_points) DESC) AS place').limit(limit)
+                          RANK() OVER (ORDER BY SUM(results.ecn_points) DESC) AS place').limit( limit)
             runner_gender = gender == "M" ? "Masculin" : "Femenin"
             hash[runner_gender] = runners
           end

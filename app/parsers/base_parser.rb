@@ -50,7 +50,10 @@ class BaseParser
 
       @return_result = result if @return_data == "result"
     end
+    add_relay_result(group)
   end
+
+  def add_relay_result(_group); end
 
   private
 
@@ -99,5 +102,9 @@ class BaseParser
     when "Irene", /a$/i then "W"
     else "M"
     end
+  end
+
+  def chack_result?(result)
+    true
   end
 end

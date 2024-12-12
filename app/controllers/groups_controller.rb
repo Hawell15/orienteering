@@ -59,7 +59,11 @@ class GroupsController < ApplicationController
   end
 
   def count_rang
-    GroupCategoriesUpdater.new(@group).get_rang_and_categories
+    if @group.competition.distance_type == "Stafeta"
+      RelayGroupCategoriesUpdater.new(@group).get_rang_and_categories
+    else
+      GroupCategoriesUpdater.new(@group).get_rang_and_categories
+    end
 
     redirect_to request.referer
   end
