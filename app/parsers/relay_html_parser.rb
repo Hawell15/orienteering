@@ -9,7 +9,8 @@ class RelayHtmlParser < HtmlParser
       end
 
       team = @hash[:groups].detect { |gr|gr[:group_name] == group.group_name }[:results].compact.detect { |res| res[:place] == relay_result.first[:place] }[:runner][:club]
-      RelayResult.create!(
+
+      RelayResult.find_or_create_by!(
         place:       relay_result.first.place,
         time:        relay_result.pluck("time").sum,
         team:        team,
