@@ -21,6 +21,7 @@
         <strong>FOS ID:</strong>
         <%= @runner.id%>
     </p>
+    <% if admin_user?  %>
     <hr>
     <%= form_tag merge_runner_path do %>
     <%= label_tag "merge_runner_id", "Uneste cu sportivul", class: "label-filter" %>
@@ -30,6 +31,7 @@
     <%= check_box_tag :main, true, id: "main" %>
     <br>
     <%= submit_tag "Submit" %>
+    <% end %>
     <% end %>
     <hr class="my-4">
     <div class="container">
