@@ -14,7 +14,7 @@ class RelayGroupCategoriesUpdater < GroupCategoriesUpdater
   end
 
   def rang_results
-    Result.where(id: main_results.first(4).pluck("results_id").flatten)
+    Result.where(id: main_results.first(relay_team_count).pluck("results_id").flatten)
   end
 
   def set_junior_category?(res)
@@ -23,5 +23,9 @@ class RelayGroupCategoriesUpdater < GroupCategoriesUpdater
 
   def min_results_size
     2
+  end
+
+  def relay_team_count
+    @group.competition.distance_type == "Sprint Stafeta" ? 3 : 4
   end
 end

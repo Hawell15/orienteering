@@ -113,7 +113,7 @@ class CompetitionsController < ApplicationController
 
     @competition.groups.each do |group|
       next if group.results.blank?
-      parser = if @competition.distance_type == "Stafeta"
+      parser = if @competition.distance_type[/Stafeta/]
         RelayGroupCategoriesUpdater.new(competition_params)
       else
         GroupCategoriesUpdater.new(group).get_rang_and_categories
