@@ -24,6 +24,7 @@ class Entry < ApplicationRecord
   private
 
   def notify_telegram
+    return
     return unless Rails.env.production?
     return unless self.status == "confirmed"
 
