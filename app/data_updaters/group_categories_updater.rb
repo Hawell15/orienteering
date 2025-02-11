@@ -8,11 +8,12 @@ class GroupCategoriesUpdater
   def get_rang_and_categories
     rang = get_group_rang
     @group.update!(rang:)
+    return process_knock_out_categories(rang) if group.competition.distance_type == "Knock Out Sprint"
 
     time_hash = get_time_hash
-
    main_results.each do |res|
-      update_result_category(res, time_hash)
+      category_id = get_category_id(res, time_hash)
+      update_result_category(res, category_id)
     end
   end
 
@@ -89,21 +90,10 @@ class GroupCategoriesUpdater
     end.compact.to_h
   end
 
-  def update_result_category(res, time_hash)
-    time = res.time
-    place = res.place
-    clasa = @group.clasa
+  def update_result_category(res, category_id)
+    status = get_status(res)
+    ResultAndEntryProcessor.new({category_id: category_id}, res, nil, status).update_result
 
-    category_id = if clasa == '2' && place == 1
-                    2
-                  elsif ['2', '3'].include?(clasa) && (1..3).include?(place)
-                    3
-                  else
-                    time_hash.detect { |_k, v| v >= time }&.first || 10
-                  end
-    category_id = 10 if category_id > 6 && !set_junior_category?(res)
-
-    res.update(category_id: category_id)
     category_id
   end
 
@@ -125,5 +115,57 @@ class GroupCategoriesUpdater
 
   def min_results_size
     3
+  end
+
+  def get_status(res)
+    return "confirmed" if res.category_id > 3
+
+    res.category_id < res.runner.best_category_id ? "pending" : "confirmed"
+  end
+
+  def get_category_id(res, time_hash)
+    time = res.time
+    place = res.place
+    clasa = @group.clasa
+
+    category_id = if clasa == '2' && place == 1
+                    2
+                  elsif ['2', '3'].include?(clasa) && (1..3).include?(place)
+                    3
+                  else
+                    time_hash.detect { |_k, v| v >= time }&.first || 10
+                  end
+    category_id = 10 if category_id > 6 && !set_junior_category?(res)
+
+    category_id
+  end
+
+  def process_knock_out_categories(rang)
+     if @group.group_name.include?("21")
+      if rang <= 120
+        @group.results.where(place: (1..6).to_a).each { |res| update_result_category(res, 4) }
+        @group.results.where(place: (7..10).to_a).each { |res| update_result_category(res, 5) }
+        @group.results.where(place: (11..16).to_a).each { |res| update_result_category(res, 6) }
+      else
+        first_place_category_id = rang > 300 ? 2 : 3
+        @group.results.where(place: 1).each { |res| update_result_category(res, first_place_category_id) }
+        @group.results.where(place: (2..3).to_a).each { |res| update_result_category(res, 3) }
+        @group.results.where(place: (4..8).to_a).each { |res| update_result_category(res, 4) }
+        @group.results.where(place: (9..12).to_a).each { |res| update_result_category(res, 5) }
+        @group.results.where(place: (13..16).to_a).each { |res| update_result_category(res, 6) }
+      end
+    elsif @group.group_name.include?("16")
+      if rang >= 20
+        @group.results.where(place: 1).each { |res| update_result_category(res, 4) }
+        @group.results.where(place: (2..3).to_a).each { |res| update_result_category(res, 5) }
+        @group.results.where(place: (4..8).to_a).each { |res| update_result_category(res, 6) }
+        @group.results.where(place: (9..12).to_a).each { |res| update_result_category(res, 7) }
+      else
+        @group.results.where(place: (1..3).to_a).each { |res| update_result_category(res, 5) }
+        @group.results.where(place: (4..6).to_a).each { |res| update_result_category(res, 6) }
+        @group.results.where(place: (7..9).to_a).each { |res| update_result_category(res, 7) }
+        @group.results.where(place: (10..12).to_a).each { |res| update_result_category(res, 8) }
+      end
+    end
   end
 end

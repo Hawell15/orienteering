@@ -1,9 +1,9 @@
 class CompetitionsController < ApplicationController
-  before_action :set_competition, only: %i[show edit update destroy group_clasa update_group_clasa group_ecn_coeficients set_ecn update_group_ecn_coeficients new_runners pdf ecn_csv]
+  before_action :set_competition, only: %i[show edit update destroy group_clasa update_group_clasa group_ecn_coeficients set_ecn update_group_ecn_coeficients new_runners pdf ecn_csv set_wre_categories]
 
   # GET /competitions or /competitions.json
   def index
-    @competitions = Competition.order(date: :desc)
+    @competitions = Competition.all
 
     @competitions = @competitions.where.not(wre_id: nil) if params[:wre]
     @competitions = @competitions.where(distance_type: params[:distance_type]) if params[:distance_type].present?
@@ -109,15 +109,30 @@ class CompetitionsController < ApplicationController
   def group_ecn_coeficients; end
 
   def update_group_clasa
+    check_exprired_cagegories
+    results = Result.joins(:group).where("group.competition_id": @competition.id).update_all(category_id: 10)
+
     @competition.update(group_clasa_params)
 
     @competition.groups.each do |group|
       next if group.results.blank?
-      parser = if @competition.distance_type == "Stafeta"
-        RelayGroupCategoriesUpdater.new(competition_params)
+      parser = if @competition.distance_type&.include?("Stafeta")
+        RelayGroupCategoriesUpdater
       else
-        GroupCategoriesUpdater.new(group).get_rang_and_categories
-      end
+        GroupCategoriesUpdater
+      end.new(group).get_rang_and_categories
+    end
+
+    redirect_to competition_url(@competition)
+  end
+
+   def set_wre_categories
+    check_exprired_cagegories
+    results = Result.joins(:group).where("group.competition_id": @competition.id)
+    results.update_all(category_id: 10)
+    results.each do |result|
+      category_id = get_wre_category(result)
+      ResultAndEntryProcessor.new({category_id: category_id}, result, nil, get_status(result)).update_result
     end
 
     redirect_to competition_url(@competition)
@@ -228,7 +243,6 @@ class CompetitionsController < ApplicationController
     end
   end
 
-
   private
 
   # Use callbacks to share common setup or constraints between actions.
@@ -262,4 +276,30 @@ class CompetitionsController < ApplicationController
   def group_ecn_coeficients_params
     params.require(:competition).permit(groups_attributes: %i[id ecn_coeficient])
   end
+
+  def check_exprired_cagegories
+    Runner.where('category_valid < ?', @competition.date).each do |runner|
+      category_id =  runner.category_id == 6 && (Date.today.year - runner.dob.year > 19) ? 10 : runner.category_id + 1
+      ResultAndEntryProcessor.new({ runner_id: runner.id, category_id: category_id, date: runner.category_valid, group_id: 2}, nil, nil, "confirmed").add_result
+    end
+  end
+
+  def get_wre_category(result)
+    delta = result.date < "01.01.2024".to_date ? 50 : 0
+
+    category_id = case result.wre_points
+    when 700..899                       then 4
+    when 900..(1049 + delta)            then 3
+    when (1050 + delta)..(1249 + delta) then 2
+    when (1250 + delta)..1500           then 1
+    else 10
+    end
+  end
+
+  def get_status(res)
+    return "confirmed" if res.category_id > 3
+
+    res.category_id < res.runner.best_category_id ? "pending" : "confirmed"
+  end
+
 end

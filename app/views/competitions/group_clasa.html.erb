@@ -9,7 +9,7 @@
   <div class="py-4">
       </div>
   <tbody>
-    <% @competition.groups.each do |group| %>
+   <% @competition.groups.order(:group_name).each do |group| %>
     <%= f.fields_for :groups, group do |group_fields| %>
       <tr>
         <td><%= group_fields.object.group_name %></td>

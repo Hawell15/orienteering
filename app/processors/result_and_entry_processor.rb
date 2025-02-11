@@ -52,10 +52,10 @@ class ResultAndEntryProcessor
 
     result.update!(params)
 
-    if params.keys.any? { |key| ['runner_id', 'category_id', 'date'].include?(key) }
+    # if params.keys.any? { |key| ['runner_id', 'category_id', 'date'].include?(key) }
       result.entry&.destroy
       add_entry
-    end
+    # end
     result
   end
 
@@ -71,10 +71,11 @@ class ResultAndEntryProcessor
   end
 
   def check_three_results?(runner)
+    return false if result.date < "2024-03-25".to_date
     return false unless runner.category_id > 8
     return false unless runner.junior_runner?
 
-    results = runner.results.where('date > ?', [Time.now - 1.year , "2024-03-25".to_date].max)
+    results = runner.results.where(date: "2024-03-25".to_date .. result.date)
 
     return false if results.count < 3
 

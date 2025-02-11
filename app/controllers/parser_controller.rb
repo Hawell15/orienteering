@@ -10,7 +10,10 @@ class ParserController < ApplicationController
     respond_to do |format|
       path         = params[:path].tempfile.path
 
-      parser = if path[/json$/]
+
+      parser = if params["relay"]
+        RelayHtmlParser.new(path)
+      elsif path[/json$/]
         JsonParser.new(path)
       elsif path[/html$/]
         HtmlParser.new(path)
@@ -21,19 +24,6 @@ class ParserController < ApplicationController
       end
       @competition = parser.convert
 
-      format.html { redirect_to competition_url(@competition), notice: 'Competitia a fost creata cu succes' }
-    end
-  end
-
-  def file_relay_results
-     return  redirect_to '/422.html' unless admin_user?
-
-    return unless params[:path]
-
-    respond_to do |format|
-      path = params[:path].tempfile.path
-      parser = RelayHtmlParser.new(path)
-      @competition = parser.convert
       format.html { redirect_to competition_url(@competition), notice: 'Competitia a fost creata cu succes' }
     end
   end
