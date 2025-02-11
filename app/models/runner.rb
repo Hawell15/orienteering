@@ -61,10 +61,10 @@ class Runner < ApplicationRecord
     (Digest::SHA2.new << "#{runner_name}-#{surname}-#{dob.to_date.year}-#{gender}").to_s
   end
 
-  def update_runner_category
+  def update_runner_category(date = Date.today)
     entry = entries
       .joins(:category)
-      .where('entries.date + (categories.validaty_period * INTERVAL \'1 year\') > ?', Date.today)
+      .where('entries.date + (categories.validaty_period * INTERVAL \'1 year\') > ?', date)
       .where(entries: { status: 'confirmed' })
       .order(:category_id, date: :desc).first
 

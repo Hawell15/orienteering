@@ -7,10 +7,12 @@ class RelayGroupCategoriesUpdater < GroupCategoriesUpdater
     @main_results ||= @group.relay_results.order(:place)
   end
 
-  def update_result_category(res, time_hash)
-    category_id = super
+  def update_result_category(res, category_id)
+    Result.where(id: res.results_id).each do |result|
+      status = get_status(res)
 
-    Result.where(id: res.results_id).update_all(category_id: category_id)
+      ResultAndEntryProcessor.new({category_id: category_id}, result, nil, status).update_result
+    end
   end
 
   def rang_results

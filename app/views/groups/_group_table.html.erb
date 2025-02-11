@@ -1,5 +1,5 @@
 <% results = filter_results({ group_id: group.id, "sort_by" => "place", "direction" => "asc" }.merge(params.to_unsafe_h)).includes(:group, :category) %>
-<% if group.competition.distance_type[/Stafeta/] %>
+<% if group.competition.distance_type&.include?("Stafeta") %>
      <%= render partial: 'results/relay_results_table', locals: { relay_results: group.relay_results, group_id: group.id, show_pagination: false } %>
      <% else %>
             <%= render partial: 'results/results_table', locals: { results: results, group_id: group.id, show_pagination: false } %>
@@ -12,7 +12,7 @@
             <% end %>
             <hr>
             <% if group.rang %>
-            <% if group.competition.distance_type[/Stafeta/] %>
+            <% if group.competition.distance_type&.include?("Stafeta") %>
             <%  percent_and_time_data = RelayGroupCategoriesUpdater.new(group).get_percent_and_times %>
             <% else %>
             <%  percent_and_time_data = GroupCategoriesUpdater.new(group).get_percent_and_times %>

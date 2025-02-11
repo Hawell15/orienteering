@@ -39,9 +39,15 @@
                     <%= link_to 'Seteaza Coeficientii Grupelor', group_ecn_coeficients_competition_path(@competition), class: "dropdown-item" %>
                 </li>
                 <% end %>
-                <li>
-                    <%= link_to 'Actualizeaza Clasele Grupelor', update_group_clasa_competition_path(@competition), class: "dropdown-item" %>
-                </li>
+                <% if @competition.wre_id %>
+                    <li>
+                        <%= link_to 'Calculeaza Wre Puncte',set_wre_categories_competition_path(@competition), class: "dropdown-item" %>
+                    </li>
+                <%else %>
+                    <li>
+                        <%= link_to 'Actualizeaza Clasele Grupelor', update_group_clasa_competition_path(@competition), class: "dropdown-item" %>
+                    </li>
+                <% end %>
                 <li>
                     <%= link_to 'Sportivi noi', new_runners_competition_path(@competition), class: "dropdown-item" %>
                 </li>

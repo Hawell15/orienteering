@@ -45,6 +45,7 @@ Rails.application.routes.draw do
       post 'group_ecn_coeficients', to: 'competitions#update_group_ecn_coeficients', as: 'update_group_ecn_coeficients'
       post 'group_clasa', to: 'competitions#update_group_clasa', as: 'update_group_clasa'
       get 'ecn_csv', to: 'competitions#ecn_csv', as: 'download_ecn_csv'
+      get 'set_wre_categories', to: 'competitions#set_wre_categories', as: 'set_wre_categories'
     end
   end
 
