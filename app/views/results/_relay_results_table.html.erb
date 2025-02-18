@@ -33,7 +33,6 @@
                 <%= Time.at(relay_result.time).utc.strftime('%H:%M:%S') %>
             </td>
             <td>
-                <%= relay_result.category.category_name %>
             </td>
         </tr>
         <% total_time = 0 %>
@@ -48,7 +47,7 @@
             </td>
             <td>
                 <% @default_category ||= Category.find(10) %>
-                <%= (result.runner.entries.select { |entry| entry["status"] == "confirmed"  && entry["date"] < result.date }.sort_by(&:date).reverse.first&.category || @default_category).category_name %>
+                <%= (result.runner.entries.select { |entry| entry["status"] == Entry::CONFIRMED  && entry["date"] < result.date }.sort_by(&:date).reverse.first&.category || @default_category).category_name %>
             </td>
             <td>
                 <%= Time.at(result.time).utc.strftime('%H:%M:%S') %>
@@ -57,7 +56,9 @@
                 <% total_time += result.time %>
                 <%= Time.at(total_time).utc.strftime('%H:%M:%S') %>
             </td>
-            <td></td>
+            <td>
+                <%= result.category.category_name %>
+            </td>
         </tr>
         <% end %>
         <% end %>

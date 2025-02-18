@@ -49,7 +49,7 @@ class JsonParser < BaseParser
 
   def extract_runner(result, gender, date)
     runner_name, surname = result["runner_name"].split(" ", 2)
-    current_category     = convert_category(result["currenct_category"]).id
+    current_category     = convert_category(result["currenct_category"])&.id
 
     {
       runner_name: runner_name,

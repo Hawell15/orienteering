@@ -68,7 +68,7 @@ class GroupCategoriesUpdater
 
   def get_group_rang
     rang_results.map do |result|
-      entry = Entry.where(runner_id: result.runner_id).where(status: "confirmed").where('date < ?', @group.competition.date).order(date: :desc).first
+      entry = Entry.where(runner_id: result.runner_id).where(status: Entry::CONFIRMED).where('date < ?', @group.competition.date).order(date: :desc).first
 
       entry ? entry.category.points : 0.0
     end.sum
@@ -118,9 +118,9 @@ class GroupCategoriesUpdater
   end
 
   def get_status(res)
-    return "confirmed" if res.category_id > 3
+    return Entry::CONFIRMED if res.category_id > 3
 
-    res.category_id < res.runner.best_category_id ? "pending" : "confirmed"
+    res.category_id < res.runner.best_category_id ? Entry::PENDING : Entry::CONFIRMED
   end
 
   def get_category_id(res, time_hash)

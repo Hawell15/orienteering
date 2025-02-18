@@ -8,6 +8,7 @@ class Runner < ApplicationRecord
   accepts_nested_attributes_for :results
 
   before_save :add_checksum
+  before_save :check_dob
   scope :wre, -> { where.not(wre_id: nil) }
   scope :club_id, ->(club_id) { where(club_id:) }
   scope :category_id, ->(category_id) { where(category_id:) }
@@ -65,7 +66,7 @@ class Runner < ApplicationRecord
     entry = entries
       .joins(:category)
       .where('entries.date + (categories.validaty_period * INTERVAL \'1 year\') > ?', date)
-      .where(entries: { status: 'confirmed' })
+      .where(entries: { status: Entry::CONFIRMED })
       .order(:category_id, date: :desc).first
 
     hash = {}
@@ -99,6 +100,12 @@ class Runner < ApplicationRecord
 
   def add_checksum
     self.checksum = get_checksum(runner_name, surname, dob, gender)
+  end
+
+  def check_dob
+    return unless self.dob.to_date == "01-01-2025".to_date
+
+    self.dob = "01-01-0000".to_date
   end
 
   def self.get_runner_by_matching(options)

@@ -40,7 +40,7 @@ class BaseParser
     hash.each do |result_hash|
       next unless result_hash
 
-      status = "unconfirmed"
+      status = Entry::UNCONFIRMED
       status = result_hash[:status] || status
 
       runner_id = result_hash[:runner_id] || add_runners(result_hash[:runner]).id
@@ -81,6 +81,7 @@ class BaseParser
   end
 
   def convert_category(string)
+    return unless string
     string.gsub!('І', 'I') # NOTE: from Ukranian I to English
     string.gsub!('-u', ' j')
     string.gsub!('Ij', 'I j')

@@ -23,7 +23,7 @@ class Result < ApplicationRecord
     when 'group_name'
       joins(:group).order("groups.group_name #{direction}")
     when 'current_category_id'
-      select("results.*, (SELECT entries.category_id FROM entries WHERE entries.runner_id = results.runner_id AND entries.status = 'confirmed' AND entries.date < results.date ORDER BY entries.date DESC LIMIT 1) AS cat_id")
+      select("results.*, (SELECT entries.category_id FROM entries WHERE entries.runner_id = results.runner_id AND entries.status = #{Entry::CONFIRMED} AND entries.date < results.date ORDER BY entries.date DESC LIMIT 1) AS cat_id")
                        .order("cat_id #{direction}")
     else
       order("#{sort_by} #{direction}")

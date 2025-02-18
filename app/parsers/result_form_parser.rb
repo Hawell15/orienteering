@@ -65,7 +65,7 @@ class ResultFormParser < BaseParser
         category_id: json["category_id"],
         wre_points:  json["wre_points"],
         date:        date,
-        status:      "confirmed"
+        status:      Entry::CONFIRMED
     }.compact]
   end
 

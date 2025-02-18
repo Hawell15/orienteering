@@ -15,8 +15,14 @@ class Entry < ApplicationRecord
     where created_at: Competition.find(competition_id).created_at..Competition.find(competition_id).created_at + 5.minutes
   }
 
+  STATUSES = %w[unconfirmed confirmed pending]
+
+  STATUSES.each do |name|
+    const_set(name.upcase, name)
+  end
+
   def update_runner_category
-    return unless self.status == "confirmed"
+    return unless self.status == Entry::CONFIRMED
 
     self.runner.update_runner_category
   end
@@ -24,12 +30,11 @@ class Entry < ApplicationRecord
   private
 
   def notify_telegram
-    return
     return unless Rails.env.production?
-    return unless self.status == "confirmed"
+    return unless self.status == Entry::CONFIRMED
 
     message = "#{self.runner.runner_name} #{self.runner.surname} \nModificare categorie din: #{self.runner.category.category_name} in: #{self.category.category_name} \nvalabila pina la: #{self.category_id == 10 ? "" : (self.date + 2.years).as_json} \nCompetitia: #{self.result.group.competition.competition_name} Grupa: #{self.result.group.group_name}"
 
-    NotifyTelegramJob.perform_now(message)
+    # NotifyTelegramJob.perform_now(message)
   end
 end

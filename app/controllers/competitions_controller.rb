@@ -30,7 +30,7 @@ class CompetitionsController < ApplicationController
                                           search: "%#{params[:search].downcase}%")
     end
 
-    @competitions = @competitions.paginate(page: params[:page], per_page: 10)
+    @competitions = @competitions.order(date: :desc).paginate(page: params[:page], per_page: 10)
   end
 
   # GET /competitions/1 or /competitions/1.json
@@ -132,7 +132,7 @@ class CompetitionsController < ApplicationController
     results.update_all(category_id: 10)
     results.each do |result|
       category_id = get_wre_category(result)
-      ResultAndEntryProcessor.new({category_id: category_id}, result, nil, get_status(result)).update_result
+      ResultAndEntryProcessor.new({category_id: category_id}, result, nil, get_status(category_id, result.runner)).update_result
     end
 
     redirect_to competition_url(@competition)
@@ -174,10 +174,12 @@ class CompetitionsController < ApplicationController
   def ecn_ranking
     respond_to do |format|
       format.html do
+        year = params[:year] || Time.now.year
         gender = params[:gender].presence || 'M'
 
         @runners = Runner.where(gender:).joins(:results)
                          .where('results.ecn_points > 0')
+                         .where('extract(year  from date) = ?', year)
                          .group('runners.id')
                          .order('SUM(results.ecn_points) DESC')
                          .select('runners.id, runners.runner_name, runners.surname, runners.dob, runners.club_id, runners.gender, SUM(results.ecn_points) AS total_points, COUNT(results.ecn_points) AS ecn_results_count,
@@ -234,7 +236,7 @@ class CompetitionsController < ApplicationController
         csv << ["ID", "Loc", "Nume, Prenume", "Cat. sportivă", "Rezultat", "Cat. îndeplinită", "Club", "Country", "", "", ""]
         group.results.each do |result|
          @default_category ||= Category.find(10)
-          current_category = (result.runner.entries.select { |entry| entry["status"] == "confirmed"  && entry["date"] < result.date }.sort_by(&:date).reverse.first&.category || @default_category).category_name
+          current_category = (result.runner.entries.select { |entry| entry["status"] == Entry::CONFIRMED  && entry["date"] < result.date }.sort_by(&:date).reverse.first&.category || @default_category).category_name
 
         csv << [result.runner.id, result.place, "#{result.runner.runner_name} #{result.runner.surname}", current_category, Time.at(result.time).utc.strftime('%H:%M:%S'), result.category.category_name, result.runner.club.club_name, "", "", "", ""]
       end
@@ -280,7 +282,7 @@ class CompetitionsController < ApplicationController
   def check_exprired_cagegories
     Runner.where('category_valid < ?', @competition.date).each do |runner|
       category_id =  runner.category_id == 6 && (Date.today.year - runner.dob.year > 19) ? 10 : runner.category_id + 1
-      ResultAndEntryProcessor.new({ runner_id: runner.id, category_id: category_id, date: runner.category_valid, group_id: 2}, nil, nil, "confirmed").add_result
+      ResultAndEntryProcessor.new({ runner_id: runner.id, category_id: category_id, date: runner.category_valid, group_id: 2}, nil, nil, Entry::CONFIRMED).add_result
     end
   end
 
@@ -296,10 +298,10 @@ class CompetitionsController < ApplicationController
     end
   end
 
-  def get_status(res)
-    return "confirmed" if res.category_id > 3
+  def get_status(category_id, runner)
+    return Entry::CONFIRMED if category_id > 3
 
-    res.category_id < res.runner.best_category_id ? "pending" : "confirmed"
+    category_id < runner.best_category_id ? Entry::PENDING : Entry::CONFIRMED
   end
 
 end

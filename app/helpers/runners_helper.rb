@@ -19,7 +19,7 @@ module RunnersHelper
   end
 
   def update_runner_category(runner)
-    entry = Entry.where(runner_id: runner.id).where(status: "confirmed").where('date < ?', (Time.now + 1.day).to_date ).order(date: :desc).first
+    entry = Entry.where(runner_id: runner.id).where(status: Entry::CONFIRMED).where('date < ?', (Time.now + 1.day).to_date ).order(date: :desc).first
 
     return if !entry && runner.category_id == 10
 

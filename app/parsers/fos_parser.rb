@@ -40,7 +40,7 @@ class FosParser < BaseParser
         date:        date,
         category_id: convert_category(tr.css("td")[headers_index[:current_category]].text).id,
         runner:      extract_runner_details(tr, headers_index),
-        status:      "confirmed"
+        status:      Entry::CONFIRMED
       }
     end.compact
   end

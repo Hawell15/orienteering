@@ -1,5 +1,5 @@
 class ResultAndEntryProcessor
-  def initialize(params = nil, result = nil, entry = nil, status = "unconfirmed")
+  def initialize(params = nil, result = nil, entry = nil, status = Entry::UNCONFIRMED)
     @params = params
     @result = result
     @entry  = entry
@@ -35,14 +35,13 @@ class ResultAndEntryProcessor
         status: status
       }.compact)
     end
-
     if result.category_id == 10 && check_three_results?(result.runner)
       Entry.create!({
         result: result,
         date: result.date,
         category_id: 9,
         runner: result.runner,
-        status: "confirmed"
+        status: Entry::CONFIRMED
       }.compact)
     end
   end
