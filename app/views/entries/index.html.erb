@@ -17,11 +17,11 @@
 <%= label_tag "date[to]", "Pina la", class: "label-filter", for: "date[to]" %>
 <%= text_field_tag "date[to]", params.dig("date","to"), id: "date[to]", placeholder: "zz/ll/aaaa", class: "datepicker custom-select" %>
 <hr>
-<%= check_box_tag 'status[]', 'confirmed', params[:status]&.include?('confirmed'), id: 'confirmed-checkbox' %>
+<%= check_box_tag 'status[]', Entry::CONFIRMED, params[:status]&.include?(Entry::CONFIRMED), id: 'confirmed-checkbox' %>
 <%= label_tag 'confirmed-checkbox', 'Confirmed' %>
-<%= check_box_tag 'status[]', 'unconfirmed', params[:status]&.include?('unconfirmed'), id: 'unconfirmed-checkbox' %>
+<%= check_box_tag 'status[]', Entry::UNCONFIRMED, params[:status]&.include?(Entry::UNCONFIRMED), id: 'unconfirmed-checkbox' %>
 <%= label_tag 'unconfirmed-checkbox', 'Unconfirmed' %>
-<%= check_box_tag 'status[]', 'pending', params[:status]&.include?('pending'), id: 'pending-checkbox' %>
+<%= check_box_tag 'status[]', Entry::PENDING, params[:status]&.include?(Entry::PENDING), id: 'pending-checkbox' %>
 <%= label_tag 'pending-checkbox', 'Pending' %>
 <%= submit_tag 'Filter' %>
 <% end %>

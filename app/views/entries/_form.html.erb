@@ -27,7 +27,7 @@
         <%= form.select :category_id,  options_for_select(Category.all.map { |category| [category.category_name, category.id] }, selected: entry&.category_id), {},{class: "form-select form-group form-control"} %>
     </div>
         <div class="col">
-         <%= form.select :status, options_for_select(["confirmed", "unconfirmed", "pending"],selected: entry&.status), {},{class: "form-select form-group form-control"} %>
+         <%= form.select :status, options_for_select([Entry::CONFIRMED, Entry::UNCONFIRMED, Entry::PENDING],selected: entry&.status), {},{class: "form-select form-group form-control"} %>
     </div>
 </div>
 

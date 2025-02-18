@@ -10,7 +10,7 @@ class EntriesController < ApplicationController
 
   # GET /entries or /entries.json
   def index
-    params[:status] = %w[unconfirmed pending] unless params[:status].present?
+    params[:status] = [Entry::UNCONFIRMED, Entry::PENDING] unless params[:status].present?
 
     params[:date][:to] = '31/12/2999' if params[:date].present? && params.dig('date', 'to').blank?
 
@@ -54,7 +54,7 @@ class EntriesController < ApplicationController
   end
 
   def confirm
-    @entry.update(status: 'confirmed')
+    @entry.update(status: Entry::CONFIRMED)
 
     redirect_to request.referer, notice: 'Indeplinirea confirmata'
   end
@@ -70,7 +70,7 @@ class EntriesController < ApplicationController
   end
 
   def pending
-    @entry.update(status: 'pending')
+    @entry.update(status: Entry::PENDING)
     redirect_to request.referer, notice: 'Indeplinirea in asteptare'
   end
 
