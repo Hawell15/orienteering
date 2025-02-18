@@ -52,7 +52,7 @@ class HtmlParser < BaseParser
 
   def extract_runner(runner, gender, json)
     current_category     = convert_category(runner['qual'])
-    club = json['organizations'].detect { |org| org['id'] == runner['organization_id'] }['name']
+    club = json['organizations'].detect { |org| org['id'] == runner['organization_id'] }&.fetch('name')
 
     {
       runner_name: runner['surname'],
