@@ -91,7 +91,7 @@ class GroupCategoriesUpdater
   end
 
   def update_result_category(res, category_id)
-    status = get_status(res)
+    status = get_status(res, category_id)
     ResultAndEntryProcessor.new({category_id: category_id}, res, nil, status).update_result
 
     category_id
@@ -117,10 +117,10 @@ class GroupCategoriesUpdater
     3
   end
 
-  def get_status(res)
-    return Entry::CONFIRMED if res.category_id > 3
+  def get_status(res, category_id)
+    return Entry::CONFIRMED if category_id > 3
 
-    res.category_id < res.runner.best_category_id ? Entry::PENDING : Entry::CONFIRMED
+    category_id < res.runner.best_category_id ? Entry::PENDING : Entry::CONFIRMED
   end
 
   def get_category_id(res, time_hash)
