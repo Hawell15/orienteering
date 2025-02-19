@@ -9,7 +9,7 @@ class RelayGroupCategoriesUpdater < GroupCategoriesUpdater
 
   def update_result_category(res, category_id)
     Result.where(id: res.results_id).each do |result|
-      status = get_status(res)
+      status = get_status(res, category_id)
 
       ResultAndEntryProcessor.new({category_id: category_id}, result, nil, status).update_result
     end
