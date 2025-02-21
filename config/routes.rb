@@ -57,6 +57,7 @@ Rails.application.routes.draw do
   get 'parser/file_results', as: 'file_results'
   post 'parser/file_results'
   post 'parser/file_relay_results'
+  post 'parser/runners_dob'
   get 'parser/iof_runners', as: 'iof_runners'
   get 'parser/iof_results', as: 'iof_results'
   get 'parser/fos_data', as: 'fos_data'
