@@ -1,10 +1,14 @@
 <% if admin_user? %>
 <%= form_tag file_results_path, multipart: true  do %>
-
   <%= file_field_tag :path %>
   <%= check_box_tag :relay, '1', false %>
   <%= label_tag :relay, "Stafeta?" %>
   <%= submit_tag "Încarcă", class: "btn btn-primary" %>
+<% end %>
+
+<%= form_tag parser_runners_dob_path, multipart: true  do %>
+  <%= file_field_tag :path %>
+  <%= submit_tag "Actualizeaza", class: "btn btn-primary" %>
 <% end %>
 <% else %>
 
