@@ -18,6 +18,7 @@ class RunnersParser
       )
       next unless rn
       next unless rn.dob == "0000-01-01".to_date
+
       rn.update!(dob: runner["birth_date"])
     end.compact
   end
