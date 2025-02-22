@@ -69,12 +69,12 @@ class Runner < ApplicationRecord
       .where(entries: { status: Entry::CONFIRMED })
       .order(:category_id, date: :desc).first
 
+    entry = nil if entry && entry.category_id.in?((7..9).to_a) && !self.junior_runner?
     hash = {}
 
     if entry && self.best_category_id > entry.category_id
       hash[:best_category_id] = entry.category_id
     end
-
 
     if self.category_id != 10 && (!entry || entry.category_id == 10)
       hash[:category_id]    = 10
