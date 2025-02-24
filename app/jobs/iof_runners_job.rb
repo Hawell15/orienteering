@@ -4,6 +4,6 @@ class IofRunnersJob < ApplicationJob
   def perform
     parser = IofRunnersParser.new
     parser.convert
-    TelegramMessageJob.perform_now
+    NotifyTelegramJob.perform_now("Actualizarea datelor sportivilor IOF s-a finisat")
   end
 end

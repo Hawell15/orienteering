@@ -8,6 +8,6 @@ end
 
 task :expire_categories => :environment do
   ExpireCategoryJob.perform_now
-  TelegramMessageJob.perform_now
+  NotifyTelegramJob.perform_now("Verificarea categorii expirate s-a finisat")
 end
 
