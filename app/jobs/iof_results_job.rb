@@ -4,6 +4,6 @@ class IofResultsJob < ApplicationJob
   def perform
     parser = IofResultsParser.new
     parser.convert
-    TelegramMessageJob.perform_now
+    NotifyTelegramJob.perform_now("Descarcarea rezultatelor IOF s-a finisat")
   end
 end
