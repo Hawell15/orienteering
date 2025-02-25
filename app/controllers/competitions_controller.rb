@@ -174,12 +174,12 @@ class CompetitionsController < ApplicationController
   def ecn_ranking
     respond_to do |format|
       format.html do
-        year = params[:year] || Time.now.year
+        @year = params[:year] || Time.now.year
         gender = params[:gender].presence || 'M'
 
         @runners = Runner.where(gender:).joins(:results)
                          .where('results.ecn_points > 0')
-                         .where('extract(year  from date) = ?', year)
+                         .where('extract(year  from date) = ?', @year)
                          .group('runners.id')
                          .order('SUM(results.ecn_points) DESC')
                          .select('runners.id, runners.runner_name, runners.surname, runners.dob, runners.club_id, runners.gender, SUM(results.ecn_points) AS total_points, COUNT(results.ecn_points) AS ecn_results_count,
