@@ -78,7 +78,7 @@ class IofResultsParser < BaseParser
   end
 
   def request_runner_results(wre_id, distance_type)
-    JSON.parse(Net::HTTP.get(URI("http://ranking.orienteering.org/api/person/#{wre_id}/results/#{distance_type}")))
+    JSON.parse(Net::HTTP.get(URI("https://ranking.orienteering.org/api/person/#{wre_id}/results/#{distance_type}")))
   end
 
   def update_wre_data(runner, hash)

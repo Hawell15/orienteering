@@ -73,7 +73,7 @@ class IofRunnersParser < BaseParser
 
 
   def get_data(type, gender)
-    url = "http://ranking.orienteering.org/download.ashx?doctype=rankfile&rank=#{type}&group=#{gender}&todate=#{Time.now.to_date.as_json}&ioc=MDA"
+    url = "https://ranking.orienteering.org/download.ashx?doctype=rankfile&rank=#{type}&group=#{gender}&todate=#{Time.now.to_date.as_json}&ioc=MDA"
     csv_data  = request_data(url)
     hash_data = csv_data.map(&:to_h)
 
