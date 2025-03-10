@@ -44,22 +44,11 @@ class CompetitionsController < ApplicationController
   def pdf
     respond_to do |format|
       format.html do
-        html_string = ''
-        html_string = "<div style='text-align: center;'><h1>#{@competition.competition_name}</h1></div>"
-        html_string << "<div style='text-align: center;'><h2>#{@competition.date.strftime('%d.%m.%Y')}</h2></div>"
-        html_string << "<div style='text-align: center;'><h2>Rezultate</h2></div>"
-
-        @competition.groups.order(:group_name).each do |group|
-          # Render the partial for each group and append it to the html_string with a page break
-          html_string << render_to_string(partial: 'results/results_table2', locals: { group: })
-          html_string << '<div style="page-break-before: always;"></div>'
-        end
-
-        # Generate PDF from the concatenated html_string
-        pdf = WickedPdf.new.pdf_from_string(html_string)
-
-        # Send the generated PDF as the response
-        send_data pdf, filename: 'competition_results.pdf', type: 'application/pdf'
+        render pdf: "competitions/#{@competition.id}",                     # filename
+               template: 'competitions/show',                       # erb file to render
+               layout: 'pdf',                                 # use a special layout for PDF (optional)
+               formats: [:html],                              # important
+               locals: { custom_data: 'Any extra data' }      # pass locals if needed
       end
     end
   end
