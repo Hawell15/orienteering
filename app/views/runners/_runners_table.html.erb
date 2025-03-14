@@ -7,9 +7,15 @@
             <th class="sortable" data-sort-by="runner">
                 <%= link_to 'Nume' %>
             </th>
-            <th class="sortable" data-sort-by="best_category_id">
-                <%= link_to 'Titlul Sportiv' %>
+            <% unless controller.class == CategoriesController %>
+            <th class="sortable" data-sort-by="category_id">
+                <%= link_to 'Categorie Valida' %>
             </th>
+            <% end %>
+            <th class="sortable" data-sort-by="category_valid">
+                <%= link_to 'Valabilitate ' %>
+            </th>
+
             <th class="sortable" data-sort-by="gender">
                 <%= link_to 'Genul' %>
             </th>
@@ -21,13 +27,8 @@
                 <%= link_to 'Club' %>
             </th>
             <% end %>
-            <% unless controller.class == CategoriesController %>
-            <th class="sortable" data-sort-by="category_id">
-                <%= link_to 'Categorie Valida' %>
-            </th>
-            <% end %>
-            <th class="sortable" data-sort-by="category_valid">
-                <%= link_to 'Valabilitate ' %>
+            <th class="sortable" data-sort-by="best_category_id">
+                <%= link_to 'Titlul Sportiv' %>
             </th>
             <th class="sortable" data-sort-by="wre_id">
                 <%= link_to 'WRE ID' %>
@@ -52,8 +53,13 @@
             <td>
                 <%= link_to "#{runner.runner_name} #{runner.surname}", runner %>
             </td>
+            <% unless controller.class == CategoriesController %>
             <td>
-                <%= runner.best_category.category_name %>
+                <%= runner.category.category_name %>
+            </td>
+            <% end %>
+            <td>
+                <%= runner.category_valid&.strftime("%d/%m/%Y") %>
             </td>
             <td>
                 <%= runner.gender %>
@@ -66,13 +72,8 @@
                 <%= link_to runner.club&.club_name, runner.club %>
             </td>
             <% end %>
-            <% unless controller.class == CategoriesController %>
             <td>
-                <%= runner.category.category_name %>
-            </td>
-            <% end %>
-            <td>
-                <%= runner.category_valid&.strftime("%d/%m/%Y") %>
+                <%= runner.best_category.category_name %>
             </td>
             <td>
                 <%= runner.wre_id %>
