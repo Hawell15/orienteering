@@ -89,10 +89,10 @@ class IofResultsParser < BaseParser
     delta = date < "01.01.2024".to_date ? 50 : 0
 
     category_id = case points
-    when 700..899                       then 4
-    when 900..(1049 + delta)            then 3
-    when (1050 + delta)..(1249 + delta) then 2
-    when (1250 + delta)..1500           then 1
+    when 700..900                       then 4
+    when 901..(1050 + delta)            then 3
+    when (1051 + delta)..(1250 + delta) then 2
+    when (1251 + delta)..1500           then 1
     else 10
     end
   end
