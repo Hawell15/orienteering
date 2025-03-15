@@ -35,6 +35,6 @@ class Entry < ApplicationRecord
 
     message = "#{self.runner.runner_name} #{self.runner.surname} \nModificare categorie din: #{self.runner.category.category_name} in: #{self.category.category_name} \nvalabila pina la: #{self.category_id == 10 ? "" : (self.date + 2.years).as_json} \nCompetitia: #{self.result.group.competition.competition_name} Grupa: #{self.result.group.group_name}"
 
-    NotifyTelegramJob.perform_now(message)
+    # NotifyTelegramJob.perform_now(message)
   end
 end
