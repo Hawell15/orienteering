@@ -68,7 +68,7 @@ class GroupCategoriesUpdater
 
   def get_group_rang
     rang_results.map do |result|
-      entry = Entry.where(runner_id: result.runner_id).where(status: Entry::CONFIRMED).where('date < ?', @group.competition.date).order(date: :desc).first
+      entry = Entry.where(runner_id: result.runner_id).where(status: Entry::CONFIRMED).where('date < ?', @group.competition.date).order(date: :desc, category_id: :desc).first
 
       entry ? entry.category.points : 0.0
     end.sum
