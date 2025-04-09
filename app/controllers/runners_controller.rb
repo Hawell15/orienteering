@@ -53,7 +53,7 @@ class RunnersController < ApplicationController
   def update
     respond_to do |format|
       if @runner.update(runner_params)
-        add_result
+        # add_result
 
         format.html { redirect_to runner_url(@runner), notice: 'Runner was successfully updated.' }
         format.json { render :show, status: :ok, location: @runner }
