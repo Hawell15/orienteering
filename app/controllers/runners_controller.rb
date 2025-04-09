@@ -42,7 +42,7 @@ class RunnersController < ApplicationController
     respond_to do |format|
       parser = RunnerFormParser.new(runner_params)
       @runner = parser.convert
-      add_result
+      # add_result
 
       format.html { redirect_to runner_url(@runner), notice: 'Runner was successfully created.' }
       format.json { render :show, status: :created, location: @runner }
