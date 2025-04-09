@@ -1,7 +1,6 @@
 class RelayHtmlParser < HtmlParser
   def add_relay_result(group)
     group.results.group_by(&:place).values.each do |relay_result|
-      byebug
       results_id = relay_result.pluck("id").compact
       next if results_id.count.zero?
       unless results_id.count == results_count(group)
