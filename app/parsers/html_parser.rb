@@ -22,7 +22,7 @@ class HtmlParser < BaseParser
     @hash = {
       competition_name: json.dig('data', 'title'),
       date:             json.dig('data', 'start_datetime').to_date.as_json,
-      distance_type:    json.dig('data', 'description').strip,
+      distance_type:    distance_type(json),
       groups:           extract_groups_details(json)
     }
 
@@ -82,5 +82,9 @@ class HtmlParser < BaseParser
 
   def check_result?(result)
     true
+  end
+
+  def distance_type(json)
+    json.dig('data', 'description').strip
   end
 end
