@@ -44,11 +44,11 @@ class CompetitionsController < ApplicationController
   def pdf
     respond_to do |format|
       format.html do
-        render pdf: "competitions/#{@competition.id}",                     # filename
-               template: 'competitions/show',                       # erb file to render
-               layout: 'pdf',                                 # use a special layout for PDF (optional)
-               formats: [:html],                              # important
-               locals: { custom_data: 'Any extra data' }      # pass locals if needed
+        layout = @competition.relay? ? "pdf_relay" : "pdf"
+        render pdf: "competitions/#{@competition.id}",
+               template: 'competitions/show',
+               layout: layout,
+               formats: [:html]
       end
     end
   end

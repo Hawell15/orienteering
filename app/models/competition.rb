@@ -33,4 +33,8 @@ class Competition < ApplicationRecord
        comp.wre_id           = params[:wre_id]
      end
   end
+
+  def relay?
+    distance_type.match?(/stafeta/i)
+  end
 end
