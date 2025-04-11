@@ -17,6 +17,18 @@
 <%= label_tag "dob[to]", "Pina la", class: "label-filter", for: "dob[to]" %>
 <%= text_field_tag "dob[to]", params.dig("dob","to"), id: "dob[to]", placeholder: "zz/ll/aaaa", class: "datepicker custom-select" %>
 <br>
+
+<%= label_tag "licensed", "Licenta", class: "label-filter" %>
+
+<%= radio_button_tag "licensed", "", params[:licensed].blank?, id: "licensed_all" %>
+<%= label_tag "licensed_all", "Toti", class: "label-filter-inline" %>
+
+<%= radio_button_tag "licensed", "true", params[:licensed] == "true", id: "licensed_true" %>
+<%= label_tag "licensed_true", "Cu licenta", class: "label-filter-inline" %>
+
+<%= radio_button_tag "licensed", "false", params[:licensed] == "false", id: "licensed_false" %>
+<%= label_tag "licensed_false", "Fara licenta", class: "label-filter-inline" %>
+<br>
 <%= submit_tag "Filtreaza", class: "btn btn-info" %>
 <% end %>
 <%= form_tag("#{license_runners_path}?#{URI(request.url).query}", method: :post) do %>

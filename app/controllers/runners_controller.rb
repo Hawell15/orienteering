@@ -8,6 +8,7 @@ class RunnersController < ApplicationController
   has_scope :search
   has_scope :dob, using: %i[from to], type: :hash
   has_scope :wre, type: :boolean
+  has_scope :licensed
 
   # GET /runners or /runners.json
   def index
