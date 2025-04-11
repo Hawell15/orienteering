@@ -19,6 +19,22 @@ class Runner < ApplicationRecord
                  }
   scope :dob, ->(from, to) { where dob: from..to }
 
+  scope :licensed, ->(*value) {
+    value = value.first
+    if value.present?
+      case value.to_s
+      when "true"
+        where(license: true)
+      when "false"
+        where(license: false)
+      else
+        all
+      end
+    else
+      all
+    end
+  }
+
   scope :sorting, lambda { |sort_by, direction|
     case sort_by
     when 'runner'
