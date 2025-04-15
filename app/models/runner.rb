@@ -76,13 +76,15 @@ class Runner < ApplicationRecord
   end
 
   def entry_on_date(date = Date.today)
-    entries
+    entry = entries
       .joins(:category)
       .where('entries.date + (categories.validaty_period * INTERVAL \'1 year\') > ?', date)
       .where(entries: { status: Entry::CONFIRMED })
       .order(:category_id, date: :desc).first
 
     entry = nil if entry && entry.category_id.in?((7..9).to_a) && !self.junior_runner?
+
+    entry
   end
 
   def update_runner_category(date = Date.today)
