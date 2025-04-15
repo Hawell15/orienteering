@@ -75,14 +75,19 @@ class Runner < ApplicationRecord
     (Digest::SHA2.new << "#{runner_name}-#{surname}-#{dob.to_date.year}-#{gender}").to_s
   end
 
-  def update_runner_category(date = Date.today)
-    entry = entries
+  def entry_on_date(date = Date.today)
+    entries
       .joins(:category)
       .where('entries.date + (categories.validaty_period * INTERVAL \'1 year\') > ?', date)
       .where(entries: { status: Entry::CONFIRMED })
       .order(:category_id, date: :desc).first
 
     entry = nil if entry && entry.category_id.in?((7..9).to_a) && !self.junior_runner?
+  end
+
+  def update_runner_category(date = Date.today)
+    entry = entry_on_date
+
     hash = {}
 
     if entry && self.best_category_id > entry.category_id
