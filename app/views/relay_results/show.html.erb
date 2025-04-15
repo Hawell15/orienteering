@@ -58,7 +58,7 @@
                                 </td>
                                 <td>
                                     <% @default_category ||= Category.find(10) %>
-                                    <%= (result.runner.entries.select { |entry| entry["status"] == Entry::CONFIRMED  && entry["date"] < result.date }.sort_by(&:date).reverse.first&.category || @default_category).category_name %>
+                                     <%= (result.runner.entry_on_date(result.date)&.category || @default_category).category_name %>
                                 </td>
                                 <td>
                                     <%= Time.at(result.time).utc.strftime('%H:%M:%S') %>
