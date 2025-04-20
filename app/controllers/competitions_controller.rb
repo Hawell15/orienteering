@@ -225,7 +225,7 @@ class CompetitionsController < ApplicationController
         csv << ["ID", "Loc", "Nume, Prenume", "Cat. sportivă", "Rezultat", "Cat. îndeplinită", "Club", "Country", "", "", ""]
         group.results.each do |result|
          @default_category ||= Category.find(10)
-          current_category = (result.runner.entries.select { |entry| entry["status"] == Entry::CONFIRMED  && entry["date"] < result.date }.sort_by(&:date).reverse.first&.category || @default_category).category_name
+          current_category = (result.runner.entry_on_date(result.date)&.category || @default_category).category_name
 
         csv << [result.runner.id, result.place, "#{result.runner.runner_name} #{result.runner.surname}", current_category, Time.at(result.time).utc.strftime('%H:%M:%S'), result.category.category_name, result.runner.club.club_name, "", "", "", ""]
       end
