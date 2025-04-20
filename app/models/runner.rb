@@ -78,6 +78,7 @@ class Runner < ApplicationRecord
   def entry_on_date(date = Date.today)
     entry = entries
       .joins(:category)
+      .where('entries.date < ? ', date)
       .where('entries.date + (categories.validaty_period * INTERVAL \'1 year\') > ?', date)
       .where(entries: { status: Entry::CONFIRMED })
       .order(:category_id, date: :desc).first
