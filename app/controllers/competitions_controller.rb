@@ -221,7 +221,7 @@ class CompetitionsController < ApplicationController
       @competition.groups.each do |group|
         csv << ["", "", "", "", "", "", "", "", "", ""]
 
-        csv << ["Categorie", group.group_name, "Lungime", "", "Nr. PC", "", "Coeficient", group.ecn_coeficient, "Rang", group.rang, "Campionat Național", "", ""]
+        csv << ["Categorie", group.group_name, "Lungime", "", "Nr. PC", "", "Coeficient", group.ecn_coeficient, "Rang", group.rang, "Clasa", Category.find(group.clasa.to_i).category_name, "Campionat Național", "", ""]
         csv << ["ID", "Loc", "Nume, Prenume", "Cat. sportivă", "Rezultat", "Cat. îndeplinită", "Club", "Country", "", "", ""]
         group.results.each do |result|
          @default_category ||= Category.find(10)
