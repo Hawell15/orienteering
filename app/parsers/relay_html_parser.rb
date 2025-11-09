@@ -39,6 +39,6 @@ class RelayHtmlParser < HtmlParser
   end
 
   def distance_type(_json)
-    "Sprint Stafeta"
+    "Stafeta"
   end
 end
