@@ -163,13 +163,19 @@ class CompetitionsController < ApplicationController
   def ecn_ranking
     respond_to do |format|
       format.html do
+
         @year = params[:year] || Time.now.year
         gender = params[:gender].presence || 'M'
 
         @runners = if params[:year].to_i == 2024
+          @range = ["01.01.2024".to_date.."31.12.2024".to_date]
           ranking_2024(gender)
-        else
+        elsif params[:year].to_i == 2025
+          @range = ["01.01.2025".to_date.."31.12.2025".to_date]
           ranking_2025(gender)
+        else
+          @range = [365.days.ago..0.days.ago]
+          ranking_last_365_days(gender)
         end
 
         @runners = @runners.select { |rn| rn.total_points > 0 }
@@ -327,4 +333,33 @@ class CompetitionsController < ApplicationController
           .order('total_points DESC')
   end
 
+  def ranking_last_365_days(gender)
+    from_date = 365.days.ago.to_date
+
+    limit_number = Competition
+                   .where(ecn: true)
+                   .where('competitions.date >= ?', from_date)
+                   .count - 4
+
+    subquery = Result.select(
+      'results.*, ROW_NUMBER() OVER (PARTITION BY runner_id ORDER BY ecn_points DESC) AS rn'
+    ).where('results.ecn_points > 0')
+                     .where('results.date >= ?', from_date)
+
+    Runner.where(gender:)
+          .joins("JOIN (#{subquery.to_sql}) AS best_results ON best_results.runner_id = runners.id AND best_results.rn <= #{limit_number}")
+          .group('runners.id')
+          .select(<<~SQL)
+            runners.id,
+            runners.runner_name,
+            runners.surname,
+            runners.dob,
+            runners.club_id,
+            runners.gender,
+            SUM(best_results.ecn_points) AS total_points,
+            COUNT(best_results.ecn_points) AS ecn_results_count,
+            RANK() OVER (ORDER BY SUM(best_results.ecn_points) DESC) AS place
+          SQL
+          .order('total_points DESC')
+  end
 end
