@@ -299,6 +299,7 @@ class CompetitionsController < ApplicationController
   end
 
    def ranking_2024(gender)
+    @limit_number = 9999
     Runner.where(gender:).joins(:results)
                          .where('results.ecn_points > 0')
                          .where('extract(year  from date) = ?', @year)
@@ -309,7 +310,7 @@ class CompetitionsController < ApplicationController
   end
 
   def ranking_2025(gender)
-    limit_number = Competition.where(ecn: true).where('EXTRACT(YEAR FROM competitions.date) = ?', @year).count - 4
+    @limit_number = Competition.where(ecn: true).where('EXTRACT(YEAR FROM competitions.date) = ?', @year).count - 4
 
     subquery = Result.select(
       'results.*, ROW_NUMBER() OVER (PARTITION BY runner_id ORDER BY ecn_points DESC) AS rn'
@@ -317,7 +318,7 @@ class CompetitionsController < ApplicationController
                      .where('EXTRACT(YEAR FROM results.date) = ?', @year)
 
     Runner.where(gender:)
-          .joins("JOIN (#{subquery.to_sql}) AS best_results ON best_results.runner_id = runners.id AND best_results.rn <= #{limit_number}")
+          .joins("JOIN (#{subquery.to_sql}) AS best_results ON best_results.runner_id = runners.id AND best_results.rn <= #{@limit_number}")
           .group('runners.id')
           .select(<<~SQL)
             runners.id,
@@ -336,7 +337,7 @@ class CompetitionsController < ApplicationController
   def ranking_last_365_days(gender)
     from_date = 365.days.ago.to_date
 
-    limit_number = Competition
+    @limit_number = Competition
                    .where(ecn: true)
                    .where('competitions.date >= ?', from_date)
                    .count - 4
@@ -347,7 +348,7 @@ class CompetitionsController < ApplicationController
                      .where('results.date >= ?', from_date)
 
     Runner.where(gender:)
-          .joins("JOIN (#{subquery.to_sql}) AS best_results ON best_results.runner_id = runners.id AND best_results.rn <= #{limit_number}")
+          .joins("JOIN (#{subquery.to_sql}) AS best_results ON best_results.runner_id = runners.id AND best_results.rn <= #{@limit_number}")
           .group('runners.id')
           .select(<<~SQL)
             runners.id,
