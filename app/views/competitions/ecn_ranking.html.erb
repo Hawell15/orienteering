@@ -75,8 +75,8 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <% runner.results.where('ecn_points > 0').where(date: @range).order(date: :desc).each do |result| %>
-                            <tr>
+                            <% runner.results.where('ecn_points > 0').where(date: @range).order(ecn_points: :desc).each_with_index do |result, index| %>
+                            <tr style="<%= 'background-color: #f8d7da;' if index >= @limit_number %>">
                                 <td>
                                     <%= result.date.strftime("%d/%m/%Y") %>
                                 </td>
