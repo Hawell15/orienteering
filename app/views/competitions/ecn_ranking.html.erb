@@ -75,8 +75,9 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <% runner.results.where('ecn_points > 0').where(date: @range).order(ecn_points: :desc).each_with_index do |result, index| %>
-                            <tr style="<%= 'background-color: #f8d7da;' if index >= @limit_number %>">
+                            <% min_limit_points = runner.results.where('ecn_points > 0').where(date: @range).order(ecn_points: :desc)[@limit_number - 1]&.ecn_points || 0 %>
+                            <% runner.results.where('ecn_points > 0').where(date: @range).order(date: :desc).each_with_index do |result, index| %>
+                            <tr style="<%= 'background-color: #f8d7da;' if result.ecn_points < min_limit_points %>">
                                 <td>
                                     <%= result.date.strftime("%d/%m/%Y") %>
                                 </td>
