@@ -16,6 +16,14 @@ class ParserController < ApplicationController
         JsonParser.new(path)
       elsif path[/html$/]
         HtmlParser.new(path)
+      elsif path[/xml/]
+        updated_xml = XmlParser.new(path).convert
+
+        return send_data updated_xml,
+            filename: "updated_entries_#{Time.now.to_i}.xml",
+            type: "application/xml",
+            disposition: "attachment"
+
       elsif  params[:path].headers[/competitie.+xlsx/]
         ExcelCompetitionParser.new(path)
       elsif params[:path].headers[/rezultate.+xlsx/]
