@@ -9,6 +9,9 @@
             <th class="sortable" data-sort-by="runner_name">
                 <%= link_to 'Sportiv'%>
             </th>
+             <th class="sortable" data-sort-by="dob">
+                <%= link_to 'Anul Nasterii'%>
+            </th>
             <% end %>
             <th class="sortable" data-sort-by="current_category_id">
                 <%= link_to 'Categoria actuală'%>
@@ -52,6 +55,9 @@
             <% unless controller.class == RunnersController %>
             <td>
                 <%= link_to "#{result.runner.runner_name} #{result.runner.surname}", result.runner  %>
+            </td>
+            <td>
+                <%= result.runner.dob.year %>
             </td>
             <% end %>
             <td>
