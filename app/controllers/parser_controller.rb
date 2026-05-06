@@ -10,7 +10,9 @@ class ParserController < ApplicationController
     respond_to do |format|
       path         = params[:path].tempfile.path
 
-      parser = if params["relay"]
+      parser = if params["relay"] && path[/json$/]
+        RelayJsonParser.new(path)
+      elsif params["relay"]
         RelayHtmlParser.new(path)
       elsif path[/json$/]
         JsonParser.new(path)
