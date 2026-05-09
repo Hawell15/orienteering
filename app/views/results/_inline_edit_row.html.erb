@@ -26,4 +26,4 @@
     <%= image_tag("/confirm.png", alt: "Actualizeaza Rezultat", size: "35x30" ) %>
   </button>
 <% end %>
-<%= image_tag "/reject.jpeg", alt: "Hide", size: "30x30", onclick: "cancel_inline_edit(<%= result.id %>)" %></td>
+<%= image_tag "/reject.jpeg", alt: "Hide", size: "30x30", onclick: "cancel_inline_edit(#{result.id})" %></td>
