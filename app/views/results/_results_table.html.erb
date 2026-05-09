@@ -94,7 +94,7 @@
                 <div class="btn-group" role="group" aria-label="Basic example">
                     <%= link_to 'Arată', result, class: "btn btn-warning btn-sm"%>
                     <% if admin_user? %>
-                    <%= button_tag 'Editează', onclick: "show_hide_form_result('#edit_result_#{result.id}', '#result_#{result.id}')", class: "btn btn-success btn-sm" %>
+                    <%= button_tag 'Editează', onclick: "load_inline_edit(#{result.id}, '#{group_id}')", class: "btn btn-success btn-sm" %>
 
                     <%= link_to 'Șterge', result, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-danger btn-sm" %>
                     <% end %>
@@ -103,35 +103,6 @@
             <% end %>
         </tr>
         <tr id="edit_result_<%= result.id %>" style="display: none;">
-            <%= form_with(model: result, url: result_path(result), method: :patch, local: true) do |form| %>
-            <td>
-                <%= form.number_field :place, value: result.place, step: 1, min: 1, placeholder: "Locul", class: "form-control"  %>
-            </td>
-            <td>
-                <%= form.select :runner_id, options_for_select(Runner.order(:runner_name, :surname).map { |runner| ["#{runner.runner_name} #{runner.surname}", runner.id] }, selected: result&.runner_id), {}, { class: "form-select form-group form-control" } %>
-            </td>
-            <td></td>
-            <td>
-                <%= form.text_field :time, value:  Time.at(result.time).utc.strftime("%H:%M:%S") ,placeholder: "hh:mm:ss", class: "form-control" %>
-            </td>
-            <td>
-                <%= form.select :category_id,  options_for_select(Category.all.map { |category| [category.category_name, category.id] }, selected: result&.category_id), {},{class: "form-select form-group form-control"} %>
-            </td>
-            <td>
-                <%= form.hidden_field :group_id, value: group_id %>
-            </td>
-            <td>
-                <%= form.number_field :wre_points, value: result.wre_points %>
-            </td>
-                        <td>
-                <%= form.text_field :ecn_points, value: result.ecn_points %>
-            </td>
-            <td>
-               <button type="submit" style="border: none; background: none;">
-            <%= image_tag("/confirm.png", alt: "Actualizeaza Rezultat", size: "35x30" ) %>
-          </button>
-            <% end %>
-            <%= image_tag "/reject.jpeg", alt: "Hide", size: "30x30", onclick: "show_hide_form_result('#result_#{result.id}', '#edit_result_#{result.id}')" %></td>
         </tr>
         <% end %>
         <% if admin_user? && group_id %>
@@ -181,6 +152,28 @@
 
         show_el.show();
         hide_el.hide();
+    }
+
+    function load_inline_edit(resultId, groupId) {
+        var editRow = $('#edit_result_' + resultId);
+        var resultRow = $('#result_' + resultId);
+
+        if (editRow.children().length > 0) {
+            resultRow.hide();
+            editRow.show();
+            return;
+        }
+
+        $.get('/results/' + resultId + '/inline_edit', { group_id: groupId }, function(html) {
+            editRow.html(html);
+            resultRow.hide();
+            editRow.show();
+        });
+    }
+
+    function cancel_inline_edit(resultId) {
+        $('#edit_result_' + resultId).hide();
+        $('#result_' + resultId).show();
     }
 
     function hide_form_result() {
