@@ -1,5 +1,5 @@
 class ResultsController < ApplicationController
-  before_action :set_result, only: %i[show edit update destroy]
+  before_action :set_result, only: %i[show edit update destroy inline_edit]
 
   has_scope :runner_id
   has_scope :competition_id
@@ -34,6 +34,14 @@ class ResultsController < ApplicationController
 
   # GET /results/1/edit
   def edit; end
+
+  def inline_edit
+    @runners = Runner.order(:runner_name, :surname).pluck(:runner_name, :surname, :id).map { |r| ["#{r[0]} #{r[1]}", r[2]] }
+    @categories = Category.all.map { |c| [c.category_name, c.id] }
+    @group_id = params[:group_id]
+    render partial: 'inline_edit_row', locals: { result: @result, runners: @runners, categories: @categories, group_id: @group_id }
+  end
+
 
   # POST /results or /results.json
   def create

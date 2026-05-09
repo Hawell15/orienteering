@@ -8,7 +8,11 @@ Rails.application.routes.draw do
     end
   end
   post 'results/from_competition'
-  resources :results
+  resources :results do
+    member do
+      get :inline_edit
+    end
+  end
   get 'runners/license'
   get 'runners/update_profile', to: 'runners#update_profile'
 

@@ -1,0 +1,29 @@
+<%= form_with(model: result, url: result_path(result), method: :patch, local: true) do |form| %>
+<td>
+    <%= form.number_field :place, value: result.place, step: 1, min: 1, placeholder: "Locul", class: "form-control"  %>
+</td>
+<td>
+    <%= form.select :runner_id, options_for_select(runners, selected: result&.runner_id), {}, { class: "form-select form-group form-control" } %>
+</td>
+<td></td>
+<td>
+    <%= form.text_field :time, value:  Time.at(result.time).utc.strftime("%H:%M:%S") ,placeholder: "hh:mm:ss", class: "form-control" %>
+</td>
+<td>
+    <%= form.select :category_id,  options_for_select(categories, selected: result&.category_id), {},{class: "form-select form-group form-control"} %>
+</td>
+<td>
+    <%= form.hidden_field :group_id, value: group_id %>
+</td>
+<td>
+    <%= form.number_field :wre_points, value: result.wre_points %>
+</td>
+<td>
+    <%= form.text_field :ecn_points, value: result.ecn_points %>
+</td>
+<td>
+   <button type="submit" style="border: none; background: none;">
+    <%= image_tag("/confirm.png", alt: "Actualizeaza Rezultat", size: "35x30" ) %>
+  </button>
+<% end %>
+<%= image_tag "/reject.jpeg", alt: "Hide", size: "30x30", onclick: "cancel_inline_edit(<%= result.id %>)" %></td>
