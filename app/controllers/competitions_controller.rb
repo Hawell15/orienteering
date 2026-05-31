@@ -47,7 +47,7 @@ class CompetitionsController < ApplicationController
         layout = @competition.relay? ? "pdf_relay" : "pdf"
         render pdf: "competitions/#{@competition.id}",
                template: 'competitions/show',
-               layout: layout,
+               layout: flayout,
                formats: [:html]
       end
     end
