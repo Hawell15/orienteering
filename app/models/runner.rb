@@ -89,7 +89,7 @@ class Runner < ApplicationRecord
   end
 
   def update_runner_category(date = Date.today)
-    entry = entry_on_date
+    entry = entry_on_date(date)
 
     hash = {}
 
