@@ -24,7 +24,7 @@ class Entry < ApplicationRecord
   def update_runner_category
     return unless self.status == Entry::CONFIRMED
 
-    self.runner.update_runner_category
+    self.runner.update_runner_category(self.date + 1.day)
   end
 
   private
